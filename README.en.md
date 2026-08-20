@@ -179,16 +179,6 @@ Client-only UI: `npm run dev:watch`, then refresh the UI. Host changes: restart 
 - `src/client/` — browser half: microphone button (`conversation.input.right`), recognition bar (`conversation.input.dock`), settings page (`settings.section`)
 - `src/typert.ts` / `src/remote.ts` — Client↔Host typed contract
 
-## 📚 Design references
-
-This project **adopts architecture and interaction patterns from great open-source DSH plugins**:
-
-- [dsh-ears](https://github.com/WizisCool/dsh-ears) — the architecture template for voice input + polishing + settings (mic button, recognition bar, Typert remote, settings slot patterns)
-- [lhh010/dsh-paste-input](https://github.com/lhh010/dsh-paste-input) — mature DSH WebUI input-enhancement practices
-- [DeepSeek Harness official docs](https://github.com/deepseek-ai/deepseek-harness) — plugin development / publishing spec and the Typert / settings / llm service interfaces
-
-The `_research/` directory in this repo (containing clones of the projects above) is for local development reference only — **excluded from git tracking**, never shipped with the release.
-
 ## 📄 License
 
 [MIT](./LICENSE)

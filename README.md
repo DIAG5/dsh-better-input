@@ -179,16 +179,6 @@ npm run build    # 构建 lib/（Host ESM + 浏览器 bundle）
 - `src/client/` — 浏览器端：麦克风按钮（`conversation.input.right`）、识别条（`conversation.input.dock`）、设置页（`settings.section`）
 - `src/typert.ts` / `src/remote.ts` — Client↔Host 类型化通信契约
 
-## 📚 设计参考
-
-本项目在架构与交互上**参考了 DSH 社区优秀的开源插件**：
-
-- [dsh-ears](https://github.com/WizisCool/dsh-ears) — 语音输入 + 润色 + 设置页的架构范式（麦克风按钮、识别条、Typert remote、settings 槽位模式均借鉴其设计）
-- [lhh010/dsh-paste-input](https://github.com/lhh010/dsh-paste-input) — DSH WebUI 输入增强的成熟做法
-- [DeepSeek Harness 官方文档](https://github.com/deepseek-ai/deepseek-harness) — 插件开发 / 发布规范与 Typert / settings / llm 服务接口
-
-本仓库 `_research/` 目录（含上述项目的克隆）仅用于本地开发参考，**已排除在 git 追踪之外**，不会随发布分发。
-
 ## 📄 License
 
 [MIT](./LICENSE)
