@@ -1,9 +1,9 @@
 <h1 align="center">🎤 dsh-better-input</h1>
 
-<p align="center"><b>A better input experience for DeepSeek Harness.</b></p>
+<p align="center"><b>A better way to feed your DeepSeek Harness agent.</b></p>
 
 <p align="center">
-  Open-source input enhancement plugin for <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a> · voice input + AI polishing
+  Open-source input-experience enhancement plugin for <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a>
 </p>
 
 <p align="center">
@@ -17,24 +17,58 @@
   <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
 </p>
 
-```text
-Speak → Transcribe → AI polish → Editable draft → Send
-```
-
-> 💡 **What problem does it solve?** Typing slow or too lazy for long sentences? Talk into the composer and watch the text stream in; stutters, filler words and ASR homophone errors are cleaned up by AI into neat copy. **No extra API key needed** — polishing reuses the models you've already configured in dsh.
+> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing on a keyboard. Say it, paste an image, drop a PDF, one-click optimize your prompt — **turn every way you can input into a smoother way to converse with your agent**. That's what BetterInput means: not just voice, a better input.
 
 ---
 
-## ✨ Features
+## ✨ Implemented today
 
-- [x] 🎙️ **Voice input** — click the mic and speak; the transcript streams into your draft in real time (browser-native recognition, no API key, no server round-trip)
-- [x] 🤖 **AI polishing** — auto-cleanse after recognition: drop fillers, fix homophone errors (根木鹿→根目录, 脱肯→Token), restore punctuation, and turn spoken enumerations into lists
-- [x] 🐘 **Edit-safe override guard** — if you edit the draft while polishing runs, the result **won't** overwrite your edits; on failure the original is kept
-- [x] ⏱️ **Auto-stop recording** — configurable per-session recording limit, never holds the mic forever
-- [x] ⚙️ **Built-in settings page** — recognition language, recording limit, polish toggle, polish model, custom prompt — all visual
-- [x] 🔎 **Viewable built-in prompt** — expand the default polish prompt in settings for reference/adaptation
-- [ ] 📄 **PDF → model-friendly format** (planned)
-- [ ] 🖼️ **Image input** (planned)
+<table>
+<tr><th align="center" width="120">Module</th><th align="left">Description</th></tr>
+<tr>
+<td align="center">🎙️<br/><b>Voice input</b></td>
+<td>Click the mic and speak; transcript <strong>streams</strong> into the draft in real time. Browser-native recognition, <strong>no API key</strong>.</td>
+</tr>
+<tr>
+<td align="center">🤖<br/><b>AI polishing</b></td>
+<td>Auto-cleanse after recognition: drop fillers, fix homophone errors (根木鹿→根目录, 脱肯→Token), restore punctuation, turn spoken enumerations into lists. <strong>Reuses your configured dsh models</strong> — no extra key.</td>
+</tr>
+<tr>
+<td align="center">🐘<br/><b>Edit-safe guard</b></td>
+<td>If you edit the draft while polishing runs, the result <strong>won't</strong> overwrite your edits; on failure the original is kept.</td>
+</tr>
+<tr>
+<td align="center">⏱️<br/><b>Auto-stop recording</b></td>
+<td>Configurable per-session recording limit (1–600 s), never holds the mic forever.</td>
+</tr>
+<tr>
+<td align="center">⚙️<br/><b>Visual settings page</b></td>
+<td>Recognition language, recording limit, polish toggle/model, custom prompt — all configured in settings; the built-in prompt is one click away.</td>
+</tr>
+</table>
+
+## 🗺️ Next (directions for better input)
+
+BetterInput aims to grow into a complete **input-experience enhancement suite**. Voice is just the start; everything below revolves around making every input you feed an agent smoother:
+
+### Text & prompts
+- [ ] ✨ **Prompt optimization** — a one-click icon beside the input to have the AI polish / improve the prompt you wrote
+- [ ] 📝 **Prompt template library** — one-click insert of common templates (coding / summarize / translate / role-play…)
+- [ ] 🧹 **Text cleaning** — paste messy / line-numbered / timestamped text and get clean copy
+- [ ] 🔤 **Instant translation** — one click to turn Chinese into English (or vice versa)
+- [ ] 📋 **Smart paste** — detect code / table / URL / quote on paste and wrap it appropriately
+
+### Media & files
+- [ ] 🖼️ **Image input** — paste / drag an image to feed multimodal models
+- [ ] 🧾 **PDF → structured** — PDF into an AI-friendly readable format (Markdown / plain text)
+- [ ] 🎬 **Audio/video transcription** — paste a local media file and get text (an upgrade to voice input)
+
+### Productivity & collaboration
+- [ ] ⏱️ **Draft recovery** — auto-save and restore an unfinished draft
+- [ ] 🧮 **Variable fill** — `{{date}}`, `{{cwd}}` and other tokens replaced automatically in the input
+- [ ] 📎 **Quick input flows** — one-click send of fixed templates (daily / weekly reports)
+
+> Planned around the theme; iterating continuously. **Ideas welcome — file an [Issue](https://github.com/DIAG5/dsh-better-input/issues) or open a PR.**
 
 ## 🚀 Install
 
@@ -79,13 +113,13 @@ After installing, refresh the Web UI — a **microphone icon** 🎤 appears on t
 3. Click again (or press **Stop** on the recognition bar) to finish.
 4. Review, edit, and send.
 
-> Recognition happens fully in your browser via the Web Speech API — no API key, no server round-trip. It's auto-disabled in unsupported browsers (Firefox/Safari).
+> Recognition runs fully in your browser via the Web Speech API — no API key, no server round-trip. Auto-disabled in unsupported browsers (Firefox/Safari).
 
 ### 2. AI polishing
 
 Settings → **BetterInput** → enable **AI polishing** → pick a model already configured in dsh.
 
-The built-in prompt removes fillers, fixes ASR homophone errors, restores punctuation, and formats spoken enumerations ("first… second…") into numbered lists (`1. ` `2. `). Leave blank to use the built-in prompt (expanded via **Show the built-in prompt**), or paste a custom prompt (the output-contract guard is always appended, so it returns clean text rather than answering).
+The built-in prompt removes fillers, fixes homophone errors, restores punctuation, and formats spoken enumerations into numbered lists. Leave blank to use the built-in prompt (expand via **Show the built-in prompt**), or paste a custom prompt (the output-contract guard is always appended, so it returns clean text rather than answering).
 
 ### 3. Settings
 
@@ -103,13 +137,6 @@ The built-in prompt removes fillers, fixes ASR homophone errors, restores punctu
 - Node.js `^22.19.0 || >=24.0.0`
 - Chromium-based browsers (Chrome / Edge)
 
-## 🗺️ Roadmap
-
-- [ ] PDF → model-friendly readable format
-- [ ] Image input
-- [ ] More ASR backends (local Whisper, cloud)
-- [ ] One-click polish styles (concise / detailed / formal)
-
 ## 🛠️ Development
 
 ```sh
@@ -119,6 +146,13 @@ npm run build    # build lib/ (host ESM + browser bundle)
 ```
 
 Client-only UI: `npm run dev:watch`, then refresh the UI. Host changes: restart dsh web.
+
+## 🏗️ Architecture
+
+- `src/index.ts` — Host plugin entry, mounts the polish service
+- `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing via `ctx.llm`
+- `src/client/` — browser half: microphone button (`conversation.input.right`), recognition bar (`conversation.input.dock`), settings page (`settings.section`)
+- `src/typert.ts` / `src/remote.ts` — Client↔Host typed contract
 
 ## 📚 Design references
 
@@ -138,10 +172,11 @@ The `_research/` directory in this repo (containing clones of the projects above
 
 ## ⭐ Support
 
-Enjoying this plugin? Feel free to:
+This plugin is growing from "voice" toward a **complete input-enhancement suite** — think it's worth watching?
 
-- Give it a **Star ⭐** (your stargazes fuel development)
+- Give it a **Star ⭐** (your stargazes fuel continued iteration)
 - File an [Issue](https://github.com/DIAG5/dsh-better-input/issues) / open a [PR](https://github.com/DIAG5/dsh-better-input/pulls)
 - Share it with fellow DSH users
 
 Thanks for your support ❤️
+
