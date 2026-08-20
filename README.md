@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/banner.png" width="100%" alt="dsh-better-input banner" />
+</p>
+
 <h1 align="center">🎤 dsh-better-input</h1>
 
 <p align="center"><b>给 DeepSeek Harness 的智能体换一副更顺手的「输入」。</b></p>

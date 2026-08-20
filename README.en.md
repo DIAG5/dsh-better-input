@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/banner.png" width="100%" alt="dsh-better-input banner" />
+</p>
+
 <h1 align="center">🎤 dsh-better-input</h1>
 
 <p align="center"><b>A better way to feed your DeepSeek Harness agent.</b></p>
