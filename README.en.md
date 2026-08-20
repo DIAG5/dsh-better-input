@@ -74,35 +74,56 @@ BetterInput aims to grow into a complete **input-experience enhancement suite**.
 
 Prereqs: [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`>= 0.1.0-rc.6`) + Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge.
 
-**From the GitHub repo (recommended):**
+> 💡 **Pick either way.** If you have the `dsh` CLI installed, use the short commands below. If not — or you don't want to install anything globally — use the **npx full form**: no global configuration needed at all.
+
+### Option A: global `dsh` CLI
 
 ```sh
+# Install from the GitHub repo
 dsh plugin --profile web add github:DIAG5/dsh-better-input
+
+# Uninstall
+dsh plugin --profile web remove dsh-better-input
 ```
 
-No `dsh` CLI? Use npx:
+### Option B: no `dsh`, or avoid global installs (npx full form)
+
+Run dsh via `npx` — pulled on demand, **nothing written to your global environment**:
 
 ```sh
+# Install from the GitHub repo
 npx -y @deepseek-ai/dsh plugin --profile web add github:DIAG5/dsh-better-input
+
+# Uninstall
+npx -y @deepseek-ai/dsh plugin --profile web remove dsh-better-input
 ```
 
-**From source (development):**
+> `-y` auto-confirms the download; the first run fetches the dsh CLI, cached by npx afterwards.
+
+### From source (development)
 
 ```sh
 git clone https://github.com/DIAG5/dsh-better-input.git
 cd dsh-better-input
 npm install
 npm run build
+# with a global CLI:
 dsh plugin --profile web add "$PWD"
+# without a global CLI:
+npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 ```
 
-After installing, refresh the Web UI — a **microphone icon** 🎤 appears on the right of the composer. Or add it to a preset's `cordis.yml`:
+### Alternative: no package install — add a row to a preset's `cordis.yml`
+
+If you already use an agent preset, just add one line (no install command needed):
 
 ```yaml
 - insert:
     - id: dsh-better-input
       name: dsh-better-input
 ```
+
+After installing, refresh the Web UI — a **microphone icon** 🎤 appears on the right of the composer.
 
 ## 📖 Usage
 

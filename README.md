@@ -74,35 +74,56 @@ BetterInput 的目标是成为一套完整的**输入体验增强套件**。语�
 
 前置：[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`>= 0.1.0-rc.6`）+ Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge 浏览器。
 
-**从 GitHub 仓库安装（推荐）：**
+> 💡 **两种方式，任选其一。** 装过 `dsh` CLI 的用短命令；没装或不想全局安装的，用下方 **npx 全称**——**不需要任何全局环境配置**。
+
+### 方式 A：有全局 `dsh` CLI
 
 ```sh
+# 从 GitHub 仓库安装
 dsh plugin --profile web add github:DIAG5/dsh-better-input
+
+# 卸载
+dsh plugin --profile web remove dsh-better-input
 ```
 
-还没装 `dsh` CLI？用 npx：
+### 方式 B：没有 `dsh`，或不想全局安装（npx 全称）
+
+下面的命令用 `npx` 直接运行 dsh CLI，**不写入全局环境**，临时拉取即可用：
 
 ```sh
+# 从 GitHub 仓库安装
 npx -y @deepseek-ai/dsh plugin --profile web add github:DIAG5/dsh-better-input
+
+# 卸载
+npx -y @deepseek-ai/dsh plugin --profile web remove dsh-better-input
 ```
 
-**从源码安装（开发）：**
+> `-y` 表示自动确认下载；首次运行会拉取 dsh CLI，之后有 npx 缓存。
+
+### 从源码安装（开发）
 
 ```sh
 git clone https://github.com/DIAG5/dsh-better-input.git
 cd dsh-better-input
 npm install
 npm run build
+# 有全局 CLI：
 dsh plugin --profile web add "$PWD"
+# 没有全局 CLI：
+npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 ```
 
-安装后刷新 Web UI，输入框右侧会出现**麦克风图标** 🎤。也支持写进 preset 的 `cordis.yml`：
+### 备选：不装依赖，写进 preset 的 `cordis.yml`
+
+如果你已经在用某个 agent preset，只需要加一行（无需跑安装命令）：
 
 ```yaml
 - insert:
     - id: dsh-better-input
       name: dsh-better-input
 ```
+
+安装后刷新 Web UI，输入框右侧会出现**麦克风图标** 🎤。
 
 ## 📖 使用
 
