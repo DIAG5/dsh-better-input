@@ -7,3 +7,5 @@ node_modules/
 .pnpm-bin/
 .pnpm-store/
 *.log
+# dev-research clones of other repos; never ship these
+_research/

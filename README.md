@@ -1,35 +1,68 @@
-# dsh-better-input
+<h1 align="center">🎤 dsh-better-input</h1>
 
-Better input experience for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH).
+<p align="center"><b>给 DeepSeek Harness 换一副更顺手的输入法。</b></p>
 
-Planned features:
+<p align="center">
+  <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a> 的开源输入增强插件 · 语音输入 + AI 润色
+</p>
 
-- ✅ **Voice input** — speak into the composer, transcript streams into your draft in real time
-- ✅ **AI polishing** — clean the transcript with the LLM (fillers, homophone fixes, punctuation)
-- ✅ **Settings page** — recognition language, recording limit, polish model and prompt
-- 🔜 PDF to model-friendly format
-- 🔜 Image input
+<p align="center">
+  <a href="./README.en.md">English</a> · <a href="./README.md">简体中文</a>
+</p>
 
-## Requirements
+<p align="center">
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%20rc.6-blue?style=flat-square" alt="DSH"></a>
+  <img src="https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1a73e8?style=flat-square" alt="Platform">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
+  <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
+</p>
 
-- DSH `0.1.0-rc.6` or newer
-- Node.js `^22.19.0 || >=24.0.0`
-- A Chromium-based browser (Chrome / Edge) for the built-in speech recognition
+```text
+说出 → 转写 → AI 润色 → 可编辑草稿 → 发送
+```
 
-## Install
+> 💡 **它解决什么？** 打字慢、懒得敲长句？对着输入框说话，文字实时流出；口误、口头禅、同音错字，AI 一键润色成工整正文。**不用额外 API Key**，润色直接复用你在 dsh 里已配置的模型。
+
+---
+
+## ✨ 功能特性
+
+- [x] 🎙️ **语音输入** — 点击麦克风，边说边转写，文字实时流式进入输入框（无需 API Key，浏览器原生识别）
+- [x] 🤖 **AI 润色** — 识别后自动清理：去口头禅、修同音错字（根木鹿→根目录、脱肯→Token）、加标点、口头列举转列表
+- [x] 🐘 **智能防覆盖** — 润色进行中你手动改了草稿，润色**不会覆盖**你的编辑；失败保留原文
+- [x] ⏱️ **录音自动停止** — 可自定义单次录音上限，不占麦克风
+- [x] ⚙️ **内置设置页** — 识别语言、录音时长、润色开关、润色模型、自定义提示词，全部可视化配置
+- [x] 🔎 **内置提示词可查看** — 设置页一键展开内置润色提示词，方便参考/改编
+- [ ] 📄 **PDF 转易读格式**（规划中）
+- [ ] 🖼️ **图片输入**（规划中）
+
+## 🚀 安装
+
+前置：[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`>= 0.1.0-rc.6`）+ Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge 浏览器。
+
+**从 GitHub 仓库安装（推荐）：**
 
 ```sh
-# via the dsh CLI (recommended)
-dsh plugin --profile web add dsh-better-input
+dsh plugin --profile web add github:DIAG5/dsh-better-input
+```
 
-# without the CLI
-npx -y @deepseek-ai/dsh plugin --profile web add dsh-better-input
+还没装 `dsh` CLI？用 npx：
 
-# from a local clone (development)
+```sh
+npx -y @deepseek-ai/dsh plugin --profile web add github:DIAG5/dsh-better-input
+```
+
+**从源码安装（开发）：**
+
+```sh
+git clone https://github.com/DIAG5/dsh-better-input.git
+cd dsh-better-input
+npm install
+npm run build
 dsh plugin --profile web add "$PWD"
 ```
 
-Or add it to your preset's `cordis.yml` / patch manually:
+安装后刷新 Web UI，输入框右侧会出现**麦克风图标** 🎤。也支持写进 preset 的 `cordis.yml`：
 
 ```yaml
 - insert:
@@ -37,69 +70,78 @@ Or add it to your preset's `cordis.yml` / patch manually:
       name: dsh-better-input
 ```
 
-## Usage
+## 📖 使用
 
-### Voice input
+### 1. 语音输入
 
-1. Open a conversation in the web UI.
-2. Click the microphone button on the right side of the composer input row.
-3. Speak — the transcript streams into your draft in real time.
-4. Click the button again (or press **Stop** in the recognition bar) to finish.
-5. Review, edit, and send as usual.
+1. 打开任意对话，点击输入框右侧的**麦克风按钮**
+2. 开始说话，识别文字**实时流入**输入框
+3. 再点按钮（或识别条上的**停止**）结束
+4. 检查、修改、发送
 
-> Voice recognition runs entirely in your browser via the Web Speech API — no
-> API key, no server round-trip. Unsupported browsers show a disabled button.
+> 识别完全在浏览器本地完成（Web Speech API），无需 API Key、无服务器往返。Firefox/Safari 不支持时按钮自动禁用。
 
-### AI polishing
+### 2. AI 润色
 
-Open **Settings → BetterInput** and enable **AI polishing**, then pick a model
-route (any model already configured in dsh's own model settings — no extra API
-key needed).
+设置 → **BetterInput** → 打开 **AI 润色** → 选择一个 dsh 里已配置的模型。
 
-When enabled, the committed transcript is polished by the Host LLM before it
-stays in your draft. The built-in prompt removes fillers, fixes ASR homophone
-errors (根木鹿 → 根目录, 脱肯 → Token), restores punctuation, and formats
-spoken enumerations as lists. If you edit the draft while polishing runs, the
-polished result does **not** overwrite your edits; on failure the original
-transcript is kept.
+内置提示词会：去口头禅、修 ASR 同音错字、补标点、把口语列举转成编号列表（如「第一…第二…」→ `1. ` `2. `）。留空用内置提示词，点「查看内置提示词」可展开原文参考；或粘贴自定义提示词（总会追加输出契约保护，保证只返回正文不答非所问）。
 
-You can also paste a custom polish prompt in the settings page; the output
-contract guard (plain text, never an answer) is always appended.
+### 3. 设置
 
-### Settings
-
-| Setting | Meaning |
+| 设置项 | 说明 |
 | --- | --- |
-| Recognition language | Empty follows the browser language (e.g. `zh-CN`, `en-US`) |
-| Recording limit | Max seconds per recording (1–600) |
-| AI polishing | Enable/disable Host LLM polishing |
-| Polish model | The dsh model route used for polishing |
-| Custom polish prompt | Optional replacement of the built-in prompt |
+| 识别语言 | 留空自动跟随浏览器语言（如 `zh-CN`、`en-US`） |
+| 单次录音上限 | 1–600 秒，默认 120，到点自动停止 |
+| AI 润色 | 开/关 |
+| 润色模型 | 选择 dsh 已配置的模型路由 |
+| 自定义润色提示词 | 可选，替换内置提示词 |
 
-## Development
+## 🧩 兼容性
+
+- DeepSeek Harness `>= 0.1.0-rc.6`
+- Node.js `^22.19.0 || >=24.0.0`
+- Chromium 内核浏览器（Chrome / Edge）
+
+## 🗺️ Roadmap
+
+- [ ] PDF → 模型友好的易读格式
+- [ ] 图片输入
+- [ ] 更多识别后端（本地 Whisper、云端 ASR）
+- [ ] 一键切换润色风格（简洁 / 详细 / 正式）
+
+## 🛠️ 开发
 
 ```sh
 npm install
-npm run check     # typecheck
-npm run build     # build lib/ (host ESM + browser client bundle)
+npm run check    # 类型检查
+npm run build    # 构建 lib/（Host ESM + 浏览器 bundle）
 ```
 
-Client-only UI changes: rebuild (or `npm run dev:watch`) and refresh the web UI.
-Host changes: restart `dsh web`, then refresh.
+改 Client 端：`npm run dev:watch` 后刷新 UI；改 Host 端：重启 dsh web。
 
-## Architecture
+## 📚 设计参考
 
-- `src/index.ts` — Host plugin entry, mounts the polish service
-- `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing via `ctx.llm`
-- `src/client/` — browser half: microphone button (`conversation.input.right`), recognition bar (`conversation.input.dock`), settings page (`settings.section`)
-- `src/typert.ts` / `src/remote.ts` — Typert wire contract and Client remote types
+本项目在架构与交互上**参考了 DSH 社区优秀的开源插件**：
 
-## Roadmap
+- [dsh-ears](https://github.com/WizisCool/dsh-ears) — 语音输入 + 润色 + 设置页的架构范式（麦克风按钮、识别条、Typert remote、settings 槽位模式均借鉴其设计）
+- [lhh010/dsh-paste-input](https://github.com/lhh010/dsh-paste-input) — DSH WebUI 输入增强的成熟做法
+- [DeepSeek Harness 官方文档](https://github.com/deepseek-ai/deepseek-harness) — 插件开发 / 发布规范与 Typert / settings / llm 服务接口
 
-- PDF conversion
-- Image input
-- More ASR backends (local Whisper, cloud)
+本仓库 `_research/` 目录（含上述项目的克隆）仅用于本地开发参考，**已排除在 git 追踪之外**，不会随发布分发。
 
-## License
+## 📄 License
 
-MIT
+[MIT](./LICENSE)
+
+---
+
+## ⭐ 支持
+
+觉得这个插件好用？欢迎：
+
+- 点个 **Star ⭐**（你的收藏就是我的动力）
+- 提交 [Issue](https://github.com/DIAG5/dsh-better-input/issues) / [PR](https://github.com/DIAG5/dsh-better-input/pulls)
+- 分享给同样用 DSH 的朋友
+
+感谢你的支持 ❤️
