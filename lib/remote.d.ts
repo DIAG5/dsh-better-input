@@ -1,0 +1,23 @@
+import type { RemoteResult, TypertRemoteContribution } from '@deepseek-ai/dsh-typert-protocol';
+import type { ClientRemote } from '@deepseek-ai/dsh-api-remotes/client';
+import type { BetterInputSettingsPatch, BetterInputSettingsView, PolishRoute } from './remote-contract.js';
+export type BetterInputRemote = ClientRemote['betterInput'];
+declare module '@deepseek-ai/dsh-typert-protocol' {
+    interface TypertRemoteNamespace$betterInput {
+        getSettings: () => Promise<RemoteResult<BetterInputSettingsView>>;
+        updateSettings: (patch: BetterInputSettingsPatch, signal?: AbortSignal) => Promise<RemoteResult<BetterInputSettingsView>>;
+        listRoutes: () => Promise<RemoteResult<PolishRoute[]>>;
+        polish: (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>;
+    }
+    interface TypertRemoteMap {
+        'betterInput/getSettings': () => Promise<RemoteResult<BetterInputSettingsView>>;
+        'betterInput/updateSettings': (patch: BetterInputSettingsPatch, signal?: AbortSignal) => Promise<RemoteResult<BetterInputSettingsView>>;
+        'betterInput/listRoutes': () => Promise<RemoteResult<PolishRoute[]>>;
+        'betterInput/polish': (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>;
+    }
+    interface TypertRemoteNamespaceMap {
+        betterInput: TypertRemoteNamespace$betterInput;
+    }
+}
+export declare const TYPERT_REMOTE: TypertRemoteContribution;
+export default TYPERT_REMOTE;

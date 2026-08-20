@@ -1,0 +1,5 @@
+# The dsh-better-input bundle patch. The package entry is intentionally small;
+# browser behavior is discovered through the package's dsh.client manifest.
+- insert:
+    - id: dsh-better-input
+      name: dsh-better-input

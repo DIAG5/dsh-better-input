@@ -1,0 +1,242 @@
+import { useEffect, useRef, useState } from 'react'
+import type { BetterInputSettings, BetterInputSettingsPatch, PolishRoute } from '../config.js'
+import type { SettingsController, SettingsSnapshot, RoutesSnapshot } from './settings-controller.js'
+import { useSettingsSnapshot, useRoutesSnapshot } from './settings-controller.js'
+import { stringsForBrowser, type BetterInputStrings } from './strings.js'
+
+export type SettingsSectionProps = {
+  readonly close: () => void
+  readonly settingsController: SettingsController
+}
+
+type FieldState = {
+  text: string
+  invalid: boolean
+}
+
+/**
+ * The BetterInput settings page. Renders the recognition and polishing
+ * configuration; every field edits a local draft and saves on blur/change.
+ */
+export function BetterInputSettingsSection({ close, settingsController }: SettingsSectionProps) {
+  const strings = stringsForBrowser()
+  const settings = useSettingsSnapshot(settingsController)
+  const routes = useRoutesSnapshot(settingsController)
+  const [drafts, setDrafts] = useState<Record<string, string>>({})
+  const [saveFailed, setSaveFailed] = useState(false)
+  const [showDefaultPrompt, setShowDefaultPrompt] = useState(false)
+  const draftsRef = useRef(drafts)
+  draftsRef.current = drafts
+
+  useEffect(() => {
+    void settingsController.refreshSettings()
+    void settingsController.refreshRoutes()
+  }, [settingsController])
+
+  if (settings.status === 'loading' || routes.status === 'loading') {
+    return <SectionFrame title={strings.settingsTitle}>{strings.loading}</SectionFrame>
+  }
+
+  const field = (name: string, current: string): FieldState => ({
+    text: drafts[name] ?? current,
+    invalid: false
+  })
+
+  const setField = (name: string, value: string) => {
+    setDrafts((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const save = async (patch: BetterInputSettingsPatch) => {
+    setSaveFailed(false)
+    const ok = await settingsController.update(patch)
+    if (ok) {
+      setDrafts((prev) => {
+        const next = { ...prev }
+        for (const key of Object.keys(patch)) delete next[key]
+        return next
+      })
+    } else {
+      setSaveFailed(true)
+    }
+  }
+
+  const s = settings.view.settings
+  const languageField = field('language', s.language)
+  const secondsField = field('maxRecordingSeconds', String(s.maxRecordingSeconds))
+  const polishPromptField = field('polishPrompt', s.polishPrompt)
+
+  return (
+    <SectionFrame title={strings.settingsTitle}>
+      <p style={hintStyle}>{strings.settingsDescription}</p>
+
+      {saveFailed ? <p style={errorStyle}>{strings.saveFailed}</p> : null}
+
+      <Field label={strings.languageLabel} hint={strings.languageHint}>
+        <input
+          type="text"
+          value={languageField.text}
+          placeholder={strings.languagePlaceholder}
+          onChange={(event) => setField('language', event.target.value)}
+          onBlur={() => void save({ language: languageField.text.trim() })}
+          style={inputStyle}
+        />
+      </Field>
+
+      <Field label={strings.recordingLimitLabel} hint={strings.recordingLimitHint}>
+        <input
+          type="number"
+          min={1}
+          max={600}
+          value={secondsField.text}
+          onChange={(event) => setField('maxRecordingSeconds', event.target.value)}
+          onBlur={() => {
+            const parsed = Number(secondsField.text)
+            if (!Number.isSafeInteger(parsed) || parsed < 1 || parsed > 600) return
+            void save({ maxRecordingSeconds: parsed })
+          }}
+          style={inputStyle}
+        />
+      </Field>
+
+      <Field label={strings.polishLabel} hint={strings.polishHint}>
+        <label style={switchStyle}>
+          <input
+            type="checkbox"
+            checked={s.polishingEnabled}
+            onChange={(event) => void save({ polishingEnabled: event.target.checked })}
+          />
+          <span>{s.polishingEnabled ? strings.on : strings.off}</span>
+        </label>
+      </Field>
+
+      {s.polishingEnabled ? (
+        <>
+          <Field label={strings.polishModelLabel} hint={strings.polishModelHint}>
+            <select
+              value={drafts.polishProvider !== undefined || drafts.polishModel !== undefined
+                ? `${drafts.polishProvider ?? s.polishProvider}\u0000${drafts.polishModel ?? s.polishModel}`
+                : `${s.polishProvider}\u0000${s.polishModel}`}
+              onChange={(event) => {
+                const [provider, model] = event.target.value.split('\u0000')
+                void save({ polishProvider: provider ?? '', polishModel: model ?? '' })
+              }}
+              style={inputStyle}
+              disabled={routes.status !== 'ready' || routes.routes.length === 0}
+            >
+              <option value={'\u0000'}>{strings.polishModelNone}</option>
+              {routes.status === 'ready' && routes.routes.map((route) => (
+                <option key={`${route.provider}\u0000${route.model}`} value={`${route.provider}\u0000${route.model}`}>
+                  {route.providerName} / {route.modelName}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label={strings.polishPromptLabel} hint={strings.polishPromptHint}>
+            <textarea
+              value={polishPromptField.text}
+              rows={5}
+              placeholder={strings.polishPromptPlaceholder}
+              onChange={(event) => setField('polishPrompt', event.target.value)}
+              onBlur={() => void save({ polishPrompt: polishPromptField.text })}
+              style={{ ...inputStyle, resize: 'vertical', fontFamily: 'monospace' }}
+            />
+            {settings.view.defaultPolishPrompt !== '' ? (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowDefaultPrompt((prev) => !prev)}
+                  style={toggleLinkStyle}
+                >
+                  {showDefaultPrompt ? strings.hideDefaultPrompt : strings.showDefaultPrompt}
+                </button>
+                {showDefaultPrompt ? (
+                  <pre
+                    style={{
+                      margin: '6px 0 0',
+                      padding: 8,
+                      maxHeight: 220,
+                      overflow: 'auto',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontSize: 11,
+                      lineHeight: 1.5,
+                      background: 'var(--dsh-color-surface, rgba(0,0,0,0.03))',
+                      border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))',
+                      borderRadius: 6,
+                      fontFamily: 'monospace'
+                    }}
+                  >
+                    {settings.view.defaultPolishPrompt}
+                  </pre>
+                ) : null}
+              </div>
+            ) : null}
+          </Field>
+        </>
+      ) : null}
+
+      <p style={hintStyle}>
+        {strings.routesStatus}: {routes.status === 'ready' ? `${routes.routes.length}` : routes.detail || strings.routesUnavailable}
+      </p>
+    </SectionFrame>
+  )
+}
+
+function SectionFrame({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <h2 style={{ margin: 0, fontSize: 16 }}>{title}</h2>
+      {children}
+    </div>
+  )
+}
+
+function Field({ label, hint, children }: { label: string; hint: string; children: React.ReactNode }) {
+  return (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <span style={{ fontSize: 13, fontWeight: 600 }}>{label}</span>
+      {children}
+      <span style={hintStyle}>{hint}</span>
+    </label>
+  )
+}
+
+const inputStyle: React.CSSProperties = {
+  padding: '6px 8px',
+  borderRadius: 6,
+  border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.4))',
+  background: 'var(--dsh-color-surface, transparent)',
+  color: 'var(--dsh-color-text, inherit)',
+  fontSize: 13
+}
+
+const hintStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  opacity: 0.7
+}
+
+const errorStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  color: '#e5484d'
+}
+
+const switchStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  fontSize: 13
+}
+
+const toggleLinkStyle: React.CSSProperties = {
+  marginTop: 6,
+  padding: 0,
+  border: 'none',
+  background: 'none',
+  color: 'var(--dsh-color-primary, #4f8cff)',
+  fontSize: 12,
+  cursor: 'pointer',
+  textDecoration: 'underline'
+}

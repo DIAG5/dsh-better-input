@@ -1,0 +1,9 @@
+node_modules/
+*.tsbuildinfo
+.DS_Store
+.dsh/
+.dsh-test/
+.npm-cache/
+.pnpm-bin/
+.pnpm-store/
+*.log
