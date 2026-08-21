@@ -15,6 +15,8 @@
 </p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/v/dsh-better-input?style=flat-square" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/dm/dsh-better-input?style=flat-square" alt="npm downloads"></a>
   <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%20rc.6-blue?style=flat-square" alt="DSH"></a>
   <img src="https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1a73e8?style=flat-square" alt="Platform">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
@@ -78,12 +80,15 @@ BetterInput 的目标是成为一套完整的**输入体验增强套件**。语�
 
 前置：[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`>= 0.1.0-rc.6`）+ Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge 浏览器。
 
-> 💡 **两种方式，任选其一。** 装过 `dsh` CLI 的用短命令；没装或不想全局安装的，用下方 **npx 全称**——**不需要任何全局环境配置**。
+> 💡 **两种方式，任选其一。** 装过 `dsh` CLI 的用短命令；没装或不想全局安装的，用下方 **npx 全称**——**不需要任何全局环境配置**。已发布到 [npm](https://www.npmjs.com/package/dsh-better-input)。
 
 ### 方式 A：有全局 `dsh` CLI
 
 ```sh
-# 从 GitHub 仓库安装
+# 从 npm 安装（推荐）
+dsh plugin --profile web add dsh-better-input
+
+# 或从 GitHub 仓库安装
 dsh plugin --profile web add github:DIAG5/dsh-better-input
 
 # 卸载
@@ -95,7 +100,10 @@ dsh plugin --profile web remove dsh-better-input
 下面的命令用 `npx` 直接运行 dsh CLI，**不写入全局环境**，临时拉取即可用：
 
 ```sh
-# 从 GitHub 仓库安装
+# 从 npm 安装（推荐）
+npx -y @deepseek-ai/dsh plugin --profile web add dsh-better-input
+
+# 或从 GitHub 仓库安装
 npx -y @deepseek-ai/dsh plugin --profile web add github:DIAG5/dsh-better-input
 
 # 卸载

@@ -15,6 +15,8 @@
 </p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/v/dsh-better-input?style=flat-square" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/dm/dsh-better-input?style=flat-square" alt="npm downloads"></a>
   <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%20rc.6-blue?style=flat-square" alt="DSH"></a>
   <img src="https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1a73e8?style=flat-square" alt="Platform">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
@@ -78,12 +80,15 @@ BetterInput aims to grow into a complete **input-experience enhancement suite**.
 
 Prereqs: [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`>= 0.1.0-rc.6`) + Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge.
 
-> 💡 **Pick either way.** If you have the `dsh` CLI installed, use the short commands below. If not — or you don't want to install anything globally — use the **npx full form**: no global configuration needed at all.
+> 💡 **Pick either way.** If you have the `dsh` CLI installed, use the short commands below. If not — or you don't want to install anything globally — use the **npx full form**: no global configuration needed at all. Published on [npm](https://www.npmjs.com/package/dsh-better-input).
 
 ### Option A: global `dsh` CLI
 
 ```sh
-# Install from the GitHub repo
+# Install from npm (recommended)
+dsh plugin --profile web add dsh-better-input
+
+# Or from the GitHub repo
 dsh plugin --profile web add github:DIAG5/dsh-better-input
 
 # Uninstall
@@ -95,7 +100,10 @@ dsh plugin --profile web remove dsh-better-input
 Run dsh via `npx` — pulled on demand, **nothing written to your global environment**:
 
 ```sh
-# Install from the GitHub repo
+# Install from npm (recommended)
+npx -y @deepseek-ai/dsh plugin --profile web add dsh-better-input
+
+# Or from the GitHub repo
 npx -y @deepseek-ai/dsh plugin --profile web add github:DIAG5/dsh-better-input
 
 # Uninstall
