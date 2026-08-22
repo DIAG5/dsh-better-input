@@ -23,7 +23,7 @@
   <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
 </p>
 
-> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: from voice recognition, AI polishing, and one-click prompt optimization, to turning PDFs / DOCX / PPT / XLSX and other files into clean structured Markdown, plus interaction refinements that polish even the details — **making every way you feed an agent smoother and easier**.
+> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: voice recognition, AI polishing, prompt optimization, turning files into clean structured Markdown, and interaction UX refinements — **making every input you feed an agent better**.
 
 ---
 
@@ -67,7 +67,16 @@
 
 ## 🗺️ Next (directions for better input)
 
-BetterInput aims to grow into a complete **input-experience enhancement suite**. Voice is just the start; everything below revolves around making every input you feed an agent smoother:
+BetterInput is a complete **input-enhancement suite**: not just one kind of input, but making every input you feed an agent smoother and easier. Voice is already in place; next we go in three directions:
+
+### Files → structured (format upgrades)
+
+> 📷 Image input: **natively supported by DSH since `rc.8`** — the DeepSeek API supports image input natively, so we **no longer ship an image plugin**.
+
+Turn docs, sheets, and decks into clean, structured Markdown so the agent reads them at a glance.
+- [ ] 🧾 **PDF → structured** — PDF into an AI-friendly readable format (Markdown / plain text)
+- [ ] 📄 **Office parsing** — DOCX / PPT / XLSX into clean Markdown structure in one click
+- [ ] 🎬 **Audio/video transcription** — paste a local media file and get text (an upgrade to voice input)
 
 ### Text & prompts
 - [x] ✨ **Prompt optimization** — a one-click icon beside the input to have the AI polish / improve the prompt you wrote
@@ -76,17 +85,14 @@ BetterInput aims to grow into a complete **input-experience enhancement suite**.
 - [ ] 🔤 **Instant translation** — one click to turn Chinese into English (or vice versa)
 - [ ] 📋 **Smart paste** — detect code / table / URL / quote on paste and wrap it appropriately
 
-### Media & files
-> 📷 Image input: **natively supported by DSH since `rc.8`**. The DeepSeek API already supports image input natively, so we **no longer ship an image plugin**.
-- [ ] 🧾 **PDF → structured** — PDF into an AI-friendly readable format (Markdown / plain text)
-- [ ] 🎬 **Audio/video transcription** — paste a local media file and get text (an upgrade to voice input)
+### Interaction refinements
 
-### Productivity & collaboration
-- [ ] ⏱️ **Draft recovery** — auto-save and restore an unfinished draft
+Input isn't just about features — it's also how comfortable and polished it feels.
+- [ ] 🎚️ **Effort slider** — replace the thinking-effort dropdown with a smoother, more intuitive slider
+- [ ] ✍️ **Auto-complete suggestions** — contextual continuations while you type, adopt in one click
 - [ ] 🧮 **Variable fill** — `{{date}}`, `{{cwd}}` and other tokens replaced automatically in the input
-- [ ] 📎 **Quick input flows** — one-click send of fixed templates (daily / weekly reports)
 
-> Planned around the theme; iterating continuously. **Ideas welcome — file an [Issue](https://github.com/DIAG5/dsh-better-input/issues) or open a PR.**
+> Planned around the directions; iterating continuously. **Ideas welcome — file an [Issue](https://github.com/DIAG5/dsh-better-input/issues) or open a PR.**
 
 ## 🚀 Install
 
