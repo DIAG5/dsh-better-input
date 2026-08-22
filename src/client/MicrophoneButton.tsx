@@ -79,6 +79,12 @@ export function MicrophoneButton({ input, inputActions, voiceSession, remote, us
   const active = state === 'starting' || state === 'recording'
   const busy = state === 'transcribing' || state === 'polishing'
 
+  const settings = settingsFace.status === 'ready' ? settingsFace.settings : settingsRef.current
+  const polishingEnabled = settings?.polishingEnabled ?? false
+  const polishProvider = (settings?.polishProvider ?? '').trim()
+  const polishModel = (settings?.polishModel ?? '').trim()
+  const polishConfigured = polishingEnabled && polishProvider !== '' && polishModel !== ''
+
   const startListening = () => {
     if (active || busy) return
     const baseDraft = input.draft
@@ -168,7 +174,9 @@ export function MicrophoneButton({ input, inputActions, voiceSession, remote, us
         ? strings.polishFailedKeepOriginal
         : state === 'error'
           ? strings.voiceFailed
-          : strings.voiceStart
+          : !polishConfigured
+            ? `${strings.voiceStart} — ${strings.polishNotConfigured}`
+            : strings.voiceStart
   const label = busy ? '…' : active ? strings.voiceStop : strings.voiceStart
 
   return (
@@ -180,7 +188,8 @@ export function MicrophoneButton({ input, inputActions, voiceSession, remote, us
       title={tooltip}
       onClick={active ? stopListening : startListening}
       data-better-input-state={state}
-      style={buttonStyle(active, busy)}
+      data-better-input-polish-configured={polishConfigured ? 'yes' : 'no'}
+      style={buttonStyle(active, busy, !polishConfigured)}
     >
       <MicrophoneIcon />
     </button>
@@ -244,7 +253,7 @@ function collapseDraft(text: string): string {
   return text.replace(/\s+/g, ' ').trim()
 }
 
-function buttonStyle(active: boolean, busy: boolean): React.CSSProperties {
+function buttonStyle(active: boolean, busy: boolean, polishUnconfigured: boolean): React.CSSProperties {
   return {
     display: 'inline-flex',
     alignItems: 'center',
@@ -257,7 +266,7 @@ function buttonStyle(active: boolean, busy: boolean): React.CSSProperties {
     background: active ? 'var(--dsh-color-primary, #4f8cff)' : 'transparent',
     color: active ? '#fff' : 'var(--dsh-color-text, inherit)',
     cursor: busy ? 'default' : 'pointer',
-    opacity: busy ? 0.5 : 1,
+    opacity: busy ? 0.5 : polishUnconfigured ? 0.75 : 1,
     flex: 'none'
   }
 }

@@ -1,8 +1,62 @@
 import { useEffect, useRef, useState } from 'react'
-import type { BetterInputSettings, BetterInputSettingsPatch, PolishRoute } from '../config.js'
+import type { BetterInputSettings, BetterInputSettingsPatch, PolishRoute, ReasoningEffortInfo } from '../config.js'
 import type { SettingsController, SettingsSnapshot, RoutesSnapshot } from './settings-controller.js'
-import { useSettingsSnapshot, useRoutesSnapshot } from './settings-controller.js'
+import { useEffortsSnapshot, useSettingsSnapshot, useRoutesSnapshot } from './settings-controller.js'
 import { stringsForBrowser, type BetterInputStrings } from './strings.js'
+
+function ReasoningEffortSelect(props: {
+  settingsController: SettingsController
+  provider: string
+  model: string
+  storedEffort: string
+  onChange: (effortId: string) => void
+  strings: BetterInputStrings
+}) {
+  const { settingsController, provider, model, storedEffort, onChange, strings } = props
+  const efforts = useEffortsSnapshot(settingsController)
+
+  // Kick off the lazy fetch whenever the selected model changes.
+  useEffect(() => {
+    if (provider === '' || model === '') return
+    void settingsController.ensureEffortsFor(provider, model)
+  }, [settingsController, provider, model])
+
+  if (provider === '' || model === '') return null
+  const key = `${provider}\u0000${model}`
+  const entry = efforts[key]
+
+  // Not yet requested / loading → show a disabled placeholder so the user
+  // knows the field exists but is warming up.
+  if (entry === undefined || entry.status === 'loading') {
+    return (
+      <select value="" disabled={true} style={inputStyle}>
+        <option value="">{strings.effortLoadingLabel}</option>
+      </select>
+    )
+  }
+  if (entry.status === 'error' || entry.efforts.length === 0) {
+    // Nothing to show; silently hide like the "no efforts" case so the UI
+    // doesn't constantly surface adapter metadata misses for regular models.
+    return null
+  }
+  // The default option means "let the Host decide" — it prefers the model's
+  // `off` tier, so we no longer surface the adapter's defaultEffort here.
+  const items: readonly ReasoningEffortInfo[] = entry.efforts
+  return (
+    <select
+      value={storedEffort}
+      onChange={(event) => onChange(event.target.value)}
+      style={inputStyle}
+    >
+      <option value="">{strings.effortDefaultLabel}</option>
+      {items.map((effort) => (
+        <option key={effort.id} value={effort.id} title={effort.description}>
+          {effort.name}
+        </option>
+      ))}
+    </select>
+  )
+}
 
 export type SettingsSectionProps = {
   readonly close: () => void
@@ -25,6 +79,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const [saveFailed, setSaveFailed] = useState(false)
   const [showDefaultPrompt, setShowDefaultPrompt] = useState(false)
+  const [showDefaultOptimizePrompt, setShowDefaultOptimizePrompt] = useState(false)
   const draftsRef = useRef(drafts)
   draftsRef.current = drafts
 
@@ -64,6 +119,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
   const languageField = field('language', s.language)
   const secondsField = field('maxRecordingSeconds', String(s.maxRecordingSeconds))
   const polishPromptField = field('polishPrompt', s.polishPrompt)
+  const optimizePromptField = field('optimizePrompt', s.optimizePrompt)
 
   return (
     <SectionFrame title={strings.settingsTitle}>
@@ -132,6 +188,17 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
             </select>
           </Field>
 
+          <Field label={strings.polishEffortLabel} hint={strings.polishEffortHint}>
+            <ReasoningEffortSelect
+              settingsController={settingsController}
+              provider={s.polishProvider}
+              model={s.polishModel}
+              storedEffort={s.polishReasoningEffort}
+              onChange={(effortId) => void save({ polishReasoningEffort: effortId })}
+              strings={strings}
+            />
+          </Field>
+
           <Field label={strings.polishPromptLabel} hint={strings.polishPromptHint}>
             <textarea
               value={polishPromptField.text}
@@ -168,6 +235,95 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
                     }}
                   >
                     {settings.view.defaultPolishPrompt}
+                  </pre>
+                ) : null}
+              </div>
+            ) : null}
+          </Field>
+        </>
+      ) : null}
+
+      <Field label={strings.optimizeLabel} hint={strings.optimizeHint}>
+        <label style={switchStyle}>
+          <input
+            type="checkbox"
+            checked={s.optimizeEnabled}
+            onChange={(event) => void save({ optimizeEnabled: event.target.checked })}
+          />
+          <span>{s.optimizeEnabled ? strings.on : strings.off}</span>
+        </label>
+      </Field>
+
+      {s.optimizeEnabled ? (
+        <>
+          <Field label={strings.optimizeModelLabel} hint={strings.optimizeModelHint}>
+            <select
+              value={drafts.optimizeProvider !== undefined || drafts.optimizeModel !== undefined
+                ? `${drafts.optimizeProvider ?? s.optimizeProvider}\u0000${drafts.optimizeModel ?? s.optimizeModel}`
+                : `${s.optimizeProvider}\u0000${s.optimizeModel}`}
+              onChange={(event) => {
+                const [provider, model] = event.target.value.split('\u0000')
+                void save({ optimizeProvider: provider ?? '', optimizeModel: model ?? '' })
+              }}
+              style={inputStyle}
+              disabled={routes.status !== 'ready' || routes.routes.length === 0}
+            >
+              <option value={'\u0000'}>{strings.polishModelNone}</option>
+              {routes.status === 'ready' && routes.routes.map((route) => (
+                <option key={`${route.provider}\u0000${route.model}`} value={`${route.provider}\u0000${route.model}`}>
+                  {route.providerName} / {route.modelName}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label={strings.optimizeEffortLabel} hint={strings.optimizeEffortHint}>
+            <ReasoningEffortSelect
+              settingsController={settingsController}
+              provider={s.optimizeProvider}
+              model={s.optimizeModel}
+              storedEffort={s.optimizeReasoningEffort}
+              onChange={(effortId) => void save({ optimizeReasoningEffort: effortId })}
+              strings={strings}
+            />
+          </Field>
+
+          <Field label={strings.optimizePromptLabel} hint={strings.optimizePromptHint}>
+            <textarea
+              value={optimizePromptField.text}
+              rows={5}
+              placeholder={strings.optimizePromptPlaceholder}
+              onChange={(event) => setField('optimizePrompt', event.target.value)}
+              onBlur={() => void save({ optimizePrompt: optimizePromptField.text })}
+              style={{ ...inputStyle, resize: 'vertical', fontFamily: 'monospace' }}
+            />
+            {settings.view.defaultOptimizePrompt !== '' ? (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowDefaultOptimizePrompt((prev) => !prev)}
+                  style={toggleLinkStyle}
+                >
+                  {showDefaultOptimizePrompt ? strings.hideDefaultPrompt : strings.showDefaultPrompt}
+                </button>
+                {showDefaultOptimizePrompt ? (
+                  <pre
+                    style={{
+                      margin: '6px 0 0',
+                      padding: 8,
+                      maxHeight: 220,
+                      overflow: 'auto',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontSize: 11,
+                      lineHeight: 1.5,
+                      background: 'var(--dsh-color-surface, rgba(0,0,0,0.03))',
+                      border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))',
+                      borderRadius: 6,
+                      fontFamily: 'monospace'
+                    }}
+                  >
+                    {settings.view.defaultOptimizePrompt}
                   </pre>
                 ) : null}
               </div>

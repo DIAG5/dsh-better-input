@@ -1,7 +1,7 @@
 import type { RemoteResult, TypertRemoteContribution } from '@deepseek-ai/dsh-typert-protocol'
 import type { ClientRemote } from '@deepseek-ai/dsh-api-remotes/client'
-import { betterInputSettingsPatchSchema, betterInputSettingsViewSchema, listRoutesResultSchema, polishResultSchema, textSchema } from './remote-contract.js'
-import type { BetterInputSettingsPatch, BetterInputSettingsView, PolishRoute } from './remote-contract.js'
+import { betterInputSettingsPatchSchema, betterInputSettingsViewSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema } from './remote-contract.js'
+import type { BetterInputSettingsPatch, BetterInputSettingsView, PolishRoute, ReasoningEffortInfo } from './remote-contract.js'
 
 export type BetterInputRemote = ClientRemote['betterInput']
 
@@ -10,14 +10,18 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
     getSettings: () => Promise<RemoteResult<BetterInputSettingsView>>
     updateSettings: (patch: BetterInputSettingsPatch, signal?: AbortSignal) => Promise<RemoteResult<BetterInputSettingsView>>
     listRoutes: () => Promise<RemoteResult<PolishRoute[]>>
+    resolveModelEfforts: (provider: string, model: string) => Promise<RemoteResult<{ efforts: readonly ReasoningEffortInfo[]; defaultEffort?: string }>>
     polish: (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
+    optimize: (text: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
   }
 
   interface TypertRemoteMap {
     'betterInput/getSettings': () => Promise<RemoteResult<BetterInputSettingsView>>
     'betterInput/updateSettings': (patch: BetterInputSettingsPatch, signal?: AbortSignal) => Promise<RemoteResult<BetterInputSettingsView>>
     'betterInput/listRoutes': () => Promise<RemoteResult<PolishRoute[]>>
+    'betterInput/resolveModelEfforts': (provider: string, model: string) => Promise<RemoteResult<{ efforts: readonly ReasoningEffortInfo[]; defaultEffort?: string }>>
     'betterInput/polish': (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
+    'betterInput/optimize': (text: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
   }
 
   interface TypertRemoteNamespaceMap {
@@ -74,6 +78,32 @@ export const TYPERT_REMOTE: TypertRemoteContribution = {
       }
     },
     {
+      id: 'dsh-better-input#betterInput/resolveModelEfforts',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'resolveModelEfforts',
+      invocation: { kind: 'direct' },
+      parameters: [
+        {
+          name: 'provider',
+          wire: 'provider',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'model',
+          wire: 'model',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        }
+      ],
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#ResolveModelEffortsResult',
+        schema: resolveModelEffortsResultSchema
+      }
+    },
+    {
       id: 'dsh-better-input#betterInput/polish',
       service: 'BetterInputPolish',
       namespace: 'betterInput',
@@ -104,6 +134,39 @@ export const TYPERT_REMOTE: TypertRemoteContribution = {
         mode: 'strict',
         typeSymbol: 'string',
         schema: polishResultSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/optimize',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'optimize',
+      invocation: { kind: 'direct' },
+      parameters: [
+        {
+          name: 'text',
+          wire: 'text',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'provider',
+          wire: 'provider',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'model',
+          wire: 'model',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        }
+      ],
+      cancellation: { parameter: 'signal' },
+      result: {
+        mode: 'strict',
+        typeSymbol: 'string',
+        schema: optimizeResultSchema
       }
     }
   ]

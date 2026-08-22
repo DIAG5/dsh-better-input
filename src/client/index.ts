@@ -8,6 +8,7 @@ import { TYPERT_REMOTE } from '../remote.js'
 import type { BetterInputRemote } from '../remote.js'
 import { stringsForBrowser } from './strings.js'
 import { MicrophoneButton, type SettingsFace } from './MicrophoneButton.js'
+import { OptimizeButton } from './OptimizeButton.js'
 import { VoiceRecognitionBar } from './VoiceRecognitionBar.js'
 import { BetterInputSettingsSection } from './settings.jsx'
 import { SettingsController, useSettingsSnapshot } from './settings-controller.js'
@@ -70,22 +71,8 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
       return { status: 'ready', settings: snapshot.view.settings }
     }
 
-    remoteCtx.slots.inject('conversation.input.right', () =>
-      remoteCtx.slots.register(
-        {
-          name: 'conversation.input.right',
-          id: 'better-input-voice',
-          order: 30,
-          inject: (sessionId) => ({
-            remote,
-            voiceSession: voiceSessionFor(sessionId),
-            useSettings
-          })
-        },
-        MicrophoneButton
-      )
-    )
-
+    // Recognition bar stays in `dock` (above the composer card, the
+    // horizontal status strip) — unchanged placement.
     remoteCtx.slots.inject('conversation.input.dock', () =>
       remoteCtx.slots.register(
         {
@@ -95,6 +82,45 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
           inject: (sessionId) => ({ voiceSession: voiceSessionFor(sessionId) })
         },
         VoiceRecognitionBar
+      )
+    )
+
+    // The sparkle (prompt-optimize) button sits inline inside the
+    // `conversation.input.right` toolbar, immediately to the left of the
+    // microphone. order = 9998 places it one slot before the mic (9999),
+    // which is the rightmost edge of the public right slot — the model
+    // picker and send button follow in their own, non-slot seats.
+    remoteCtx.slots.inject('conversation.input.right', () =>
+      remoteCtx.slots.register(
+        {
+          name: 'conversation.input.right',
+          id: 'better-input-optimize',
+          order: 9998,
+          inject: () => ({
+            remote,
+            useSettings
+          })
+        },
+        OptimizeButton
+      )
+    )
+
+    // Microphone is the LAST registered entry in the public
+    // `conversation.input.right` list, so it sits immediately right of the
+    // sparkle and immediately left of DSH's built-in model-select seat.
+    remoteCtx.slots.inject('conversation.input.right', () =>
+      remoteCtx.slots.register(
+        {
+          name: 'conversation.input.right',
+          id: 'better-input-voice',
+          order: 9999,
+          inject: (sessionId) => ({
+            remote,
+            voiceSession: voiceSessionFor(sessionId),
+            useSettings
+          })
+        },
+        MicrophoneButton
       )
     )
 

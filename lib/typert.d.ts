@@ -23,10 +23,17 @@ export declare const TYPERT: {
                     polishingEnabled: import("zod").ZodBoolean;
                     polishProvider: import("zod").ZodString;
                     polishModel: import("zod").ZodString;
+                    polishReasoningEffort: import("zod").ZodString;
                     polishPrompt: import("zod").ZodString;
+                    optimizeEnabled: import("zod").ZodBoolean;
+                    optimizeProvider: import("zod").ZodString;
+                    optimizeModel: import("zod").ZodString;
+                    optimizeReasoningEffort: import("zod").ZodString;
+                    optimizePrompt: import("zod").ZodString;
                 }, import("zod/v4/core").$strip>;
                 overridden: import("zod").ZodArray<import("zod").ZodString>;
                 defaultPolishPrompt: import("zod").ZodString;
+                defaultOptimizePrompt: import("zod").ZodString;
             }, import("zod/v4/core").$strip>;
         };
     }, {
@@ -50,7 +57,13 @@ export declare const TYPERT: {
                     polishingEnabled: import("zod").ZodOptional<import("zod").ZodBoolean>;
                     polishProvider: import("zod").ZodOptional<import("zod").ZodString>;
                     polishModel: import("zod").ZodOptional<import("zod").ZodString>;
+                    polishReasoningEffort: import("zod").ZodOptional<import("zod").ZodString>;
                     polishPrompt: import("zod").ZodOptional<import("zod").ZodString>;
+                    optimizeEnabled: import("zod").ZodOptional<import("zod").ZodBoolean>;
+                    optimizeProvider: import("zod").ZodOptional<import("zod").ZodString>;
+                    optimizeModel: import("zod").ZodOptional<import("zod").ZodString>;
+                    optimizeReasoningEffort: import("zod").ZodOptional<import("zod").ZodString>;
+                    optimizePrompt: import("zod").ZodOptional<import("zod").ZodString>;
                 }, import("zod/v4/core").$strip>;
             };
         }];
@@ -69,10 +82,17 @@ export declare const TYPERT: {
                     polishingEnabled: import("zod").ZodBoolean;
                     polishProvider: import("zod").ZodString;
                     polishModel: import("zod").ZodString;
+                    polishReasoningEffort: import("zod").ZodString;
                     polishPrompt: import("zod").ZodString;
+                    optimizeEnabled: import("zod").ZodBoolean;
+                    optimizeProvider: import("zod").ZodString;
+                    optimizeModel: import("zod").ZodString;
+                    optimizeReasoningEffort: import("zod").ZodString;
+                    optimizePrompt: import("zod").ZodString;
                 }, import("zod/v4/core").$strip>;
                 overridden: import("zod").ZodArray<import("zod").ZodString>;
                 defaultPolishPrompt: import("zod").ZodString;
+                defaultOptimizePrompt: import("zod").ZodString;
             }, import("zod/v4/core").$strip>;
         };
     }, {
@@ -92,7 +112,52 @@ export declare const TYPERT: {
                 providerName: import("zod").ZodString;
                 model: import("zod").ZodString;
                 modelName: import("zod").ZodString;
+                reasoningEfforts: import("zod").ZodArray<import("zod").ZodObject<{
+                    id: import("zod").ZodString;
+                    name: import("zod").ZodString;
+                    description: import("zod").ZodOptional<import("zod").ZodString>;
+                }, import("zod/v4/core").$strip>>;
+                defaultReasoningEffort: import("zod").ZodOptional<import("zod").ZodString>;
             }, import("zod/v4/core").$strip>>;
+        };
+    }, {
+        readonly id: "dsh-better-input#betterInput/resolveModelEfforts";
+        readonly service: "BetterInputPolish";
+        readonly namespace: "betterInput";
+        readonly method: "resolveModelEfforts";
+        readonly invocation: {
+            readonly kind: "direct";
+        };
+        readonly parameters: readonly [{
+            readonly name: "provider";
+            readonly wire: "provider";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
+        }, {
+            readonly name: "model";
+            readonly wire: "model";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
+        }];
+        readonly result: {
+            readonly mode: "strict";
+            readonly typeSymbol: "dsh-better-input#ResolveModelEffortsResult";
+            readonly schema: import("zod").ZodObject<{
+                efforts: import("zod").ZodArray<import("zod").ZodObject<{
+                    id: import("zod").ZodString;
+                    name: import("zod").ZodString;
+                    description: import("zod").ZodOptional<import("zod").ZodString>;
+                }, import("zod/v4/core").$strip>>;
+                defaultEffort: import("zod").ZodOptional<import("zod").ZodString>;
+            }, import("zod/v4/core").$strip>;
         };
     }, {
         readonly id: "dsh-better-input#betterInput/polish";
@@ -105,6 +170,50 @@ export declare const TYPERT: {
         readonly parameters: readonly [{
             readonly name: "transcript";
             readonly wire: "transcript";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
+        }, {
+            readonly name: "provider";
+            readonly wire: "provider";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
+        }, {
+            readonly name: "model";
+            readonly wire: "model";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
+        }];
+        readonly cancellation: {
+            readonly parameter: "signal";
+        };
+        readonly result: {
+            readonly mode: "strict";
+            readonly typeSymbol: "string";
+            readonly schema: import("zod").ZodString;
+        };
+    }, {
+        readonly id: "dsh-better-input#betterInput/optimize";
+        readonly service: "BetterInputPolish";
+        readonly namespace: "betterInput";
+        readonly method: "optimize";
+        readonly invocation: {
+            readonly kind: "direct";
+        };
+        readonly parameters: readonly [{
+            readonly name: "text";
+            readonly wire: "text";
             readonly source: "json";
             readonly codec: {
                 readonly mode: "strict";
@@ -167,10 +276,22 @@ export declare const TYPERT: {
                 readonly jsDoc: "/** List models already registered in dsh. */";
             }, {
                 readonly kind: "method";
+                readonly name: "resolveModelEfforts";
+                readonly signature: "resolveModelEfforts(provider: string, model: string): Promise<{ efforts: readonly ReasoningEffortInfo[]; defaultEffort?: string }>";
+                readonly summary: "Resolve reasoning-effort tiers for one route (lazy).";
+                readonly jsDoc: "/** Resolve reasoning-effort tiers for one route (lazy). */";
+            }, {
+                readonly kind: "method";
                 readonly name: "polish";
                 readonly signature: "polish(transcript: string, provider: string, model: string, signal: AbortSignal): Promise<string>";
                 readonly summary: "Polish one transcript through a selected dsh route.";
                 readonly jsDoc: "/** Polish one transcript through a selected dsh route. */";
+            }, {
+                readonly kind: "method";
+                readonly name: "optimize";
+                readonly signature: "optimize(text: string, provider: string, model: string, signal: AbortSignal): Promise<string>";
+                readonly summary: "Optimize one prompt through a selected dsh route.";
+                readonly jsDoc: "/** Optimize one prompt through a selected dsh route. */";
             }];
             readonly types: readonly [{
                 readonly name: "BetterInputSettingsView";
@@ -180,7 +301,7 @@ export declare const TYPERT: {
                 readonly declaration: "export type BetterInputSettingsPatch = Partial<BetterInputSettings>";
             }, {
                 readonly name: "PolishRoute";
-                readonly declaration: "export interface PolishRoute { provider: string; providerName: string; model: string; modelName: string }";
+                readonly declaration: "export interface ReasoningEffortInfo { id: string; name: string; description?: string } export interface PolishRoute { provider: string; providerName: string; model: string; modelName: string; reasoningEfforts: readonly ReasoningEffortInfo[]; defaultReasoningEffort?: string }";
             }];
         }];
         readonly events: readonly [];

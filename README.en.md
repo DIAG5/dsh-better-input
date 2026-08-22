@@ -40,6 +40,14 @@
 <td>Auto-cleanse after recognition: drop fillers, fix homophone errors (根木鹿→根目录, 脱肯→Token), restore punctuation, turn spoken enumerations into lists. <strong>Reuses your configured dsh models</strong> — no extra key.</td>
 </tr>
 <tr>
+<td align="center">✨<br/><b>Prompt optimization</b></td>
+<td>An icon at the top right of the composer — the AI refines your prompt to be more precise; a <strong>before / after comparison panel</strong> pops up so you can review before adopting. Reuses your dsh models — no extra key.</td>
+</tr>
+<tr>
+<td align="center">🧠<br/><b>Reasoning-effort control</b></td>
+<td>Polish and optimization each pick their own effort tier. <strong>Thinking is off by default</strong> (explicitly sends the model's `off` tier when supported, so no reasoning tokens are spent), and you can raise it manually.</td>
+</tr>
+<tr>
 <td align="center">🐘<br/><b>Edit-safe guard</b></td>
 <td>If you edit the draft while polishing runs, the result <strong>won't</strong> overwrite your edits; on failure the original is kept.</td>
 </tr>
@@ -49,7 +57,7 @@
 </tr>
 <tr>
 <td align="center">⚙️<br/><b>Visual settings page</b></td>
-<td>Recognition language, recording limit, polish toggle/model, custom prompt — all configured in settings; the built-in prompt is one click away.</td>
+<td>Recognition language, recording limit, polish toggle, plus <strong>model, reasoning effort, and custom prompt</strong> for both polish and optimization. The built-in prompt is one click away. Enabled by default, with your primary model auto-selected.</td>
 </tr>
 </table>
 
@@ -58,7 +66,7 @@
 BetterInput aims to grow into a complete **input-experience enhancement suite**. Voice is just the start; everything below revolves around making every input you feed an agent smoother:
 
 ### Text & prompts
-- [ ] ✨ **Prompt optimization** — a one-click icon beside the input to have the AI polish / improve the prompt you wrote
+- [x] ✨ **Prompt optimization** — a one-click icon beside the input to have the AI polish / improve the prompt you wrote
 - [ ] 📝 **Prompt template library** — one-click insert of common templates (coding / summarize / translate / role-play…)
 - [ ] 🧹 **Text cleaning** — paste messy / line-numbered / timestamped text and get clean copy
 - [ ] 🔤 **Instant translation** — one click to turn Chinese into English (or vice versa)
@@ -154,15 +162,31 @@ Settings → **BetterInput** → enable **AI polishing** → pick a model alread
 
 The built-in prompt removes fillers, fixes homophone errors, restores punctuation, and formats spoken enumerations into numbered lists. Leave blank to use the built-in prompt (expand via **Show the built-in prompt**), or paste a custom prompt (the output-contract guard is always appended, so it returns clean text rather than answering).
 
-### 3. Settings
+### 3. Prompt optimization
+
+1. Type your prompt in the composer.
+2. Click the **✨ Optimize** icon at the top right of the input row.
+3. After a short wait, a **before / after comparison panel** appears.
+4. Click **Adopt** to replace the draft with the optimized result, or **Cancel** to keep the original.
+
+> Thinking is off by default for fast, low-cost output. You can raise the effort tier in settings for deeper optimization.
+
+### 4. Settings
 
 | Setting | Meaning |
 | --- | --- |
 | Recognition language | Empty follows the browser language (e.g. `zh-CN`, `en-US`) |
 | Recording limit | 1–600 seconds, default 120, auto-stop |
-| AI polishing | On/off |
+| AI polishing | On/off; when on, the transcript is auto-polished into the draft |
 | Polish model | A dsh model route |
+| Polish reasoning effort | Default: thinking off; optional higher tiers the model supports |
 | Custom polish prompt | Optional replacement of the built-in prompt |
+| Prompt optimization | On/off; when on, the ✨ button shows in the composer |
+| Optimize model | A dsh model route |
+| Optimize reasoning effort | Default: thinking off; optional higher tiers the model supports |
+| Custom optimize prompt | Optional replacement of the built-in optimize prompt |
+
+> Polish and optimization are configured independently — model, effort, and prompt each.
 
 ## 🧩 Compatibility
 
@@ -183,8 +207,8 @@ Client-only UI: `npm run dev:watch`, then refresh the UI. Host changes: restart 
 ## 🏗️ Architecture
 
 - `src/index.ts` — Host plugin entry, mounts the polish service
-- `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing via `ctx.llm`
-- `src/client/` — browser half: microphone button (`conversation.input.right`), recognition bar (`conversation.input.dock`), settings page (`settings.section`)
+- `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing & prompt optimization via `ctx.llm`
+- `src/client/` — browser half: microphone/optimize buttons (`conversation.input.right`), recognition bar (`conversation.input.dock`), settings page (`settings.section`)
 - `src/typert.ts` / `src/remote.ts` — Client↔Host typed contract
 
 ## 📄 License

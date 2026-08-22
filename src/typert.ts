@@ -1,4 +1,4 @@
-import { betterInputSettingsPatchSchema, betterInputSettingsViewSchema, listRoutesResultSchema, polishResultSchema, textSchema } from './remote-contract.js'
+import { betterInputSettingsPatchSchema, betterInputSettingsViewSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema } from './remote-contract.js'
 
 export const TYPERT = {
   package: 'dsh-better-input',
@@ -51,6 +51,32 @@ export const TYPERT = {
       }
     },
     {
+      id: 'dsh-better-input#betterInput/resolveModelEfforts',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'resolveModelEfforts',
+      invocation: { kind: 'direct' },
+      parameters: [
+        {
+          name: 'provider',
+          wire: 'provider',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'model',
+          wire: 'model',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        }
+      ],
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#ResolveModelEffortsResult',
+        schema: resolveModelEffortsResultSchema
+      }
+    },
+    {
       id: 'dsh-better-input#betterInput/polish',
       service: 'BetterInputPolish',
       namespace: 'betterInput',
@@ -81,6 +107,39 @@ export const TYPERT = {
         mode: 'strict',
         typeSymbol: 'string',
         schema: polishResultSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/optimize',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'optimize',
+      invocation: { kind: 'direct' },
+      parameters: [
+        {
+          name: 'text',
+          wire: 'text',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'provider',
+          wire: 'provider',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'model',
+          wire: 'model',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        }
+      ],
+      cancellation: { parameter: 'signal' },
+      result: {
+        mode: 'strict',
+        typeSymbol: 'string',
+        schema: optimizeResultSchema
       }
     }
   ],
@@ -117,10 +176,24 @@ export const TYPERT = {
           },
           {
             kind: 'method',
+            name: 'resolveModelEfforts',
+            signature: 'resolveModelEfforts(provider: string, model: string): Promise<{ efforts: readonly ReasoningEffortInfo[]; defaultEffort?: string }>',
+            summary: 'Resolve reasoning-effort tiers for one route (lazy).',
+            jsDoc: '/** Resolve reasoning-effort tiers for one route (lazy). */'
+          },
+          {
+            kind: 'method',
             name: 'polish',
             signature: 'polish(transcript: string, provider: string, model: string, signal: AbortSignal): Promise<string>',
             summary: 'Polish one transcript through a selected dsh route.',
             jsDoc: '/** Polish one transcript through a selected dsh route. */'
+          },
+          {
+            kind: 'method',
+            name: 'optimize',
+            signature: 'optimize(text: string, provider: string, model: string, signal: AbortSignal): Promise<string>',
+            summary: 'Optimize one prompt through a selected dsh route.',
+            jsDoc: '/** Optimize one prompt through a selected dsh route. */'
           }
         ],
         types: [
@@ -134,7 +207,7 @@ export const TYPERT = {
           },
           {
             name: 'PolishRoute',
-            declaration: 'export interface PolishRoute { provider: string; providerName: string; model: string; modelName: string }'
+            declaration: 'export interface ReasoningEffortInfo { id: string; name: string; description?: string } export interface PolishRoute { provider: string; providerName: string; model: string; modelName: string; reasoningEfforts: readonly ReasoningEffortInfo[]; defaultReasoningEffort?: string }'
           }
         ]
       }
