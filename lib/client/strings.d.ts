@@ -1,7 +1,8 @@
 /**
- * UI strings for dsh-better-input. First version picks the language once at
- * module load from the browser locale; a full locale-service integration can
- * replace this later without touching components.
+ * Bilingual UI strings for dsh-better-input (zh/en). Registered as one
+ * namespace into the DSH locale runtime; every slot component declares that
+ * namespace and reads copy through the framework-injected `t` seat, so the
+ * UI follows the DSH settings language switch automatically.
  */
 export type BetterInputStrings = {
     voiceStart: string;
@@ -61,5 +62,28 @@ export type BetterInputStrings = {
     optimizePromptLabel: string;
     optimizePromptHint: string;
     optimizePromptPlaceholder: string;
+    aboutTitle: string;
+    aboutVersionLabel: string;
+    aboutRepositoryLabel: string;
+    aboutLicenseLabel: string;
+    checkUpdateButton: string;
+    checkingUpdate: string;
+    updateUpToDate: string;
+    updateAvailable: string;
+    updateUnpublished: string;
+    updateCheckFailed: string;
+    updateCommandLabel: string;
+    updateCommandNpxLabel: string;
+    updateCommandPick: string;
 };
-export declare function stringsForBrowser(): BetterInputStrings;
+export declare const zh: BetterInputStrings;
+export declare const en: BetterInputStrings;
+/** Namespace owning every BetterInput surface string. Registered into the DSH
+ * locale runtime; slots declaring this namespace receive the typed `t`. */
+export declare const BETTER_INPUT_NS = "better-input";
+declare module '@deepseek-ai/dsh-client-ui-slots' {
+    /** BetterInput dictionary keys (one shared key set, zh/en bilingual). */
+    interface LocaleNamespaceMap {
+        'better-input': keyof BetterInputStrings;
+    }
+}

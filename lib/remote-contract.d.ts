@@ -88,6 +88,28 @@ export declare const listRoutesResultSchema: z.ZodArray<z.ZodObject<{
 }, z.core.$strip>>;
 export declare const polishResultSchema: z.ZodString;
 export declare const optimizeResultSchema: z.ZodString;
+export declare const aboutInfoSchema: z.ZodObject<{
+    repository: z.ZodString;
+    repositorySlug: z.ZodString;
+    version: z.ZodString;
+    license: z.ZodString;
+    updateCommand: z.ZodString;
+    updateCommandNpx: z.ZodString;
+}, z.core.$strip>;
+export declare const updateCheckResultSchema: z.ZodObject<{
+    status: z.ZodEnum<{
+        "up-to-date": "up-to-date";
+        "update-available": "update-available";
+        unpublished: "unpublished";
+        error: "error";
+    }>;
+    installed: z.ZodString;
+    latest: z.ZodNullable<z.ZodString>;
+    updateCommand: z.ZodString;
+    updateCommandNpx: z.ZodString;
+}, z.core.$strip>;
+export type AboutInfoWire = z.infer<typeof aboutInfoSchema>;
+export type UpdateCheckResultWire = z.infer<typeof updateCheckResultSchema>;
 export type BetterInputSettingsWire = z.infer<typeof betterInputSettingsSchema>;
 export type BetterInputSettingsPatchWire = z.infer<typeof betterInputSettingsPatchSchema>;
 export type BetterInputSettingsViewWire = z.infer<typeof betterInputSettingsViewSchema>;

@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import type { BetterInputRemote } from '../remote.js'
-import { stringsForBrowser } from './strings.js'
 import type { SettingsFace } from './MicrophoneButton.js'
+
+/** The framework-injected `t` seat for the BetterInput namespace. */
+type Translate = TranslateNS<'better-input'>
 
 /**
  * Props handed to every `conversation.input.dock` entry, plus the injected
@@ -18,6 +21,7 @@ export type OptimizeButtonProps = {
   }
   readonly remote: BetterInputRemote
   readonly useSettings: () => SettingsFace
+  readonly t: Translate
 }
 
 type OptimizeState =
@@ -33,8 +37,7 @@ type OptimizeState =
  * the original and optimized text. The draft is replaced only when the user
  * clicks "Adopt".
  */
-export function OptimizeButton({ input, inputActions, remote, useSettings }: OptimizeButtonProps) {
-  const strings = stringsForBrowser()
+export function OptimizeButton({ input, inputActions, remote, useSettings, t }: OptimizeButtonProps) {
   const [state, setState] = useState<OptimizeState>({ kind: 'idle' })
   const settingsFace = useSettings()
   const abortRef = useRef<AbortController | null>(null)
@@ -65,12 +68,12 @@ export function OptimizeButton({ input, inputActions, remote, useSettings }: Opt
     if (state.kind === 'optimizing') return
     const draft = draftRef.current.trim()
     if (draft === '') {
-      setState({ kind: 'error', message: strings.optimizeEmpty })
+      setState({ kind: 'error', message: t('optimizeEmpty') })
       return
     }
 
     if (!modelConfigured) {
-      setState({ kind: 'error', message: strings.optimizeNotConfigured })
+      setState({ kind: 'error', message: t('optimizeNotConfigured') })
       return
     }
 
@@ -88,7 +91,7 @@ export function OptimizeButton({ input, inputActions, remote, useSettings }: Opt
       }
       const optimized = result.value.trim()
       if (optimized === '') {
-        setState({ kind: 'error', message: strings.optimizeFailed })
+        setState({ kind: 'error', message: t('optimizeFailed') })
         return
       }
       // Always show the comparison panel, even when the model returned the
@@ -97,7 +100,7 @@ export function OptimizeButton({ input, inputActions, remote, useSettings }: Opt
       setState({ kind: 'result', original: draft, optimized })
     } catch (error) {
       if (controller.signal.aborted) return
-      setState({ kind: 'error', message: error instanceof Error ? error.message : strings.optimizeFailed })
+      setState({ kind: 'error', message: error instanceof Error ? error.message : t('optimizeFailed') })
     } finally {
       if (abortRef.current === controller) abortRef.current = null
     }
@@ -115,7 +118,7 @@ export function OptimizeButton({ input, inputActions, remote, useSettings }: Opt
 
   const busy = state.kind === 'optimizing'
   const disabled = busy || !modelConfigured
-  const buttonTitle = modelConfigured ? strings.optimizeButton : strings.optimizeNotConfigured
+  const buttonTitle = modelConfigured ? t('optimizeButton') : t('optimizeNotConfigured')
 
   const errorToast = state.kind === 'error' ? (
     <ErrorToastPortal
@@ -126,13 +129,13 @@ export function OptimizeButton({ input, inputActions, remote, useSettings }: Opt
 
   const confirmModal = state.kind === 'result' ? (
     <ConfirmModalPortal
-      title={strings.optimizePanelTitle}
-      originalLabel={strings.optimizeOriginalLabel}
-      optimizedLabel={strings.optimizeOptimizedLabel}
+      title={t('optimizePanelTitle')}
+      originalLabel={t('optimizeOriginalLabel')}
+      optimizedLabel={t('optimizeOptimizedLabel')}
       original={state.original}
       optimized={state.optimized}
-      adoptLabel={strings.optimizeAdopt}
-      cancelLabel={strings.optimizeCancel}
+      adoptLabel={t('optimizeAdopt')}
+      cancelLabel={t('optimizeCancel')}
       onAdopt={handleAdopt}
       onCancel={handleCancel}
     />
@@ -150,7 +153,7 @@ export function OptimizeButton({ input, inputActions, remote, useSettings }: Opt
           style={buttonStyle(disabled)}
         >
           <SparkleIcon />
-          {busy ? strings.optimizeBusy : ''}
+          {busy ? t('optimizeBusy') : ''}
         </button>
       </div>
       {errorToast}

@@ -1,29 +1,32 @@
-import { stringsForBrowser } from './strings.js'
+import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import { useVoiceInputSession, type VoiceInputSession } from './voice-session.js'
+
+/** The framework-injected `t` seat for the BetterInput namespace. */
+type Translate = TranslateNS<'better-input'>
 
 export type RecognitionBarProps = {
   readonly voiceSession: VoiceInputSession
+  readonly t: Translate
 }
 
 /**
  * The recognition status bar above the composer. Shows live state and a stop
  * button while recording; the bar renders nothing when idle.
  */
-export function VoiceRecognitionBar({ voiceSession }: RecognitionBarProps) {
-  const strings = stringsForBrowser()
+export function VoiceRecognitionBar({ voiceSession, t }: RecognitionBarProps) {
   const snapshot = useVoiceInputSession(voiceSession)
 
   const active = snapshot.state === 'starting' || snapshot.state === 'recording'
   const label = active
-    ? strings.listening
+    ? t('listening')
     : snapshot.state === 'transcribing'
-      ? strings.transcribing
+      ? t('transcribing')
       : snapshot.state === 'polishing'
-        ? strings.polishing
+        ? t('polishing')
         : snapshot.state === 'polish-error'
-          ? strings.polishFailedKeepOriginal
+          ? t('polishFailedKeepOriginal')
           : snapshot.state === 'error'
-            ? strings.voiceFailed
+            ? t('voiceFailed')
             : ''
 
   if (label === '') return null
@@ -64,7 +67,7 @@ export function VoiceRecognitionBar({ voiceSession }: RecognitionBarProps) {
             cursor: 'pointer'
           }}
         >
-          {strings.voiceStop}
+          {t('voiceStop')}
         </button>
       ) : null}
     </div>

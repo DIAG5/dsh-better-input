@@ -160,6 +160,55 @@ export declare const TYPERT: {
             }, import("zod/v4/core").$strip>;
         };
     }, {
+        readonly id: "dsh-better-input#betterInput/getAbout";
+        readonly service: "BetterInputPolish";
+        readonly namespace: "betterInput";
+        readonly method: "getAbout";
+        readonly invocation: {
+            readonly kind: "direct";
+        };
+        readonly parameters: readonly [];
+        readonly result: {
+            readonly mode: "strict";
+            readonly typeSymbol: "dsh-better-input#AboutInfo";
+            readonly schema: import("zod").ZodObject<{
+                repository: import("zod").ZodString;
+                repositorySlug: import("zod").ZodString;
+                version: import("zod").ZodString;
+                license: import("zod").ZodString;
+                updateCommand: import("zod").ZodString;
+                updateCommandNpx: import("zod").ZodString;
+            }, import("zod/v4/core").$strip>;
+        };
+    }, {
+        readonly id: "dsh-better-input#betterInput/checkForUpdate";
+        readonly service: "BetterInputPolish";
+        readonly namespace: "betterInput";
+        readonly method: "checkForUpdate";
+        readonly invocation: {
+            readonly kind: "direct";
+        };
+        readonly parameters: readonly [];
+        readonly cancellation: {
+            readonly parameter: "signal";
+        };
+        readonly result: {
+            readonly mode: "strict";
+            readonly typeSymbol: "dsh-better-input#UpdateCheckResult";
+            readonly schema: import("zod").ZodObject<{
+                status: import("zod").ZodEnum<{
+                    "up-to-date": "up-to-date";
+                    "update-available": "update-available";
+                    unpublished: "unpublished";
+                    error: "error";
+                }>;
+                installed: import("zod").ZodString;
+                latest: import("zod").ZodNullable<import("zod").ZodString>;
+                updateCommand: import("zod").ZodString;
+                updateCommandNpx: import("zod").ZodString;
+            }, import("zod/v4/core").$strip>;
+        };
+    }, {
         readonly id: "dsh-better-input#betterInput/polish";
         readonly service: "BetterInputPolish";
         readonly namespace: "betterInput";
@@ -282,6 +331,18 @@ export declare const TYPERT: {
                 readonly jsDoc: "/** Resolve reasoning-effort tiers for one route (lazy). */";
             }, {
                 readonly kind: "method";
+                readonly name: "getAbout";
+                readonly signature: "getAbout(): AboutInfo";
+                readonly summary: "Read the installed plugin identity and repository info.";
+                readonly jsDoc: "/** Read the installed plugin identity and repository info. */";
+            }, {
+                readonly kind: "method";
+                readonly name: "checkForUpdate";
+                readonly signature: "checkForUpdate(signal: AbortSignal): Promise<UpdateCheckResult>";
+                readonly summary: "Check the npm registry for the latest published version.";
+                readonly jsDoc: "/** Check the npm registry for the latest published version. */";
+            }, {
+                readonly kind: "method";
                 readonly name: "polish";
                 readonly signature: "polish(transcript: string, provider: string, model: string, signal: AbortSignal): Promise<string>";
                 readonly summary: "Polish one transcript through a selected dsh route.";
@@ -302,6 +363,12 @@ export declare const TYPERT: {
             }, {
                 readonly name: "PolishRoute";
                 readonly declaration: "export interface ReasoningEffortInfo { id: string; name: string; description?: string } export interface PolishRoute { provider: string; providerName: string; model: string; modelName: string; reasoningEfforts: readonly ReasoningEffortInfo[]; defaultReasoningEffort?: string }";
+            }, {
+                readonly name: "AboutInfo";
+                readonly declaration: "export interface AboutInfo { repository: string; repositorySlug: string; version: string; license: string; updateCommand: string; updateCommandNpx: string }";
+            }, {
+                readonly name: "UpdateCheckResult";
+                readonly declaration: "export type UpdateCheckResult = { status: 'up-to-date' | 'update-available' | 'unpublished' | 'error'; installed: string; latest: string | null; updateCommand: string; updateCommandNpx: string }";
             }];
         }];
         readonly events: readonly [];

@@ -1,9 +1,12 @@
 import { useEffect, useRef } from 'react'
+import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import { effectiveRecognitionLanguage, effectiveRecordingSeconds, type BetterInputSettings, type BetterInputSettingsPatch } from '../config.js'
 import type { BetterInputRemote } from '../remote.js'
-import { stringsForBrowser } from './strings.js'
 import { WebSpeechSession, isWebSpeechAvailable } from './web-speech.js'
 import { useVoiceInputSession, type VoiceInputSession } from './voice-session.js'
+
+/** The framework-injected `t` seat for the BetterInput namespace. */
+type Translate = TranslateNS<'better-input'>
 
 /**
  * Standard props the conversation input zone hands to every
@@ -20,6 +23,7 @@ export type InputZoneLikeProps = {
   readonly voiceSession: VoiceInputSession
   readonly remote: BetterInputRemote
   readonly useSettings: () => SettingsFace
+  readonly t: Translate
 }
 
 export type SettingsFace = {
@@ -33,8 +37,7 @@ export type SettingsFace = {
  * polishing is enabled, the committed transcript is polished through the Host
  * LLM route and replaces the draft (unless the user edited it meanwhile).
  */
-export function MicrophoneButton({ input, inputActions, voiceSession, remote, useSettings }: InputZoneLikeProps) {
-  const strings = stringsForBrowser()
+export function MicrophoneButton({ input, inputActions, voiceSession, remote, useSettings, t }: InputZoneLikeProps) {
   const snapshot = useVoiceInputSession(voiceSession)
   const state = snapshot.state
   const setState = (next: typeof state, detail = '') => voiceSession.setState(next, detail)
@@ -167,17 +170,17 @@ export function MicrophoneButton({ input, inputActions, voiceSession, remote, us
   stopRef.current = stopListening
 
   const tooltip = busy
-    ? strings.voiceBusy
+    ? t('voiceBusy')
     : active
-      ? strings.voiceStop
+      ? t('voiceStop')
       : state === 'polish-error'
-        ? strings.polishFailedKeepOriginal
+        ? t('polishFailedKeepOriginal')
         : state === 'error'
-          ? strings.voiceFailed
+          ? t('voiceFailed')
           : !polishConfigured
-            ? `${strings.voiceStart} — ${strings.polishNotConfigured}`
-            : strings.voiceStart
-  const label = busy ? '…' : active ? strings.voiceStop : strings.voiceStart
+            ? `${t('voiceStart')} — ${t('polishNotConfigured')}`
+            : t('voiceStart')
+  const label = busy ? '…' : active ? t('voiceStop') : t('voiceStart')
 
   return (
     <button

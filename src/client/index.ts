@@ -6,7 +6,8 @@ import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-client-ui-settings/client'
 import { TYPERT_REMOTE } from '../remote.js'
 import type { BetterInputRemote } from '../remote.js'
-import { stringsForBrowser } from './strings.js'
+import type {} from '@deepseek-ai/dsh-client-locale/client'
+import { BETTER_INPUT_NS, en, zh } from './strings.js'
 import { MicrophoneButton, type SettingsFace } from './MicrophoneButton.js'
 import { OptimizeButton } from './OptimizeButton.js'
 import { VoiceRecognitionBar } from './VoiceRecognitionBar.js'
@@ -19,7 +20,8 @@ const PULSE_KEYFRAMES = `@keyframes dsh-better-input-pulse {
   50% { opacity: 0.3; }
 }`
 
-/** Required Client services: the slot registry and the Typert remote hub.
+/** Required Client services: the slot registry, the Typert remote hub, and the
+ * DSH locale runtime (so `t` seats resolve and our dictionary registers).
  * `remote.betterInput` is mounted by this plugin's own apply() via
  * `ctx.remote.$mount`, so it MUST NOT appear here — the outer inject gates
  * plugin activation and would deadlock waiting for itself. It is declared
@@ -27,10 +29,13 @@ const PULSE_KEYFRAMES = `@keyframes dsh-better-input-pulse {
  * Settings reach the browser through `SettingsScopeBinder` (provided by
  * `@deepseek-ai/dsh-client-ui-settings`) and are read inside the settings
  * section slot itself, not via a top-level `settings` service here. */
-export const inject = ['slots', 'remote']
+export const inject = ['slots', 'remote', 'locale']
 
 export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
   const disposeRemote = await ctx.remote.$mount(TYPERT_REMOTE)
+  // Register our bilingual dictionary with the DSH locale runtime BEFORE any
+  // slot renders, so the injected `t` seat never hits a missing namespace.
+  const disposeLocaleDicts = ctx.locale.register(BETTER_INPUT_NS, { zh, en })
   await ctx.inject(['slots', 'remote', 'remote.betterInput'], async (remoteCtx) => {
     const remote = remoteCtx.remote.betterInput as BetterInputRemote
     const controller = new SettingsController(remote)
@@ -79,6 +84,7 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
           name: 'conversation.input.dock',
           id: 'better-input-recognition-bar',
           order: 15,
+          locale: BETTER_INPUT_NS,
           inject: (sessionId) => ({ voiceSession: voiceSessionFor(sessionId) })
         },
         VoiceRecognitionBar
@@ -96,6 +102,7 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
           name: 'conversation.input.right',
           id: 'better-input-optimize',
           order: 9998,
+          locale: BETTER_INPUT_NS,
           inject: () => ({
             remote,
             useSettings
@@ -114,6 +121,7 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
           name: 'conversation.input.right',
           id: 'better-input-voice',
           order: 9999,
+          locale: BETTER_INPUT_NS,
           inject: (sessionId) => ({
             remote,
             voiceSession: voiceSessionFor(sessionId),
@@ -124,19 +132,20 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
       )
     )
 
-    remoteCtx.slots.inject('settings.section', () => {
-      const strings = stringsForBrowser()
-      return remoteCtx.slots.register(
+    remoteCtx.slots.inject('settings.section', () =>
+      remoteCtx.slots.register(
         {
           name: 'settings.section',
           id: 'dsh-better-input',
           order: 16,
-          label: strings.settingsTitle,
+          // Thunk so the sidebar row follows the active locale on switches.
+          label: () => ctx.locale.bind(BETTER_INPUT_NS)('settingsTitle'),
+          locale: BETTER_INPUT_NS,
           inject: () => ({ settingsController: controller })
         },
         BetterInputSettingsSection
       )
-    })
+    )
 
     return () => {
       // Slots and effects are disposed through their own fiber.
@@ -144,6 +153,7 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
   })
 
   return async () => {
+    disposeLocaleDicts()
     await disposeRemote()
   }
 }

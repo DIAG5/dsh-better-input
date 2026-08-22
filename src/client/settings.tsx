@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import type { BetterInputSettings, BetterInputSettingsPatch, PolishRoute, ReasoningEffortInfo } from '../config.js'
-import type { SettingsController, SettingsSnapshot, RoutesSnapshot, UpdateSnapshot } from './settings-controller.js'
+import type { BetterInputSettings, BetterInputSettingsPatch, ReasoningEffortInfo } from '../config.js'
+import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
+import type { SettingsController, UpdateSnapshot } from './settings-controller.js'
 import { useAboutSnapshot, useEffortsSnapshot, useSettingsSnapshot, useRoutesSnapshot, useUpdateSnapshot } from './settings-controller.js'
-import { stringsForBrowser, type BetterInputStrings } from './strings.js'
+
+/** The framework-injected `t` seat for the BetterInput namespace. */
+type Translate = TranslateNS<'better-input'>
 
 function ReasoningEffortSelect(props: {
   settingsController: SettingsController
@@ -10,9 +13,9 @@ function ReasoningEffortSelect(props: {
   model: string
   storedEffort: string
   onChange: (effortId: string) => void
-  strings: BetterInputStrings
+  t: Translate
 }) {
-  const { settingsController, provider, model, storedEffort, onChange, strings } = props
+  const { settingsController, provider, model, storedEffort, onChange, t } = props
   const efforts = useEffortsSnapshot(settingsController)
 
   // Kick off the lazy fetch whenever the selected model changes.
@@ -30,7 +33,7 @@ function ReasoningEffortSelect(props: {
   if (entry === undefined || entry.status === 'loading') {
     return (
       <select value="" disabled={true} style={inputStyle}>
-        <option value="">{strings.effortLoadingLabel}</option>
+        <option value="">{t('effortLoadingLabel')}</option>
       </select>
     )
   }
@@ -48,7 +51,7 @@ function ReasoningEffortSelect(props: {
       onChange={(event) => onChange(event.target.value)}
       style={inputStyle}
     >
-      <option value="">{strings.effortDefaultLabel}</option>
+      <option value="">{t('effortDefaultLabel')}</option>
       {items.map((effort) => (
         <option key={effort.id} value={effort.id} title={effort.description}>
           {effort.name}
@@ -60,6 +63,7 @@ function ReasoningEffortSelect(props: {
 
 export type SettingsSectionProps = {
   readonly close: () => void
+  readonly t: Translate
   readonly settingsController: SettingsController
 }
 
@@ -72,8 +76,7 @@ type FieldState = {
  * The BetterInput settings page. Renders the recognition and polishing
  * configuration; every field edits a local draft and saves on blur/change.
  */
-export function BetterInputSettingsSection({ close, settingsController }: SettingsSectionProps) {
-  const strings = stringsForBrowser()
+export function BetterInputSettingsSection({ close, settingsController, t }: SettingsSectionProps) {
   const settings = useSettingsSnapshot(settingsController)
   const routes = useRoutesSnapshot(settingsController)
   const about = useAboutSnapshot(settingsController)
@@ -92,7 +95,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
   }, [settingsController])
 
   if (settings.status === 'loading' || routes.status === 'loading') {
-    return <SectionFrame title={strings.settingsTitle}>{strings.loading}</SectionFrame>
+    return <SectionFrame title={t('settingsTitle')}>{t('loading')}</SectionFrame>
   }
 
   const field = (name: string, current: string): FieldState => ({
@@ -125,23 +128,23 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
   const optimizePromptField = field('optimizePrompt', s.optimizePrompt)
 
   return (
-    <SectionFrame title={strings.settingsTitle}>
-      <p style={hintStyle}>{strings.settingsDescription}</p>
+    <SectionFrame title={t('settingsTitle')}>
+      <p style={hintStyle}>{t('settingsDescription')}</p>
 
-      {saveFailed ? <p style={errorStyle}>{strings.saveFailed}</p> : null}
+      {saveFailed ? <p style={errorStyle}>{t('saveFailed')}</p> : null}
 
-      <Field label={strings.languageLabel} hint={strings.languageHint}>
+      <Field label={t('languageLabel')} hint={t('languageHint')}>
         <input
           type="text"
           value={languageField.text}
-          placeholder={strings.languagePlaceholder}
+          placeholder={t('languagePlaceholder')}
           onChange={(event) => setField('language', event.target.value)}
           onBlur={() => void save({ language: languageField.text.trim() })}
           style={inputStyle}
         />
       </Field>
 
-      <Field label={strings.recordingLimitLabel} hint={strings.recordingLimitHint}>
+      <Field label={t('recordingLimitLabel')} hint={t('recordingLimitHint')}>
         <input
           type="number"
           min={1}
@@ -157,20 +160,20 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
         />
       </Field>
 
-      <Field label={strings.polishLabel} hint={strings.polishHint}>
+      <Field label={t('polishLabel')} hint={t('polishHint')}>
         <label style={switchStyle}>
           <input
             type="checkbox"
             checked={s.polishingEnabled}
             onChange={(event) => void save({ polishingEnabled: event.target.checked })}
           />
-          <span>{s.polishingEnabled ? strings.on : strings.off}</span>
+          <span>{s.polishingEnabled ? t('on') : t('off')}</span>
         </label>
       </Field>
 
       {s.polishingEnabled ? (
         <>
-          <Field label={strings.polishModelLabel} hint={strings.polishModelHint}>
+          <Field label={t('polishModelLabel')} hint={t('polishModelHint')}>
             <select
               value={drafts.polishProvider !== undefined || drafts.polishModel !== undefined
                 ? `${drafts.polishProvider ?? s.polishProvider}\u0000${drafts.polishModel ?? s.polishModel}`
@@ -182,7 +185,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
               style={inputStyle}
               disabled={routes.status !== 'ready' || routes.routes.length === 0}
             >
-              <option value={'\u0000'}>{strings.polishModelNone}</option>
+              <option value={'\u0000'}>{t('polishModelNone')}</option>
               {routes.status === 'ready' && routes.routes.map((route) => (
                 <option key={`${route.provider}\u0000${route.model}`} value={`${route.provider}\u0000${route.model}`}>
                   {route.providerName} / {route.modelName}
@@ -191,22 +194,22 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
             </select>
           </Field>
 
-          <Field label={strings.polishEffortLabel} hint={strings.polishEffortHint}>
+          <Field label={t('polishEffortLabel')} hint={t('polishEffortHint')}>
             <ReasoningEffortSelect
               settingsController={settingsController}
               provider={s.polishProvider}
               model={s.polishModel}
               storedEffort={s.polishReasoningEffort}
               onChange={(effortId) => void save({ polishReasoningEffort: effortId })}
-              strings={strings}
+              t={t}
             />
           </Field>
 
-          <Field label={strings.polishPromptLabel} hint={strings.polishPromptHint}>
+          <Field label={t('polishPromptLabel')} hint={t('polishPromptHint')}>
             <textarea
               value={polishPromptField.text}
               rows={5}
-              placeholder={strings.polishPromptPlaceholder}
+              placeholder={t('polishPromptPlaceholder')}
               onChange={(event) => setField('polishPrompt', event.target.value)}
               onBlur={() => void save({ polishPrompt: polishPromptField.text })}
               style={{ ...inputStyle, resize: 'vertical', fontFamily: 'monospace' }}
@@ -218,7 +221,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
                   onClick={() => setShowDefaultPrompt((prev) => !prev)}
                   style={toggleLinkStyle}
                 >
-                  {showDefaultPrompt ? strings.hideDefaultPrompt : strings.showDefaultPrompt}
+                  {showDefaultPrompt ? t('hideDefaultPrompt') : t('showDefaultPrompt')}
                 </button>
                 {showDefaultPrompt ? (
                   <pre
@@ -246,20 +249,20 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
         </>
       ) : null}
 
-      <Field label={strings.optimizeLabel} hint={strings.optimizeHint}>
+      <Field label={t('optimizeLabel')} hint={t('optimizeHint')}>
         <label style={switchStyle}>
           <input
             type="checkbox"
             checked={s.optimizeEnabled}
             onChange={(event) => void save({ optimizeEnabled: event.target.checked })}
           />
-          <span>{s.optimizeEnabled ? strings.on : strings.off}</span>
+          <span>{s.optimizeEnabled ? t('on') : t('off')}</span>
         </label>
       </Field>
 
       {s.optimizeEnabled ? (
         <>
-          <Field label={strings.optimizeModelLabel} hint={strings.optimizeModelHint}>
+          <Field label={t('optimizeModelLabel')} hint={t('optimizeModelHint')}>
             <select
               value={drafts.optimizeProvider !== undefined || drafts.optimizeModel !== undefined
                 ? `${drafts.optimizeProvider ?? s.optimizeProvider}\u0000${drafts.optimizeModel ?? s.optimizeModel}`
@@ -271,7 +274,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
               style={inputStyle}
               disabled={routes.status !== 'ready' || routes.routes.length === 0}
             >
-              <option value={'\u0000'}>{strings.polishModelNone}</option>
+              <option value={'\u0000'}>{t('polishModelNone')}</option>
               {routes.status === 'ready' && routes.routes.map((route) => (
                 <option key={`${route.provider}\u0000${route.model}`} value={`${route.provider}\u0000${route.model}`}>
                   {route.providerName} / {route.modelName}
@@ -280,22 +283,22 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
             </select>
           </Field>
 
-          <Field label={strings.optimizeEffortLabel} hint={strings.optimizeEffortHint}>
+          <Field label={t('optimizeEffortLabel')} hint={t('optimizeEffortHint')}>
             <ReasoningEffortSelect
               settingsController={settingsController}
               provider={s.optimizeProvider}
               model={s.optimizeModel}
               storedEffort={s.optimizeReasoningEffort}
               onChange={(effortId) => void save({ optimizeReasoningEffort: effortId })}
-              strings={strings}
+              t={t}
             />
           </Field>
 
-          <Field label={strings.optimizePromptLabel} hint={strings.optimizePromptHint}>
+          <Field label={t('optimizePromptLabel')} hint={t('optimizePromptHint')}>
             <textarea
               value={optimizePromptField.text}
               rows={5}
-              placeholder={strings.optimizePromptPlaceholder}
+              placeholder={t('optimizePromptPlaceholder')}
               onChange={(event) => setField('optimizePrompt', event.target.value)}
               onBlur={() => void save({ optimizePrompt: optimizePromptField.text })}
               style={{ ...inputStyle, resize: 'vertical', fontFamily: 'monospace' }}
@@ -307,7 +310,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
                   onClick={() => setShowDefaultOptimizePrompt((prev) => !prev)}
                   style={toggleLinkStyle}
                 >
-                  {showDefaultOptimizePrompt ? strings.hideDefaultPrompt : strings.showDefaultPrompt}
+                  {showDefaultOptimizePrompt ? t('hideDefaultPrompt') : t('showDefaultPrompt')}
                 </button>
                 {showDefaultOptimizePrompt ? (
                   <pre
@@ -336,7 +339,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
       ) : null}
 
       <p style={hintStyle}>
-        {strings.routesStatus}: {routes.status === 'ready' ? `${routes.routes.length}` : routes.detail || strings.routesUnavailable}
+        {t('routesStatus')}: {routes.status === 'ready' ? `${routes.routes.length}` : routes.detail || t('routesUnavailable')}
       </p>
 
       <hr style={dividerStyle} />
@@ -347,7 +350,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
         repository={about.about.repository}
         license={about.about.license}
         update={update}
-        strings={strings}
+        t={t}
         onCheckUpdate={() => void settingsController.checkForUpdate()}
       />
     </SectionFrame>
@@ -360,17 +363,17 @@ function AboutUpdateSection(props: {
   repository: string
   license: string
   update: UpdateSnapshot
-  strings: BetterInputStrings
+  t: Translate
   onCheckUpdate: () => void
 }) {
-  const { aboutStatus, version, repository, license, update, strings, onCheckUpdate } = props
+  const { aboutStatus, version, repository, license, update, t, onCheckUpdate } = props
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <h3 style={{ margin: 0, fontSize: 14 }}>{strings.aboutTitle}</h3>
+      <h3 style={{ margin: 0, fontSize: 14 }}>{t('aboutTitle')}</h3>
       {aboutStatus === 'ready' ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 13, opacity: 0.85 }}>
-          <span>{strings.aboutVersionLabel}: {version || '—'}</span>
-          <span>{strings.aboutLicenseLabel}: {license || '—'}</span>
+          <span>{t('aboutVersionLabel')}: {version || '—'}</span>
+          <span>{t('aboutLicenseLabel')}: {license || '—'}</span>
           {repository !== '' ? (
             <a
               href={repository}
@@ -378,7 +381,7 @@ function AboutUpdateSection(props: {
               rel="noreferrer"
               style={{ color: 'var(--dsh-color-primary, #4f8cff)' }}
             >
-              {strings.aboutRepositoryLabel}: {repository}
+              {t('aboutRepositoryLabel')}: {repository}
             </a>
           ) : null}
         </div>
@@ -399,36 +402,36 @@ function AboutUpdateSection(props: {
             cursor: update.status === 'loading' ? 'default' : 'pointer'
           }}
         >
-          {update.status === 'loading' ? strings.checkingUpdate : strings.checkUpdateButton}
+          {update.status === 'loading' ? t('checkingUpdate') : t('checkUpdateButton')}
         </button>
         {update.status === 'ready' && update.update !== null ? (
           (() => {
             const status = update.update.status
             if (status === 'up-to-date') {
-              return <p style={hintStyle}>{strings.updateUpToDate}</p>
+              return <p style={hintStyle}>{t('updateUpToDate')}</p>
             }
             if (status === 'unpublished') {
-              return <p style={hintStyle}>{strings.updateUnpublished}</p>
+              return <p style={hintStyle}>{t('updateUnpublished')}</p>
             }
             if (status === 'update-available') {
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <p style={{ ...hintStyle, color: '#e5484d' }}>
-                    {strings.updateAvailable}: {update.update.installed} → {update.update.latest}
+                    {t('updateAvailable')}: {update.update.installed} → {update.update.latest}
                   </p>
-                  <span style={hintStyle}>{strings.updateCommandLabel}:</span>
+                  <span style={hintStyle}>{t('updateCommandLabel')}:</span>
                   <code style={codeStyle}>{update.update.updateCommand}</code>
-                  <span style={hintStyle}>{strings.updateCommandNpxLabel}:</span>
+                  <span style={hintStyle}>{t('updateCommandNpxLabel')}:</span>
                   <code style={codeStyle}>{update.update.updateCommandNpx}</code>
-                  <span style={hintStyle}>{strings.updateCommandPick}:</span>
+                  <span style={hintStyle}>{t('updateCommandPick')}:</span>
                 </div>
               )
             }
-            return <p style={errorStyle}>{strings.updateCheckFailed}</p>
+            return <p style={errorStyle}>{t('updateCheckFailed')}</p>
           })()
         ) : null}
         {update.status === 'error' ? (
-          <p style={errorStyle}>{strings.updateCheckFailed}: {update.detail}</p>
+          <p style={errorStyle}>{t('updateCheckFailed')}: {update.detail}</p>
         ) : null}
       </div>
     </div>

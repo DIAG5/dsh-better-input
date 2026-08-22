@@ -1,6 +1,7 @@
 import type { Context } from '@deepseek-ai/cordis';
 import { TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol';
 import { type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js';
+import { type AboutInfo, type UpdateCheckResult } from '../about.js';
 export declare class BetterInputPolishService extends TypertRemoteService {
     static inject: string[];
     private settings;
@@ -19,6 +20,8 @@ export declare class BetterInputPolishService extends TypertRemoteService {
         efforts: readonly ReasoningEffortInfo[];
         defaultEffort?: string;
     }>;
+    getAbout(): AboutInfo;
+    checkForUpdate(signal: AbortSignal): Promise<UpdateCheckResult>;
     polish(transcript: string, provider: string, model: string, signal: AbortSignal): Promise<string>;
     optimize(text: string, provider: string, model: string, signal: AbortSignal): Promise<string>;
     private completePolish;

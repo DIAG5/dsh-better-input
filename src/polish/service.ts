@@ -6,6 +6,7 @@ import type { SettingsScope } from '@deepseek-ai/dsh-settings'
 import type { LlmModelInfo, LlmResolvedModelInfo, StreamChunk } from '@deepseek-ai/dsh-llm'
 import { DEFAULT_SETTINGS, MAX_OPTIMIZED_CHARACTERS, MAX_OPTIMIZE_CHARACTERS, MAX_POLISHED_CHARACTERS, MAX_TRANSCRIPT_CHARACTERS, OPTIMIZE_TIMEOUT_MS, POLISH_TIMEOUT_MS, SETTINGS_NAMESPACE, validateSettings, type BetterInputSettings, type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js'
 import { BetterInputSettingsSchema } from '../config-schema.js'
+import { checkForPluginUpdate, readInstalledAboutInfo, type AboutInfo, type UpdateCheckResult } from '../about.js'
 import { optimizeUserText, polishUserText, resolveOptimizeSystemPrompt, resolvePolishSystemPrompt, OPTIMIZE_SYSTEM_PROMPT, POLISH_SYSTEM_PROMPT } from './prompts.js'
 
 /** Host-side settings file shape (flat for hand editing). */
@@ -127,6 +128,15 @@ export class BetterInputPolishService extends TypertRemoteService {
       })) ?? [],
       ...(defaultEffort === undefined ? {} : { defaultEffort })
     }
+  }
+
+  getAbout(): AboutInfo {
+    return readInstalledAboutInfo()
+  }
+
+  async checkForUpdate(signal: AbortSignal): Promise<UpdateCheckResult> {
+    signal.throwIfAborted()
+    return checkForPluginUpdate({ installed: readInstalledAboutInfo().version, signal })
   }
 
   async polish(transcript: string, provider: string, model: string, signal: AbortSignal): Promise<string> {

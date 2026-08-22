@@ -1,7 +1,8 @@
 /**
- * UI strings for dsh-better-input. First version picks the language once at
- * module load from the browser locale; a full locale-service integration can
- * replace this later without touching components.
+ * Bilingual UI strings for dsh-better-input (zh/en). Registered as one
+ * namespace into the DSH locale runtime; every slot component declares that
+ * namespace and reads copy through the framework-injected `t` seat, so the
+ * UI follows the DSH settings language switch automatically.
  */
 export type BetterInputStrings = {
   voiceStart: string
@@ -76,7 +77,7 @@ export type BetterInputStrings = {
   updateCommandPick: string
 }
 
-const zh: BetterInputStrings = {
+export const zh: BetterInputStrings = {
   voiceStart: '语音输入',
   voiceStop: '停止语音输入',
   voiceBusy: '正在处理…',
@@ -149,7 +150,7 @@ const zh: BetterInputStrings = {
   updateCommandPick: '按你的安装方式二选一即可'
 }
 
-const en: BetterInputStrings = {
+export const en: BetterInputStrings = {
   voiceStart: 'Voice input',
   voiceStop: 'Stop voice input',
   voiceBusy: 'Processing…',
@@ -222,7 +223,13 @@ const en: BetterInputStrings = {
   updateCommandPick: 'Use either one depending on how you installed DSH'
 }
 
-export function stringsForBrowser(): BetterInputStrings {
-  const lang = typeof navigator === 'undefined' ? '' : (navigator.language ?? '')
-  return lang.toLowerCase().startsWith('zh') ? zh : en
+/** Namespace owning every BetterInput surface string. Registered into the DSH
+ * locale runtime; slots declaring this namespace receive the typed `t`. */
+export const BETTER_INPUT_NS = 'better-input'
+
+declare module '@deepseek-ai/dsh-client-ui-slots' {
+  /** BetterInput dictionary keys (one shared key set, zh/en bilingual). */
+  interface LocaleNamespaceMap {
+    'better-input': keyof BetterInputStrings
+  }
 }

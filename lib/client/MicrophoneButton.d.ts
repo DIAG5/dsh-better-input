@@ -1,6 +1,9 @@
+import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots';
 import { type BetterInputSettings, type BetterInputSettingsPatch } from '../config.js';
 import type { BetterInputRemote } from '../remote.js';
 import { type VoiceInputSession } from './voice-session.js';
+/** The framework-injected `t` seat for the BetterInput namespace. */
+type Translate = TranslateNS<'better-input'>;
 /**
  * Standard props the conversation input zone hands to every
  * `conversation.input.right` entry, plus the injected voice session and
@@ -16,6 +19,7 @@ export type InputZoneLikeProps = {
     readonly voiceSession: VoiceInputSession;
     readonly remote: BetterInputRemote;
     readonly useSettings: () => SettingsFace;
+    readonly t: Translate;
 };
 export type SettingsFace = {
     readonly status: 'loading' | 'ready' | 'error';
@@ -27,7 +31,7 @@ export type SettingsFace = {
  * polishing is enabled, the committed transcript is polished through the Host
  * LLM route and replaces the draft (unless the user edited it meanwhile).
  */
-export declare function MicrophoneButton({ input, inputActions, voiceSession, remote, useSettings }: InputZoneLikeProps): import("react").JSX.Element;
+export declare function MicrophoneButton({ input, inputActions, voiceSession, remote, useSettings, t }: InputZoneLikeProps): import("react").JSX.Element;
 export interface PolishDraftOptions {
     transcript: string;
     baseDraft: string;
