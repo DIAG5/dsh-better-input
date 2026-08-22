@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/v/dsh-better-input?style=flat-square" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/dm/dsh-better-input?style=flat-square" alt="npm downloads"></a>
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%20rc.8-blue?style=flat-square" alt="DSH"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%200.1.0-rc.8-blue?style=flat-square" alt="DSH"></a>
   <img src="https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1a73e8?style=flat-square" alt="Platform">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
   <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
@@ -203,6 +203,7 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 | 设置项      | 说明                                   |
 | -------- | ------------------------------------ |
+| 界面语言     | 插件界面文案支持<strong>中文 / 英文</strong>，跟随 DSH 界面语言一键切换，即时生效 |
 | 识别语言     | 留空自动跟随浏览器语言（如 `zh-CN`、`en-US`）       |
 | 单次录音上限   | 1–600 秒，默认 120，到点自动停止                |
 | AI 润色    | 开/关；开启后每次语音识别结束自动润色进草稿               |
