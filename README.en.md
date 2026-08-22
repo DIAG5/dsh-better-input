@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/v/dsh-better-input?style=flat-square" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/dm/dsh-better-input?style=flat-square" alt="npm downloads"></a>
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%20rc.6-blue?style=flat-square" alt="DSH"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%20rc.8-blue?style=flat-square" alt="DSH"></a>
   <img src="https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1a73e8?style=flat-square" alt="Platform">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
   <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
@@ -86,7 +86,7 @@ BetterInput aims to grow into a complete **input-experience enhancement suite**.
 
 ## 🚀 Install
 
-Prereqs: [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`>= 0.1.0-rc.6`) + Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge.
+Prereqs: [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`>= 0.1.0-rc.8`) + Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge.
 
 > 💡 **Pick either way.** If you have the `dsh` CLI installed, use the short commands below. If not — or you don't want to install anything globally — use the **npx full form**: no global configuration needed at all. Published on [npm](https://www.npmjs.com/package/dsh-better-input).
 
@@ -190,7 +190,7 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 
 ## 🧩 Compatibility
 
-- DeepSeek Harness `>= 0.1.0-rc.6`
+- DeepSeek Harness `>= 0.1.0-rc.8`
 - Node.js `^22.19.0 || >=24.0.0`
 - Chromium-based browsers (Chrome / Edge)
 
