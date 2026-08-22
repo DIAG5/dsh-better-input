@@ -180,10 +180,15 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 1. Open Settings → **BetterInput** → scroll to the bottom to the "**About & Updates**" section
 2. Click "**Check for updates**"
 3. If a newer version exists, it shows `installed → latest` plus an update command
-4. Run that command in a terminal to upgrade:
-   ```sh
-   dsh plugin --profile web update dsh-better-input
-   ```
+4. Run one of the commands below, depending on how you installed DSH:
+   - With a global `dsh` CLI:
+     ```sh
+     dsh plugin --profile web update dsh-better-input
+     ```
+   - Without one, via npx:
+     ```sh
+     npx -y @deepseek-ai/dsh plugin --profile web update dsh-better-input
+     ```
 
 > Note: DSH does not auto-update third-party plugins on launch — run the command above to pull the new release. This section simply helps you notice and follow updates promptly.
 

@@ -1,4 +1,4 @@
-import { betterInputSettingsPatchSchema, betterInputSettingsViewSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema } from './remote-contract.js'
+import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
 
 export const TYPERT = {
   package: 'dsh-better-input',
@@ -74,6 +74,33 @@ export const TYPERT = {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#ResolveModelEffortsResult',
         schema: resolveModelEffortsResultSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/getAbout',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'getAbout',
+      invocation: { kind: 'direct' },
+      parameters: [],
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#AboutInfo',
+        schema: aboutInfoSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/checkForUpdate',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'checkForUpdate',
+      invocation: { kind: 'direct' },
+      parameters: [],
+      cancellation: { parameter: 'signal' },
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#UpdateCheckResult',
+        schema: updateCheckResultSchema
       }
     },
     {
@@ -183,6 +210,20 @@ export const TYPERT = {
           },
           {
             kind: 'method',
+            name: 'getAbout',
+            signature: 'getAbout(): AboutInfo',
+            summary: 'Read the installed plugin identity and repository info.',
+            jsDoc: '/** Read the installed plugin identity and repository info. */'
+          },
+          {
+            kind: 'method',
+            name: 'checkForUpdate',
+            signature: 'checkForUpdate(signal: AbortSignal): Promise<UpdateCheckResult>',
+            summary: 'Check the npm registry for the latest published version.',
+            jsDoc: '/** Check the npm registry for the latest published version. */'
+          },
+          {
+            kind: 'method',
             name: 'polish',
             signature: 'polish(transcript: string, provider: string, model: string, signal: AbortSignal): Promise<string>',
             summary: 'Polish one transcript through a selected dsh route.',
@@ -208,6 +249,14 @@ export const TYPERT = {
           {
             name: 'PolishRoute',
             declaration: 'export interface ReasoningEffortInfo { id: string; name: string; description?: string } export interface PolishRoute { provider: string; providerName: string; model: string; modelName: string; reasoningEfforts: readonly ReasoningEffortInfo[]; defaultReasoningEffort?: string }'
+          },
+          {
+            name: 'AboutInfo',
+            declaration: 'export interface AboutInfo { repository: string; repositorySlug: string; version: string; license: string; updateCommand: string; updateCommandNpx: string }'
+          },
+          {
+            name: 'UpdateCheckResult',
+            declaration: "export type UpdateCheckResult = { status: 'up-to-date' | 'update-available' | 'unpublished' | 'error'; installed: string; latest: string | null; updateCommand: string; updateCommandNpx: string }"
           }
         ]
       }

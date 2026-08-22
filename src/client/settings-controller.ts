@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { DEFAULT_SETTINGS, type BetterInputSettings, type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js'
+import type { AboutInfoWire, UpdateCheckResultWire } from '../remote-contract.js'
 import type { BetterInputRemote } from '../remote.js'
 
 export type SettingsStatus = 'loading' | 'ready' | 'error'
@@ -26,6 +27,27 @@ export type EffortsEntry = {
   readonly detail: string
 }
 
+export type AboutSnapshot = {
+  readonly status: 'loading' | 'ready' | 'error'
+  readonly about: AboutInfoWire
+  readonly detail: string
+}
+
+export type UpdateSnapshot = {
+  readonly status: 'idle' | 'loading' | 'ready' | 'error'
+  readonly update: UpdateCheckResultWire | null
+  readonly detail: string
+}
+
+const EMPTY_ABOUT: AboutInfoWire = {
+  repository: '',
+  repositorySlug: '',
+  version: '',
+  license: '',
+  updateCommand: '',
+  updateCommandNpx: ''
+}
+
 const EMPTY_VIEW: BetterInputSettingsView = {
   available: false,
   writable: false,
@@ -48,6 +70,8 @@ export class SettingsController {
   private settingsSnapshot: SettingsSnapshot = { status: 'loading', view: EMPTY_VIEW, detail: '' }
   private routesSnapshot: RoutesSnapshot = { status: 'loading', routes: [], detail: '' }
   private effortsSnapshot: EffortsSnapshot = {}
+  private aboutSnapshot: AboutSnapshot = { status: 'loading', about: EMPTY_ABOUT, detail: '' }
+  private updateSnapshot: UpdateSnapshot = { status: 'idle', update: null, detail: '' }
   private readonly listeners = new Set<Listener>()
   private disposed = false
 
@@ -58,6 +82,10 @@ export class SettingsController {
   readonly getRoutesSnapshot = (): RoutesSnapshot => this.routesSnapshot
 
   readonly getEffortsSnapshot = (): EffortsSnapshot => this.effortsSnapshot
+
+  readonly getAboutSnapshot = (): AboutSnapshot => this.aboutSnapshot
+
+  readonly getUpdateSnapshot = (): UpdateSnapshot => this.updateSnapshot
 
   readonly subscribe = (listener: Listener): (() => void) => {
     this.listeners.add(listener)
@@ -179,6 +207,37 @@ export class SettingsController {
     this.emit()
   }
 
+  async refreshAbout(): Promise<void> {
+    const result = await this.remote.getAbout()
+    if (this.disposed) return
+    if (!result.ok) {
+      this.aboutSnapshot = { status: 'error', about: EMPTY_ABOUT, detail: result.error.message }
+    } else {
+      this.aboutSnapshot = { status: 'ready', about: result.value, detail: '' }
+    }
+    this.emit()
+  }
+
+  async checkForUpdate(): Promise<void> {
+    if (this.disposed) return
+    if (this.updateSnapshot.status === 'loading') return
+    this.updateSnapshot = { status: 'loading', update: null, detail: '' }
+    this.emit()
+    try {
+      const result = await this.remote.checkForUpdate()
+      if (this.disposed) return
+      if (result.ok) {
+        this.updateSnapshot = { status: 'ready', update: result.value, detail: '' }
+      } else {
+        this.updateSnapshot = { status: 'error', update: null, detail: result.error.message }
+      }
+    } catch (error) {
+      if (this.disposed) return
+      this.updateSnapshot = { status: 'error', update: null, detail: error instanceof Error ? error.message : String(error) }
+    }
+    this.emit()
+  }
+
   dispose(): void {
     this.disposed = true
     this.listeners.clear()
@@ -199,4 +258,12 @@ export function useRoutesSnapshot(controller: SettingsController): RoutesSnapsho
 
 export function useEffortsSnapshot(controller: SettingsController): EffortsSnapshot {
   return useSyncExternalStore(controller.subscribe, controller.getEffortsSnapshot, controller.getEffortsSnapshot)
+}
+
+export function useAboutSnapshot(controller: SettingsController): AboutSnapshot {
+  return useSyncExternalStore(controller.subscribe, controller.getAboutSnapshot, controller.getAboutSnapshot)
+}
+
+export function useUpdateSnapshot(controller: SettingsController): UpdateSnapshot {
+  return useSyncExternalStore(controller.subscribe, controller.getUpdateSnapshot, controller.getUpdateSnapshot)
 }

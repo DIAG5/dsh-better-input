@@ -180,10 +180,15 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 1. 打开设置 → **BetterInput** → 拉到最底部「**关于与更新**」分节
 2. 点击「**检查更新**」
 3. 若发现新版本，会显示 `当前版本 → 最新版本`，并给出更新命令
-4. 在终端执行该命令即可升级：
-   ```sh
-   dsh plugin --profile web update dsh-better-input
-   ```
+4. 在终端执行更新命令即可升级（按你的安装方式**二选一**）：
+   - 已全局安装 dsh CLI：
+     ```sh
+     dsh plugin --profile web update dsh-better-input
+     ```
+   - 未全局安装，改用 npx：
+     ```sh
+     npx -y @deepseek-ai/dsh plugin --profile web update dsh-better-input
+     ```
 
 > 说明：DSH 不会在你进入时自动更新第三方插件，需手动执行上面命令才会拉到新版。这个分节就是帮你及时发现并跟进更新。
 

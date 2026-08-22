@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { BetterInputSettings, BetterInputSettingsPatch, PolishRoute, ReasoningEffortInfo } from '../config.js'
-import type { SettingsController, SettingsSnapshot, RoutesSnapshot } from './settings-controller.js'
-import { useEffortsSnapshot, useSettingsSnapshot, useRoutesSnapshot } from './settings-controller.js'
+import type { SettingsController, SettingsSnapshot, RoutesSnapshot, UpdateSnapshot } from './settings-controller.js'
+import { useAboutSnapshot, useEffortsSnapshot, useSettingsSnapshot, useRoutesSnapshot, useUpdateSnapshot } from './settings-controller.js'
 import { stringsForBrowser, type BetterInputStrings } from './strings.js'
 
 function ReasoningEffortSelect(props: {
@@ -76,6 +76,8 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
   const strings = stringsForBrowser()
   const settings = useSettingsSnapshot(settingsController)
   const routes = useRoutesSnapshot(settingsController)
+  const about = useAboutSnapshot(settingsController)
+  const update = useUpdateSnapshot(settingsController)
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const [saveFailed, setSaveFailed] = useState(false)
   const [showDefaultPrompt, setShowDefaultPrompt] = useState(false)
@@ -86,6 +88,7 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
   useEffect(() => {
     void settingsController.refreshSettings()
     void settingsController.refreshRoutes()
+    void settingsController.refreshAbout()
   }, [settingsController])
 
   if (settings.status === 'loading' || routes.status === 'loading') {
@@ -335,7 +338,100 @@ export function BetterInputSettingsSection({ close, settingsController }: Settin
       <p style={hintStyle}>
         {strings.routesStatus}: {routes.status === 'ready' ? `${routes.routes.length}` : routes.detail || strings.routesUnavailable}
       </p>
+
+      <hr style={dividerStyle} />
+
+      <AboutUpdateSection
+        aboutStatus={about.status}
+        version={about.about.version}
+        repository={about.about.repository}
+        license={about.about.license}
+        update={update}
+        strings={strings}
+        onCheckUpdate={() => void settingsController.checkForUpdate()}
+      />
     </SectionFrame>
+  )
+}
+
+function AboutUpdateSection(props: {
+  aboutStatus: string
+  version: string
+  repository: string
+  license: string
+  update: UpdateSnapshot
+  strings: BetterInputStrings
+  onCheckUpdate: () => void
+}) {
+  const { aboutStatus, version, repository, license, update, strings, onCheckUpdate } = props
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <h3 style={{ margin: 0, fontSize: 14 }}>{strings.aboutTitle}</h3>
+      {aboutStatus === 'ready' ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 13, opacity: 0.85 }}>
+          <span>{strings.aboutVersionLabel}: {version || '—'}</span>
+          <span>{strings.aboutLicenseLabel}: {license || '—'}</span>
+          {repository !== '' ? (
+            <a
+              href={repository}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: 'var(--dsh-color-primary, #4f8cff)' }}
+            >
+              {strings.aboutRepositoryLabel}: {repository}
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <button
+          type="button"
+          onClick={onCheckUpdate}
+          disabled={update.status === 'loading'}
+          style={{
+            width: 'fit-content',
+            padding: '6px 12px',
+            borderRadius: 6,
+            border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.4))',
+            background: 'var(--dsh-color-surface, transparent)',
+            color: 'var(--dsh-color-text, inherit)',
+            fontSize: 13,
+            cursor: update.status === 'loading' ? 'default' : 'pointer'
+          }}
+        >
+          {update.status === 'loading' ? strings.checkingUpdate : strings.checkUpdateButton}
+        </button>
+        {update.status === 'ready' && update.update !== null ? (
+          (() => {
+            const status = update.update.status
+            if (status === 'up-to-date') {
+              return <p style={hintStyle}>{strings.updateUpToDate}</p>
+            }
+            if (status === 'unpublished') {
+              return <p style={hintStyle}>{strings.updateUnpublished}</p>
+            }
+            if (status === 'update-available') {
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <p style={{ ...hintStyle, color: '#e5484d' }}>
+                    {strings.updateAvailable}: {update.update.installed} → {update.update.latest}
+                  </p>
+                  <span style={hintStyle}>{strings.updateCommandLabel}:</span>
+                  <code style={codeStyle}>{update.update.updateCommand}</code>
+                  <span style={hintStyle}>{strings.updateCommandNpxLabel}:</span>
+                  <code style={codeStyle}>{update.update.updateCommandNpx}</code>
+                  <span style={hintStyle}>{strings.updateCommandPick}:</span>
+                </div>
+              )
+            }
+            return <p style={errorStyle}>{strings.updateCheckFailed}</p>
+          })()
+        ) : null}
+        {update.status === 'error' ? (
+          <p style={errorStyle}>{strings.updateCheckFailed}: {update.detail}</p>
+        ) : null}
+      </div>
+    </div>
   )
 }
 
@@ -395,4 +491,22 @@ const toggleLinkStyle: React.CSSProperties = {
   fontSize: 12,
   cursor: 'pointer',
   textDecoration: 'underline'
+}
+
+const dividerStyle: React.CSSProperties = {
+  margin: '8px 0',
+  border: 'none',
+  borderTop: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))'
+}
+
+const codeStyle: React.CSSProperties = {
+  padding: '6px 8px',
+  overflow: 'auto',
+  whiteSpace: 'pre-wrap',
+  wordBreak: 'break-all',
+  fontSize: 12,
+  fontFamily: 'monospace',
+  background: 'var(--dsh-color-surface, rgba(0,0,0,0.03))',
+  border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))',
+  borderRadius: 6
 }

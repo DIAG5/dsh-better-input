@@ -68,6 +68,26 @@ export const polishResultSchema = z.string()
 
 export const optimizeResultSchema = z.string()
 
+export const aboutInfoSchema = z.object({
+  repository: z.string(),
+  repositorySlug: z.string(),
+  version: z.string(),
+  license: z.string(),
+  updateCommand: z.string(),
+  updateCommandNpx: z.string()
+})
+
+export const updateCheckResultSchema = z.object({
+  status: z.enum(['up-to-date', 'update-available', 'unpublished', 'error']),
+  installed: z.string(),
+  latest: z.string().nullable(),
+  updateCommand: z.string(),
+  updateCommandNpx: z.string()
+})
+
+export type AboutInfoWire = z.infer<typeof aboutInfoSchema>
+export type UpdateCheckResultWire = z.infer<typeof updateCheckResultSchema>
+
 export type BetterInputSettingsWire = z.infer<typeof betterInputSettingsSchema>
 export type BetterInputSettingsPatchWire = z.infer<typeof betterInputSettingsPatchSchema>
 export type BetterInputSettingsViewWire = z.infer<typeof betterInputSettingsViewSchema>

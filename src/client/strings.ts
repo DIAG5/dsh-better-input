@@ -61,6 +61,19 @@ export type BetterInputStrings = {
   optimizePromptLabel: string
   optimizePromptHint: string
   optimizePromptPlaceholder: string
+  aboutTitle: string
+  aboutVersionLabel: string
+  aboutRepositoryLabel: string
+  aboutLicenseLabel: string
+  checkUpdateButton: string
+  checkingUpdate: string
+  updateUpToDate: string
+  updateAvailable: string
+  updateUnpublished: string
+  updateCheckFailed: string
+  updateCommandLabel: string
+  updateCommandNpxLabel: string
+  updateCommandPick: string
 }
 
 const zh: BetterInputStrings = {
@@ -120,7 +133,20 @@ const zh: BetterInputStrings = {
   optimizeEffortHint: '控制大模型的推理深度。默认即适配器最低档，适合大多数场景。',
   optimizePromptLabel: '自定义优化提示词',
   optimizePromptHint: '留空使用内置提示词。自定义提示词总是追加输出契约保护。',
-  optimizePromptPlaceholder: '可选：粘贴自定义提示词…'
+  optimizePromptPlaceholder: '可选：粘贴自定义提示词…',
+  aboutTitle: '关于与更新',
+  aboutVersionLabel: '当前版本',
+  aboutRepositoryLabel: '项目地址',
+  aboutLicenseLabel: '许可证',
+  checkUpdateButton: '检查更新',
+  checkingUpdate: '检查中…',
+  updateUpToDate: '当前已是最新版本。',
+  updateAvailable: '发现新版本',
+  updateUnpublished: '该版本未在 npm 上公开发布。',
+  updateCheckFailed: '检查更新失败',
+  updateCommandLabel: '已全局安装 dsh CLI，执行',
+  updateCommandNpxLabel: '未全局安装，改用 npx 执行',
+  updateCommandPick: '按你的安装方式二选一即可'
 }
 
 const en: BetterInputStrings = {
@@ -180,7 +206,20 @@ const en: BetterInputStrings = {
   optimizeEffortHint: 'Controls the model inference depth. Default uses the adapter baseline (lightest tier).',
   optimizePromptLabel: 'Custom optimize prompt',
   optimizePromptHint: 'Empty uses the built-in prompt. A custom prompt always keeps the output-contract guard.',
-  optimizePromptPlaceholder: 'Optional: paste a custom prompt…'
+  optimizePromptPlaceholder: 'Optional: paste a custom prompt…',
+  aboutTitle: 'About & Updates',
+  aboutVersionLabel: 'Installed version',
+  aboutRepositoryLabel: 'Repository',
+  aboutLicenseLabel: 'License',
+  checkUpdateButton: 'Check for updates',
+  checkingUpdate: 'Checking…',
+  updateUpToDate: 'You are up to date.',
+  updateAvailable: 'A new version is available',
+  updateUnpublished: 'This version is not published on npm.',
+  updateCheckFailed: 'Update check failed',
+  updateCommandLabel: 'With a global dsh CLI, run',
+  updateCommandNpxLabel: 'Without a global dsh CLI, run via npx',
+  updateCommandPick: 'Use either one depending on how you installed DSH'
 }
 
 export function stringsForBrowser(): BetterInputStrings {
