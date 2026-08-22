@@ -23,7 +23,7 @@
   <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
 </p>
 
-> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing on a keyboard. Say it, drop a PDF, one-click optimize your prompt — **turn more ways to input into smoother ways to converse with your agent**. (Image input is already native to DSH; BetterInput focuses on the input paths the official release doesn't cover yet.) That's what BetterInput means: not just voice, a better input.
+> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: from voice recognition, AI polishing, and one-click prompt optimization, to turning PDFs / DOCX / PPT / XLSX and other files into clean structured Markdown, plus interaction refinements that polish even the details — **making every way you feed an agent smoother and easier**.
 
 ---
 
@@ -77,7 +77,7 @@ BetterInput aims to grow into a complete **input-experience enhancement suite**.
 - [ ] 📋 **Smart paste** — detect code / table / URL / quote on paste and wrap it appropriately
 
 ### Media & files
-> 📷 Image input: **natively supported by DSH since `rc.8`** (paste / drag / file picker) — no plugin needed. Since the DSH API already supports image input natively, we **no longer ship an image plugin**. BetterInput focuses on what the official release doesn't cover yet.
+> 📷 Image input: **natively supported by DSH since `rc.8`**. The DeepSeek API already supports image input natively, so we **no longer ship an image plugin**.
 - [ ] 🧾 **PDF → structured** — PDF into an AI-friendly readable format (Markdown / plain text)
 - [ ] 🎬 **Audio/video transcription** — paste a local media file and get text (an upgrade to voice input)
 
