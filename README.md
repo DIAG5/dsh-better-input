@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/v/dsh-better-input?style=flat-square" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/dm/dsh-better-input?style=flat-square" alt="npm downloads"></a>
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%200.1.0-rc.8-blue?style=flat-square" alt="DSH"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%200.1.0--rc.8-blue?style=flat-square" alt="DSH"></a>
   <img src="https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1a73e8?style=flat-square" alt="Platform">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
   <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
