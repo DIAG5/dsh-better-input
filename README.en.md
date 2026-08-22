@@ -73,7 +73,7 @@ BetterInput aims to grow into a complete **input-experience enhancement suite**.
 - [ ] 📋 **Smart paste** — detect code / table / URL / quote on paste and wrap it appropriately
 
 ### Media & files
-> 📷 Image input: **natively supported by DSH since `rc.8`** (paste / drag / file picker) — no plugin needed. BetterInput focuses on what the official release doesn't cover yet.
+> 📷 Image input: **natively supported by DSH since `rc.8`** (paste / drag / file picker) — no plugin needed. Since the DSH API already supports image input natively, we **no longer ship an image plugin**. BetterInput focuses on what the official release doesn't cover yet.
 - [ ] 🧾 **PDF → structured** — PDF into an AI-friendly readable format (Markdown / plain text)
 - [ ] 🎬 **Audio/video transcription** — paste a local media file and get text (an upgrade to voice input)
 
