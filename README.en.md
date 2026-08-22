@@ -52,6 +52,10 @@
 <td>If you edit the draft while polishing runs, the result <strong>won't</strong> overwrite your edits; on failure the original is kept.</td>
 </tr>
 <tr>
+<td align="center">🔄<br/><b>Update check</b></td>
+<td>A one-click **About & Updates** section at the bottom of Settings checks the npm registry for the latest release and shows a **copy-paste update command**, so you can adopt bug fixes and new features quickly.</td>
+</tr>
+<tr>
 <td align="center">⏱️<br/><b>Auto-stop recording</b></td>
 <td>Configurable per-session recording limit (1–600 s), never holds the mic forever.</td>
 </tr>
@@ -171,7 +175,19 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 
 > Thinking is off by default for fast, low-cost output. You can raise the effort tier in settings for deeper optimization.
 
-### 4. Settings
+### 4. Check for updates
+
+1. Open Settings → **BetterInput** → scroll to the bottom to the "**About & Updates**" section
+2. Click "**Check for updates**"
+3. If a newer version exists, it shows `installed → latest` plus an update command
+4. Run that command in a terminal to upgrade:
+   ```sh
+   dsh plugin --profile web update dsh-better-input
+   ```
+
+> Note: DSH does not auto-update third-party plugins on launch — run the command above to pull the new release. This section simply helps you notice and follow updates promptly.
+
+### 5. Settings
 
 | Setting | Meaning |
 | --- | --- |
@@ -185,6 +201,7 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 | Optimize model | A dsh model route |
 | Optimize reasoning effort | Default: thinking off; optional higher tiers the model supports |
 | Custom optimize prompt | Optional replacement of the built-in optimize prompt |
+| About & Updates | Shows installed version / license / repo, and a one-click "Check for updates" for the latest release and update command |
 
 > Polish and optimization are configured independently — model, effort, and prompt each.
 
@@ -208,6 +225,7 @@ Client-only UI: `npm run dev:watch`, then refresh the UI. Host changes: restart 
 
 - `src/index.ts` — Host plugin entry, mounts the polish service
 - `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing & prompt optimization via `ctx.llm`
+- `src/about.ts` — plugin identity and npm version check (About & Updates)
 - `src/client/` — browser half: microphone/optimize buttons (`conversation.input.right`), recognition bar (`conversation.input.dock`), settings page (`settings.section`)
 - `src/typert.ts` / `src/remote.ts` — Client↔Host typed contract
 

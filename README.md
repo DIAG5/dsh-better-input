@@ -52,6 +52,10 @@
 <td>润色进行中你手动改了草稿，结果<strong>不会覆盖</strong>你的编辑；失败保留原文。</td>
 </tr>
 <tr>
+<td align="center">🔄<br/><b>更新检查</b></td>
+<td>设置页底部「<strong>关于与更新</strong>」一键检测 npm 最新版，发现新版会给出<strong>一键复制更新命令</strong>，让你及时跟进修复与新功能。</td>
+</tr>
+<tr>
 <td align="center">⏱️<br/><b>录音自动停止</b></td>
 <td>可自定义单次录音上限（1–600 秒），不占麦克风。</td>
 </tr>
@@ -171,7 +175,19 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 > 默认关闭思考，追求快速、低成本的直出结果。从设置页可手动提高思考强度以获得更深层的优化。
 
-### 4. 设置
+### 4. 检查更新
+
+1. 打开设置 → **BetterInput** → 拉到最底部「**关于与更新**」分节
+2. 点击「**检查更新**」
+3. 若发现新版本，会显示 `当前版本 → 最新版本`，并给出更新命令
+4. 在终端执行该命令即可升级：
+   ```sh
+   dsh plugin --profile web update dsh-better-input
+   ```
+
+> 说明：DSH 不会在你进入时自动更新第三方插件，需手动执行上面命令才会拉到新版。这个分节就是帮你及时发现并跟进更新。
+
+### 5. 设置
 
 | 设置项 | 说明 |
 | --- | --- |
@@ -185,6 +201,7 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 | 优化模型 | 选择 dsh 已配置的模型路由 |
 | 优化思考强度 | 默认关闭思考；可选模型支持的更高档位 |
 | 自定义优化提示词 | 可选，替换内置优化提示词 |
+| 关于与更新 | 显示当前版本 / 许可证 / 仓库，一键「检查更新」获取最新版与更新命令 |
 
 > 润色与优化的模型、思考强度、提示词相互独立，可各自配置。
 
@@ -208,6 +225,7 @@ npm run build    # 构建 lib/（Host ESM + 浏览器 bundle）
 
 - `src/index.ts` — Host 插件入口，挂载润色服务
 - `src/polish/service.ts` — `BetterInputPolishService`（Typert remote）：设置、dsh 模型路由发现、LLM 润色与提示词优化（复用 `ctx.llm`）
+- `src/about.ts` — 插件身份读取与 npm 版本检查（「关于与更新」）
 - `src/client/` — 浏览器端：麦克风按钮/优化按钮（`conversation.input.right`）、识别条（`conversation.input.dock`）、设置页（`settings.section`）
 - `src/typert.ts` / `src/remote.ts` — Client↔Host 类型化通信契约
 
