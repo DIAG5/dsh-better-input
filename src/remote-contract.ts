@@ -15,7 +15,8 @@ export const betterInputSettingsSchema = z.object({
   optimizeProvider: z.string(),
   optimizeModel: z.string(),
   optimizeReasoningEffort: z.string(),
-  optimizePrompt: z.string()
+  optimizePrompt: z.string(),
+  contextTurns: z.number()
 })
 
 export const betterInputSettingsPatchSchema = z.object({
@@ -30,7 +31,8 @@ export const betterInputSettingsPatchSchema = z.object({
   optimizeProvider: z.string().optional(),
   optimizeModel: z.string().optional(),
   optimizeReasoningEffort: z.string().optional(),
-  optimizePrompt: z.string().optional()
+  optimizePrompt: z.string().optional(),
+  contextTurns: z.number().optional()
 })
 
 export const betterInputSettingsViewSchema = z.object({

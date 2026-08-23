@@ -14,7 +14,7 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
     getAbout: () => Promise<RemoteResult<AboutInfoWire>>
     checkForUpdate: (signal?: AbortSignal) => Promise<RemoteResult<UpdateCheckResultWire>>
     polish: (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
-    optimize: (text: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
+    optimize: (text: string, provider: string, model: string, context: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
   }
 
   interface TypertRemoteMap {
@@ -25,7 +25,7 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
     'betterInput/getAbout': () => Promise<RemoteResult<AboutInfoWire>>
     'betterInput/checkForUpdate': (signal?: AbortSignal) => Promise<RemoteResult<UpdateCheckResultWire>>
     'betterInput/polish': (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
-    'betterInput/optimize': (text: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
+    'betterInput/optimize': (text: string, provider: string, model: string, context: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
   }
 
   interface TypertRemoteNamespaceMap {
@@ -189,6 +189,12 @@ export const TYPERT_REMOTE: TypertRemoteContribution = {
         {
           name: 'model',
           wire: 'model',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'context',
+          wire: 'context',
           source: 'json',
           codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
         }

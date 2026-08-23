@@ -39,6 +39,8 @@ export interface BetterInputSettings {
     optimizeReasoningEffort: string;
     /** Custom optimize system prompt, empty for the built-in one. */
     optimizePrompt: string;
+    /** Number of recent conversation turns to include as context for optimization. 0 disables context. */
+    contextTurns: number;
 }
 /**
  * Out-of-the-box defaults: every toggle ON so new users get the full
@@ -92,6 +94,7 @@ export interface BetterInputSettingsView {
 export declare function recognitionLanguageFromBrowser(): string;
 export declare function effectiveRecognitionLanguage(stored: string): string;
 export declare function isValidRecordingLimit(value: number): boolean;
+export declare function isValidContextTurns(value: number): boolean;
 export declare function validateSettings(settings: BetterInputSettings): void;
 /** Resolve the effective recording cap from stored settings. */
 export declare function effectiveRecordingSeconds(settings: Pick<BetterInputSettings, 'maxRecordingSeconds'>): number;

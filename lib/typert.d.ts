@@ -30,6 +30,7 @@ export declare const TYPERT: {
                     optimizeModel: import("zod").ZodString;
                     optimizeReasoningEffort: import("zod").ZodString;
                     optimizePrompt: import("zod").ZodString;
+                    contextTurns: import("zod").ZodNumber;
                 }, import("zod/v4/core").$strip>;
                 overridden: import("zod").ZodArray<import("zod").ZodString>;
                 defaultPolishPrompt: import("zod").ZodString;
@@ -64,6 +65,7 @@ export declare const TYPERT: {
                     optimizeModel: import("zod").ZodOptional<import("zod").ZodString>;
                     optimizeReasoningEffort: import("zod").ZodOptional<import("zod").ZodString>;
                     optimizePrompt: import("zod").ZodOptional<import("zod").ZodString>;
+                    contextTurns: import("zod").ZodOptional<import("zod").ZodNumber>;
                 }, import("zod/v4/core").$strip>;
             };
         }];
@@ -89,6 +91,7 @@ export declare const TYPERT: {
                     optimizeModel: import("zod").ZodString;
                     optimizeReasoningEffort: import("zod").ZodString;
                     optimizePrompt: import("zod").ZodString;
+                    contextTurns: import("zod").ZodNumber;
                 }, import("zod/v4/core").$strip>;
                 overridden: import("zod").ZodArray<import("zod").ZodString>;
                 defaultPolishPrompt: import("zod").ZodString;
@@ -287,6 +290,15 @@ export declare const TYPERT: {
                 readonly typeSymbol: "string";
                 readonly schema: import("zod").ZodString;
             };
+        }, {
+            readonly name: "context";
+            readonly wire: "context";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
         }];
         readonly cancellation: {
             readonly parameter: "signal";
@@ -350,7 +362,7 @@ export declare const TYPERT: {
             }, {
                 readonly kind: "method";
                 readonly name: "optimize";
-                readonly signature: "optimize(text: string, provider: string, model: string, signal: AbortSignal): Promise<string>";
+                readonly signature: "optimize(text: string, provider: string, model: string, context: string, signal: AbortSignal): Promise<string>";
                 readonly summary: "Optimize one prompt through a selected dsh route.";
                 readonly jsDoc: "/** Optimize one prompt through a selected dsh route. */";
             }];

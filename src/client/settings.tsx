@@ -126,6 +126,7 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
   const secondsField = field('maxRecordingSeconds', String(s.maxRecordingSeconds))
   const polishPromptField = field('polishPrompt', s.polishPrompt)
   const optimizePromptField = field('optimizePrompt', s.optimizePrompt)
+  const contextTurnsField = field('contextTurns', String(s.contextTurns))
 
   return (
     <SectionFrame title={t('settingsTitle')}>
@@ -337,6 +338,22 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
           </Field>
         </>
       ) : null}
+
+      <Field label={t('contextTurnsLabel')} hint={t('contextTurnsHint')}>
+        <input
+          type="number"
+          min={0}
+          max={20}
+          value={contextTurnsField.text}
+          onChange={(event) => setField('contextTurns', event.target.value)}
+          onBlur={() => {
+            const parsed = Number(contextTurnsField.text)
+            if (!Number.isSafeInteger(parsed) || parsed < 0 || parsed > 20) return
+            void save({ contextTurns: parsed })
+          }}
+          style={inputStyle}
+        />
+      </Field>
 
       <p style={hintStyle}>
         {t('routesStatus')}: {routes.status === 'ready' ? `${routes.routes.length}` : routes.detail || t('routesUnavailable')}

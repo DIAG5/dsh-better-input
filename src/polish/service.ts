@@ -172,7 +172,7 @@ export class BetterInputPolishService extends TypertRemoteService {
     }
   }
 
-  async optimize(text: string, provider: string, model: string, signal: AbortSignal): Promise<string> {
+  async optimize(text: string, provider: string, model: string, context: string, signal: AbortSignal): Promise<string> {
     const raw = text.trim()
     if (raw === '' || raw.length > MAX_OPTIMIZE_CHARACTERS || signal.aborted) return raw
     const settings = this.settings === undefined ? DEFAULT_SETTINGS : flattenStoredSettings(this.settings.get())
@@ -189,7 +189,7 @@ export class BetterInputPolishService extends TypertRemoteService {
     signal.addEventListener('abort', forwardAbort, { once: true })
 
     try {
-      const result = await this.completeOptimize(routeProvider, routeModel, raw, storedPrompt, effort, timeout.signal)
+      const result = await this.completeOptimize(routeProvider, routeModel, raw, context, storedPrompt, effort, timeout.signal)
       if (result.trim() === '' && !timeout.signal.aborted && !signal.aborted) {
         return raw
       }
@@ -221,7 +221,7 @@ export class BetterInputPolishService extends TypertRemoteService {
     return output
   }
 
-  private async completeOptimize(provider: string, model: string, raw: string, storedPrompt: string, effort: string, signal: AbortSignal): Promise<string> {
+  private async completeOptimize(provider: string, model: string, raw: string, context: string, storedPrompt: string, effort: string, signal: AbortSignal): Promise<string> {
     const config = await this.resolveEffortConfig(provider, model, effort, signal)
     const prepared = await this.ctx.llm.prepareCall(config, signal)
     const message = createUserMessage({
@@ -231,7 +231,7 @@ export class BetterInputPolishService extends TypertRemoteService {
     const output = await collectText(prepared.stream({
       ...prepared.config,
       messages: [message],
-      system: resolveOptimizeSystemPrompt(storedPrompt),
+      system: resolveOptimizeSystemPrompt(storedPrompt, context),
       signal
     }), MAX_OPTIMIZED_CHARACTERS, 'optimization')
     if (output === '') throw new Error('The dsh LLM route returned no optimized text')
@@ -274,7 +274,8 @@ function flattenStoredSettings(raw: unknown): BetterInputSettings {
     optimizeProvider: text(record.optimizeProvider),
     optimizeModel: text(record.optimizeModel),
     optimizeReasoningEffort: text(record.optimizeReasoningEffort),
-    optimizePrompt: typeof record.optimizePrompt === 'string' ? record.optimizePrompt : ''
+    optimizePrompt: typeof record.optimizePrompt === 'string' ? record.optimizePrompt : '',
+    contextTurns: typeof record.contextTurns === 'number' ? record.contextTurns : DEFAULT_SETTINGS.contextTurns
   }
 }
 

@@ -24,9 +24,11 @@ export declare function optimizeUserText(text: string): string;
 /**
  * Resolve the system prompt for one optimize call. An empty stored prompt uses
  * the built-in default; a non-empty one replaces the default entirely, with
- * the output-contract guard always appended.
+ * the output-contract guard always appended. When `context` is provided, it is
+ * appended as a reference section so the LLM understands the conversation
+ * context without answering questions in it.
  */
-export declare function resolveOptimizeSystemPrompt(storedPrompt: string): string;
+export declare function resolveOptimizeSystemPrompt(storedPrompt: string, context?: string): string;
 /**
  * Resolve the system prompt for one polish call. An empty stored prompt uses
  * the built-in default; a non-empty one replaces the default entirely, with

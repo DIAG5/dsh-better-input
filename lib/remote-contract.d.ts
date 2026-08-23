@@ -13,6 +13,7 @@ export declare const betterInputSettingsSchema: z.ZodObject<{
     optimizeModel: z.ZodString;
     optimizeReasoningEffort: z.ZodString;
     optimizePrompt: z.ZodString;
+    contextTurns: z.ZodNumber;
 }, z.core.$strip>;
 export declare const betterInputSettingsPatchSchema: z.ZodObject<{
     language: z.ZodOptional<z.ZodString>;
@@ -27,6 +28,7 @@ export declare const betterInputSettingsPatchSchema: z.ZodObject<{
     optimizeModel: z.ZodOptional<z.ZodString>;
     optimizeReasoningEffort: z.ZodOptional<z.ZodString>;
     optimizePrompt: z.ZodOptional<z.ZodString>;
+    contextTurns: z.ZodOptional<z.ZodNumber>;
 }, z.core.$strip>;
 export declare const betterInputSettingsViewSchema: z.ZodObject<{
     available: z.ZodBoolean;
@@ -44,6 +46,7 @@ export declare const betterInputSettingsViewSchema: z.ZodObject<{
         optimizeModel: z.ZodString;
         optimizeReasoningEffort: z.ZodString;
         optimizePrompt: z.ZodString;
+        contextTurns: z.ZodNumber;
     }, z.core.$strip>;
     overridden: z.ZodArray<z.ZodString>;
     defaultPolishPrompt: z.ZodString;

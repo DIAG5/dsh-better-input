@@ -62,6 +62,8 @@ export type BetterInputStrings = {
     optimizePromptLabel: string;
     optimizePromptHint: string;
     optimizePromptPlaceholder: string;
+    contextTurnsLabel: string;
+    contextTurnsHint: string;
     aboutTitle: string;
     aboutVersionLabel: string;
     aboutRepositoryLabel: string;

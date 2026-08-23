@@ -43,6 +43,8 @@ export interface BetterInputSettings {
   optimizeReasoningEffort: string
   /** Custom optimize system prompt, empty for the built-in one. */
   optimizePrompt: string
+  /** Number of recent conversation turns to include as context for optimization. 0 disables context. */
+  contextTurns: number
 }
 
 /**
@@ -65,7 +67,8 @@ export const DEFAULT_SETTINGS: BetterInputSettings = Object.freeze({
   optimizeProvider: '',
   optimizeModel: '',
   optimizeReasoningEffort: '',
-  optimizePrompt: ''
+  optimizePrompt: '',
+  contextTurns: 3
 })
 
 export type BetterInputSettingsPatch = Partial<BetterInputSettings>
@@ -127,9 +130,16 @@ export function isValidRecordingLimit(value: number): boolean {
   return Number.isSafeInteger(value) && value >= 1 && value <= 600
 }
 
+export function isValidContextTurns(value: number): boolean {
+  return Number.isSafeInteger(value) && value >= 0 && value <= 20
+}
+
 export function validateSettings(settings: BetterInputSettings): void {
   if (!isValidRecordingLimit(settings.maxRecordingSeconds)) {
     throw new Error('dsh-better-input recording limit must be between 1 and 600 seconds')
+  }
+  if (!isValidContextTurns(settings.contextTurns)) {
+    throw new Error('dsh-better-input context turns must be between 0 and 20')
   }
   if (settings.polishPrompt.trim().length > MAX_POLISH_PROMPT_LENGTH) {
     throw new Error('dsh-better-input polish prompt is too long')

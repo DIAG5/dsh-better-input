@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
+import type { ConversationSnapshot } from '@deepseek-ai/dsh-client-runtime/client'
 import type { BetterInputRemote } from '../remote.js'
 import type { SettingsFace } from './MicrophoneButton.js'
 
@@ -10,7 +11,8 @@ type Translate = TranslateNS<'better-input'>
 /**
  * Props handed to every `conversation.input.dock` entry, plus the injected
  * remote and settings face. The standard session kit provides `inputActions`
- * and `useInput` separately; the owner share gives us `input.draft`.
+ * and `useInput` separately; the owner share gives us `input.draft` and
+ * `session` (the conversation snapshot with message history).
  */
 export type OptimizeButtonProps = {
   readonly input: {
@@ -19,6 +21,7 @@ export type OptimizeButtonProps = {
   readonly inputActions: {
     setDraft(text: string): void
   }
+  readonly session: ConversationSnapshot
   readonly remote: BetterInputRemote
   readonly useSettings: () => SettingsFace
   readonly t: Translate
@@ -37,7 +40,7 @@ type OptimizeState =
  * the original and optimized text. The draft is replaced only when the user
  * clicks "Adopt".
  */
-export function OptimizeButton({ input, inputActions, remote, useSettings, t }: OptimizeButtonProps) {
+export function OptimizeButton({ input, inputActions, session, remote, useSettings, t }: OptimizeButtonProps) {
   const [state, setState] = useState<OptimizeState>({ kind: 'idle' })
   const settingsFace = useSettings()
   const abortRef = useRef<AbortController | null>(null)
@@ -83,7 +86,10 @@ export function OptimizeButton({ input, inputActions, remote, useSettings, t }: 
     setState({ kind: 'optimizing' })
 
     try {
-      const result = await remote.optimize(draft, provider, model, controller.signal)
+      // Extract conversation context based on user settings
+      const contextTurns = settings?.contextTurns ?? 3
+      const context = contextTurns > 0 ? extractConversationContext(session, contextTurns) : ''
+      const result = await remote.optimize(draft, provider, model, context, controller.signal)
       if (controller.signal.aborted) return
       if (!result.ok) {
         setState({ kind: 'error', message: result.error.message })
@@ -250,6 +256,45 @@ function SparkleIcon() {
       />
     </svg>
   )
+}
+
+/**
+ * Extract recent conversation context from the session snapshot. Returns a
+ * plain-text summary of the last N user/assistant turns, formatted as:
+ *
+ *   User: <message text>
+ *   Assistant: <response text (truncated at 500 chars)>
+ *
+ * Returns an empty string when there are no user/assistant nodes.
+ */
+function extractConversationContext(session: ConversationSnapshot, maxTurns: number): string {
+  // Collect user and assistant nodes in display order.
+  const relevant: Array<{ role: 'user' | 'assistant'; text: string }> = []
+  for (const node of session.nodes) {
+    if (node.kind === 'user') {
+      // Extract text from user content blocks.
+      const text = (node as unknown as { content: readonly { type: string; text: string }[] }).content
+        .filter((c) => c.type === 'text')
+        .map((c) => c.text)
+        .join('')
+      if (text.trim()) relevant.push({ role: 'user', text: text.trim() })
+    } else if (node.kind === 'assistant') {
+      // Extract text from assistant blocks.
+      const text = (node as unknown as { blocks: readonly { kind: string; text: string }[] }).blocks
+        .filter((b) => b.kind === 'text')
+        .map((b) => b.text)
+        .join('')
+      if (text.trim()) relevant.push({ role: 'assistant', text: text.trim().slice(0, 500) })
+    }
+  }
+
+  // Take only the last `maxTurns` turns (a turn = user + assistant pair).
+  const recent = relevant.slice(-maxTurns * 2)
+  if (recent.length === 0) return ''
+
+  return recent
+    .map((entry) => (entry.role === 'user' ? `User: ${entry.text}` : `Assistant: ${entry.text}`))
+    .join('\n')
 }
 
 // --- Styles ---

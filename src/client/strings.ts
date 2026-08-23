@@ -62,6 +62,8 @@ export type BetterInputStrings = {
   optimizePromptLabel: string
   optimizePromptHint: string
   optimizePromptPlaceholder: string
+  contextTurnsLabel: string
+  contextTurnsHint: string
   aboutTitle: string
   aboutVersionLabel: string
   aboutRepositoryLabel: string
@@ -135,6 +137,8 @@ export const zh: BetterInputStrings = {
   optimizePromptLabel: '自定义优化提示词',
   optimizePromptHint: '留空使用内置提示词。自定义提示词总是追加输出契约保护。',
   optimizePromptPlaceholder: '可选：粘贴自定义提示词…',
+  contextTurnsLabel: '上下文引用轮数',
+  contextTurnsHint: '优化时引用最近 N 轮对话作为上下文，0 为禁用。默认 3 轮。',
   aboutTitle: '关于与更新',
   aboutVersionLabel: '当前版本',
   aboutRepositoryLabel: '项目地址',
@@ -208,6 +212,8 @@ export const en: BetterInputStrings = {
   optimizePromptLabel: 'Custom optimize prompt',
   optimizePromptHint: 'Empty uses the built-in prompt. A custom prompt always keeps the output-contract guard.',
   optimizePromptPlaceholder: 'Optional: paste a custom prompt…',
+  contextTurnsLabel: 'Context turns',
+  contextTurnsHint: 'Include recent N turns as context for optimization. 0 = disabled. Default 3.',
   aboutTitle: 'About & Updates',
   aboutVersionLabel: 'Installed version',
   aboutRepositoryLabel: 'Repository',

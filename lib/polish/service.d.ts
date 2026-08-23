@@ -23,7 +23,7 @@ export declare class BetterInputPolishService extends TypertRemoteService {
     getAbout(): AboutInfo;
     checkForUpdate(signal: AbortSignal): Promise<UpdateCheckResult>;
     polish(transcript: string, provider: string, model: string, signal: AbortSignal): Promise<string>;
-    optimize(text: string, provider: string, model: string, signal: AbortSignal): Promise<string>;
+    optimize(text: string, provider: string, model: string, context: string, signal: AbortSignal): Promise<string>;
     private completePolish;
     private completeOptimize;
     /**

@@ -14,5 +14,6 @@ export const BetterInputSettingsSchema = s.object({
   optimizeProvider: s.string().default(DEFAULT_SETTINGS.optimizeProvider).description('dsh optimize provider id'),
   optimizeModel: s.string().default(DEFAULT_SETTINGS.optimizeModel).description('dsh optimize model id'),
   optimizeReasoningEffort: s.string().default(DEFAULT_SETTINGS.optimizeReasoningEffort).description('dsh optimize reasoning effort id, empty uses the adapter default (lowest tier)'),
-  optimizePrompt: s.string().default(DEFAULT_SETTINGS.optimizePrompt).description('Custom optimize system prompt, empty for built-in')
+  optimizePrompt: s.string().default(DEFAULT_SETTINGS.optimizePrompt).description('Custom optimize system prompt, empty for built-in'),
+  contextTurns: s.number().default(DEFAULT_SETTINGS.contextTurns).description('Recent conversation turns included as context for optimization (0 = disabled)')
 })

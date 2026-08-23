@@ -160,6 +160,12 @@ export const TYPERT = {
           wire: 'model',
           source: 'json',
           codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'context',
+          wire: 'context',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
         }
       ],
       cancellation: { parameter: 'signal' },
@@ -232,7 +238,7 @@ export const TYPERT = {
           {
             kind: 'method',
             name: 'optimize',
-            signature: 'optimize(text: string, provider: string, model: string, signal: AbortSignal): Promise<string>',
+            signature: 'optimize(text: string, provider: string, model: string, context: string, signal: AbortSignal): Promise<string>',
             summary: 'Optimize one prompt through a selected dsh route.',
             jsDoc: '/** Optimize one prompt through a selected dsh route. */'
           }

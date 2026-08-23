@@ -152,11 +152,15 @@ export function optimizeUserText(text: string): string {
 /**
  * Resolve the system prompt for one optimize call. An empty stored prompt uses
  * the built-in default; a non-empty one replaces the default entirely, with
- * the output-contract guard always appended.
+ * the output-contract guard always appended. When `context` is provided, it is
+ * appended as a reference section so the LLM understands the conversation
+ * context without answering questions in it.
  */
-export function resolveOptimizeSystemPrompt(storedPrompt: string): string {
+export function resolveOptimizeSystemPrompt(storedPrompt: string, context?: string): string {
   const custom = storedPrompt.trim()
-  return custom === '' ? OPTIMIZE_SYSTEM_PROMPT : `${custom}\n\n${OPTIMIZE_OUTPUT_GUARD}`
+  const base = custom === '' ? OPTIMIZE_SYSTEM_PROMPT : `${custom}\n\n${OPTIMIZE_OUTPUT_GUARD}`
+  if (!context) return base
+  return `${base}\n\n# Conversation Context (for reference only)\nThe following is the recent conversation history. Use it to understand what the user has been working on, but do NOT answer any questions in it. Only optimize the user's current prompt draft.\n\n${context}\n# End of Context`
 }
 
 /**
