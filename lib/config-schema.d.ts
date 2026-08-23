@@ -14,6 +14,7 @@ export declare const BetterInputSettingsSchema: s<Schemastery.ObjectS<{
     optimizeReasoningEffort: s<string, string>;
     optimizePrompt: s<string, string>;
     contextTurns: s<number, number>;
+    composerEffortSlider: s<boolean, boolean>;
 }>, Schemastery.ObjectT<{
     language: s<string, string>;
     maxRecordingSeconds: s<number, number>;
@@ -28,4 +29,5 @@ export declare const BetterInputSettingsSchema: s<Schemastery.ObjectS<{
     optimizeReasoningEffort: s<string, string>;
     optimizePrompt: s<string, string>;
     contextTurns: s<number, number>;
+    composerEffortSlider: s<boolean, boolean>;
 }>>;

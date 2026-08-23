@@ -1,6 +1,7 @@
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client';
-/** Required Client services: the slot registry, the Typert remote hub, and the
- * DSH locale runtime (so `t` seats resolve and our dictionary registers).
+/** Required Client services: the slot registry, the Typert remote hub, the
+ * DSH locale runtime, and the model-directories service (provided by the
+ * DSH web-app bundle's `@deepseek-ai/dsh-client-ui-model-selection` plugin).
  * `remote.betterInput` is mounted by this plugin's own apply() via
  * `ctx.remote.$mount`, so it MUST NOT appear here — the outer inject gates
  * plugin activation and would deadlock waiting for itself. It is declared

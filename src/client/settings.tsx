@@ -336,23 +336,34 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
               </div>
             ) : null}
           </Field>
+
+          <Field label={t('contextTurnsLabel')} hint={t('contextTurnsHint')}>
+            <input
+              type="number"
+              min={0}
+              max={20}
+              value={contextTurnsField.text}
+              onChange={(event) => setField('contextTurns', event.target.value)}
+              onBlur={() => {
+                const parsed = Number(contextTurnsField.text)
+                if (!Number.isSafeInteger(parsed) || parsed < 0 || parsed > 20) return
+                void save({ contextTurns: parsed })
+              }}
+              style={inputStyle}
+            />
+          </Field>
         </>
       ) : null}
 
-      <Field label={t('contextTurnsLabel')} hint={t('contextTurnsHint')}>
-        <input
-          type="number"
-          min={0}
-          max={20}
-          value={contextTurnsField.text}
-          onChange={(event) => setField('contextTurns', event.target.value)}
-          onBlur={() => {
-            const parsed = Number(contextTurnsField.text)
-            if (!Number.isSafeInteger(parsed) || parsed < 0 || parsed > 20) return
-            void save({ contextTurns: parsed })
-          }}
-          style={inputStyle}
-        />
+      <Field label={t('composerSliderLabel')} hint={t('composerSliderHint')}>
+        <label style={switchStyle}>
+          <input
+            type="checkbox"
+            checked={s.composerEffortSlider}
+            onChange={(event) => void save({ composerEffortSlider: event.target.checked })}
+          />
+          <span>{s.composerEffortSlider ? t('on') : t('off')}</span>
+        </label>
       </Field>
 
       <p style={hintStyle}>

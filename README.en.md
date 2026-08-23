@@ -88,7 +88,7 @@ Turn docs, sheets, and decks into clean, structured Markdown so the agent reads 
 ### Interaction refinements
 
 Input isn't just about features — it's also how comfortable and polished it feels.
-- [ ] 🎚️ **Effort slider** — replace the thinking-effort dropdown with a smoother, more intuitive slider
+- [x] 🎚️ **Effort slider** — replace the thinking-effort dropdown with a smoother, more intuitive slider（目前改了一天了，还是有 bug，持续迭代中）
 - [ ] ✍️ **Auto-complete suggestions** — contextual continuations while you type, adopt in one click
 - [ ] 🧮 **Variable fill** — `{{date}}`, `{{cwd}}` and other tokens replaced automatically in the input
 

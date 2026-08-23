@@ -64,6 +64,8 @@ export type BetterInputStrings = {
     optimizePromptPlaceholder: string;
     contextTurnsLabel: string;
     contextTurnsHint: string;
+    composerSliderLabel: string;
+    composerSliderHint: string;
     aboutTitle: string;
     aboutVersionLabel: string;
     aboutRepositoryLabel: string;

@@ -64,6 +64,8 @@ export type BetterInputStrings = {
   optimizePromptPlaceholder: string
   contextTurnsLabel: string
   contextTurnsHint: string
+  composerSliderLabel: string
+  composerSliderHint: string
   aboutTitle: string
   aboutVersionLabel: string
   aboutRepositoryLabel: string
@@ -139,6 +141,8 @@ export const zh: BetterInputStrings = {
   optimizePromptPlaceholder: '可选：粘贴自定义提示词…',
   contextTurnsLabel: '上下文引用轮数',
   contextTurnsHint: '优化时引用最近 N 轮对话作为上下文，0 为禁用。默认 3 轮。',
+  composerSliderLabel: '对话栏思考强度滑块',
+  composerSliderHint: '在对话栏模型选择器中加入带发光特效的思考强度滑块。关闭后恢复原版模型选择器 UI。',
   aboutTitle: '关于与更新',
   aboutVersionLabel: '当前版本',
   aboutRepositoryLabel: '项目地址',
@@ -214,6 +218,8 @@ export const en: BetterInputStrings = {
   optimizePromptPlaceholder: 'Optional: paste a custom prompt…',
   contextTurnsLabel: 'Context turns',
   contextTurnsHint: 'Include recent N turns as context for optimization. 0 = disabled. Default 3.',
+  composerSliderLabel: 'Composer reasoning-effort slider',
+  composerSliderHint: 'Add a glowing effort slider inside the composer model picker. Disable to restore the built-in selector UI.',
   aboutTitle: 'About & Updates',
   aboutVersionLabel: 'Installed version',
   aboutRepositoryLabel: 'Repository',
