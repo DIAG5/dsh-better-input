@@ -276,7 +276,6 @@ function flattenStoredSettings(raw: unknown): BetterInputSettings {
     optimizeReasoningEffort: text(record.optimizeReasoningEffort),
     optimizePrompt: typeof record.optimizePrompt === 'string' ? record.optimizePrompt : '',
     contextTurns: typeof record.contextTurns === 'number' ? record.contextTurns : DEFAULT_SETTINGS.contextTurns,
-    composerEffortSlider: record.composerEffortSlider !== false,
   }
 }
 

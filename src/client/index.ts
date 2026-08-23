@@ -14,32 +14,29 @@ import { VoiceRecognitionBar } from './VoiceRecognitionBar.js'
 import { BetterInputSettingsSection } from './settings.jsx'
 import { SettingsController, useSettingsSnapshot } from './settings-controller.js'
 import { VoiceInputSession } from './voice-session.js'
-import { ModelSelector } from './ModelSelector.js'
-import { CSS as EFFORT_SLIDER_CSS } from './effort-slider.css.js'
 
 const PULSE_KEYFRAMES = `@keyframes dsh-better-input-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }`
 
-/** Required Client services: the slot registry, the Typert remote hub, the
- * DSH locale runtime, and the model-directories service (provided by the
- * DSH web-app bundle's `@deepseek-ai/dsh-client-ui-model-selection` plugin).
- * `remote.betterInput` is mounted by this plugin's own apply() via
- * `ctx.remote.$mount`, so it MUST NOT appear here — the outer inject gates
- * plugin activation and would deadlock waiting for itself. It is declared
- * only on the inner ctx.inject() below, which runs after the mount.
- * Settings reach the browser through `SettingsScopeBinder` (provided by
- * `@deepseek-ai/dsh-client-ui-settings`) and are read inside the settings
- * section slot itself, not via a top-level `settings` service here. */
-export const inject = ['slots', 'remote', 'locale', 'modelDirectories']
+/** Required Client services: the slot registry, the Typert remote hub, and
+ * the DSH locale runtime. `remote.betterInput` is mounted by this plugin's
+ * own apply() via `ctx.remote.$mount`, so it MUST NOT appear here — the
+ * outer inject gates plugin activation and would deadlock waiting for
+ * itself. It is declared only on the inner ctx.inject() below, which runs
+ * after the mount. Settings reach the browser through `SettingsScopeBinder`
+ * (provided by `@deepseek-ai/dsh-client-ui-settings`) and are read inside
+ * the settings section slot itself, not via a top-level `settings` service
+ * here. */
+export const inject = ['slots', 'remote', 'locale']
 
 export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
   const disposeRemote = await ctx.remote.$mount(TYPERT_REMOTE)
   // Register our bilingual dictionary with the DSH locale runtime BEFORE any
   // slot renders, so the injected `t` seat never hits a missing namespace.
   const disposeLocaleDicts = ctx.locale.register(BETTER_INPUT_NS, { zh, en })
-  await ctx.inject(['slots', 'remote', 'remote.betterInput', 'modelDirectories'], async (remoteCtx) => {
+  await ctx.inject(['slots', 'remote', 'remote.betterInput'], async (remoteCtx) => {
     const remote = remoteCtx.remote.betterInput as BetterInputRemote
     const controller = new SettingsController(remote)
 
@@ -59,12 +56,11 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
       controller.dispose()
     }, 'dsh-better-input sessions lifecycle')
 
-    // Inject the keyframes used by the recognition bar pulse and the
-    // effort-slider stylesheet.
+    // Inject the keyframes used by the recognition bar pulse.
     remoteCtx.effect(() => {
       const styleTag = document.createElement('style')
       styleTag.dataset.plugin = 'dsh-better-input'
-      styleTag.textContent = PULSE_KEYFRAMES + '\n' + EFFORT_SLIDER_CSS
+      styleTag.textContent = PULSE_KEYFRAMES
       document.head.appendChild(styleTag)
       return () => {
         styleTag.remove()
@@ -148,32 +144,6 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
           inject: () => ({ settingsController: controller })
         },
         BetterInputSettingsSection
-      )
-    )
-
-    // ── Model selector (replaces the built-in conversation.input.model) ──
-    // Follow the canonical slot pattern: wrap `slots.register` in
-    // `slots.inject(name, …)` so the loader waits for the parent entry to
-    // declare the seat before Registering our occupant. The seat is a
-    // single-slot, so we register with a lower priority (entriesOfSlot
-    // returns the first entry, sorted by priority ascending) to shadow the
-    // default occupant. The inject factory resolves the per-session model
-    // directory from the `modelDirectories` service.
-    //
-    // If the user disables the composer slider in settings, this component
-    // renders `null` and Cordis falls back to the next entry in the single
-    // slot — i.e. the built-in model picker.
-    remoteCtx.slots.inject('conversation.input.model', () =>
-      remoteCtx.slots.register(
-        {
-          name: 'conversation.input.model',
-          priority: -1,
-          inject: (sessionId: string) => ({
-            directory: remoteCtx.modelDirectories.directoryFor(sessionId),
-            settingsController: controller,
-          }),
-        },
-        ModelSelector
       )
     )
 

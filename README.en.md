@@ -45,7 +45,7 @@
 </tr>
 <tr>
 <td align="center">🧠<br/><b>Reasoning-effort control</b></td>
-<td>Polish and optimization each pick their own effort tier. <strong>Thinking is off by default</strong> (explicitly sends the model's `off` tier when supported, so no reasoning tokens are spent), and you can raise it manually.</td>
+<td>Polish and optimization each pick their own effort tier. <strong>Thinking is off by default</strong> (explicitly sends the model's `off` tier when supported, so no reasoning tokens are spent), and you can raise it manually.<br/>The slider-style adjustment idea in the composer is inspired by <a href="https://github.com/HanaAyane/dsh-reasoning-effort">@HanaAyane/dsh-reasoning-effort</a>.</td>
 </tr>
 <tr>
 <td align="center">🐘<br/><b>Edit-safe guard</b></td>
@@ -88,11 +88,13 @@ Turn docs, sheets, and decks into clean, structured Markdown so the agent reads 
 ### Interaction refinements
 
 Input isn't just about features — it's also how comfortable and polished it feels.
-- [x] 🎚️ **Effort slider** — replace the thinking-effort dropdown with a smoother, more intuitive slider（目前改了一天了，还是有 bug，持续迭代中）
+- [x] 🎚️ **Effort slider** — the slider-style reasoning-effort adjustment is inspired by <a href="https://github.com/HanaAyane/dsh-reasoning-effort">@HanaAyane/dsh-reasoning-effort</a>; install that plugin directly if you want the experience
 - [ ] ✍️ **Auto-complete suggestions** — contextual continuations while you type, adopt in one click
 - [ ] 🧮 **Variable fill** — `{{date}}`, `{{cwd}}` and other tokens replaced automatically in the input
 
 > Planned around the directions; iterating continuously. **Ideas welcome — file an [Issue](https://github.com/DIAG5/dsh-better-input/issues) or open a PR.**
+
+> 💭 **On settings toggles**: for features that **modify DSH's built-in plugins**, adding another toggle in the settings screen is really **redundant** — if a feature can in principle be **split out as its own plugin**, it should be enabled/disabled by **installing / uninstalling** it, not by another switch inside BetterInput. So this plugin no longer pays the price of core-feature toggles: **anything that can be split out already has been split out of BetterInput** — install the standalone plugin when you want it, uninstall it when you don't.
 
 ## 🚀 Install
 

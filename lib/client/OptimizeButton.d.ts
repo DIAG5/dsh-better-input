@@ -29,5 +29,5 @@ export type OptimizeButtonProps = {
  * the original and optimized text. The draft is replaced only when the user
  * clicks "Adopt".
  */
-export declare function OptimizeButton({ input, inputActions, session, remote, useSettings, t }: OptimizeButtonProps): import("react").JSX.Element | null;
+export declare function OptimizeButton({ input, inputActions, session, remote, useSettings, t }: OptimizeButtonProps): import("react").JSX.Element;
 export {};

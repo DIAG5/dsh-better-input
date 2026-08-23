@@ -41,8 +41,6 @@ export interface BetterInputSettings {
     optimizePrompt: string;
     /** Number of recent conversation turns to include as context for optimization. 0 disables context. */
     contextTurns: number;
-    /** Replace the built-in model picker with a composer slider + reasoning effort controls. */
-    composerEffortSlider: boolean;
 }
 /**
  * Out-of-the-box defaults: every toggle ON so new users get the full

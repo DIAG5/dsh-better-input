@@ -53,8 +53,7 @@ export type BetterInputStrings = {
   optimizeAdopt: string
   optimizeCancel: string
   optimizeNotConfigured: string
-  optimizeLabel: string
-  optimizeHint: string
+  optimizeSectionLabel: string
   optimizeModelLabel: string
   optimizeModelHint: string
   optimizeEffortLabel: string
@@ -64,11 +63,10 @@ export type BetterInputStrings = {
   optimizePromptPlaceholder: string
   contextTurnsLabel: string
   contextTurnsHint: string
-  composerSliderLabel: string
-  composerSliderHint: string
   aboutTitle: string
   aboutVersionLabel: string
   aboutRepositoryLabel: string
+  aboutChangelogLabel: string
   aboutLicenseLabel: string
   checkUpdateButton: string
   checkingUpdate: string
@@ -130,8 +128,7 @@ export const zh: BetterInputStrings = {
   optimizeAdopt: '采纳',
   optimizeCancel: '取消',
   optimizeNotConfigured: '未配置优化模型，请在设置页开启',
-  optimizeLabel: '提示词优化',
-  optimizeHint: '在输入框旁添加 ✨ 按钮，用大模型优化你写好的提示词，让提问更精准。优化后需手动确认才替换。',
+  optimizeSectionLabel: '提示词优化',
   optimizeModelLabel: '优化模型',
   optimizeModelHint: '选择 dsh 中已配置的模型路由。',
   optimizeEffortLabel: '优化思考强度',
@@ -141,11 +138,10 @@ export const zh: BetterInputStrings = {
   optimizePromptPlaceholder: '可选：粘贴自定义提示词…',
   contextTurnsLabel: '上下文引用轮数',
   contextTurnsHint: '优化时引用最近 N 轮对话作为上下文，0 为禁用。默认 3 轮。',
-  composerSliderLabel: '对话栏思考强度滑块',
-  composerSliderHint: '在对话栏模型选择器中加入带发光特效的思考强度滑块。关闭后恢复原版模型选择器 UI。',
   aboutTitle: '关于与更新',
   aboutVersionLabel: '当前版本',
   aboutRepositoryLabel: '项目地址',
+  aboutChangelogLabel: '更新日志',
   aboutLicenseLabel: '许可证',
   checkUpdateButton: '检查更新',
   checkingUpdate: '检查中…',
@@ -207,8 +203,7 @@ export const en: BetterInputStrings = {
   optimizeAdopt: 'Adopt',
   optimizeCancel: 'Cancel',
   optimizeNotConfigured: 'No optimize model configured, enable it in Settings',
-  optimizeLabel: 'Prompt optimization',
-  optimizeHint: 'Add a ✨ button beside the input box that optimizes your prompt with an LLM for clearer, more specific questions. Requires manual confirmation before replacing.',
+  optimizeSectionLabel: 'Prompt optimization',
   optimizeModelLabel: 'Optimize model',
   optimizeModelHint: 'Pick a model route already configured in dsh.',
   optimizeEffortLabel: 'Optimize thinking effort',
@@ -218,11 +213,10 @@ export const en: BetterInputStrings = {
   optimizePromptPlaceholder: 'Optional: paste a custom prompt…',
   contextTurnsLabel: 'Context turns',
   contextTurnsHint: 'Include recent N turns as context for optimization. 0 = disabled. Default 3.',
-  composerSliderLabel: 'Composer reasoning-effort slider',
-  composerSliderHint: 'Add a glowing effort slider inside the composer model picker. Disable to restore the built-in selector UI.',
   aboutTitle: 'About & Updates',
   aboutVersionLabel: 'Installed version',
   aboutRepositoryLabel: 'Repository',
+  aboutChangelogLabel: 'Changelog',
   aboutLicenseLabel: 'License',
   checkUpdateButton: 'Check for updates',
   checkingUpdate: 'Checking…',

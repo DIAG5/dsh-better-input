@@ -59,9 +59,9 @@ export function OptimizeButton({ input, inputActions, session, remote, useSettin
   }, [])
 
   const settings = settingsFace.status === 'ready' ? settingsFace.settings : null
-  const optimizeEnabled = settings?.optimizeEnabled ?? false
-
-  if (!optimizeEnabled) return null
+  // The prompt-optimize feature is a core capability: an on/off toggle works
+  // against the "everything is a plugin" philosophy, so it stays always-on
+  // and users just configure its provider/model/prompt in settings.
 
   const provider = settings?.optimizeProvider.trim() ?? ''
   const model = settings?.optimizeModel.trim() ?? ''

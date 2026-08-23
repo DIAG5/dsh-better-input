@@ -250,20 +250,9 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
         </>
       ) : null}
 
-      <Field label={t('optimizeLabel')} hint={t('optimizeHint')}>
-        <label style={switchStyle}>
-          <input
-            type="checkbox"
-            checked={s.optimizeEnabled}
-            onChange={(event) => void save({ optimizeEnabled: event.target.checked })}
-          />
-          <span>{s.optimizeEnabled ? t('on') : t('off')}</span>
-        </label>
-      </Field>
+      <h3 style={{ margin: '16px 0 0', fontSize: 14 }}>{t('optimizeSectionLabel')}</h3>
 
-      {s.optimizeEnabled ? (
-        <>
-          <Field label={t('optimizeModelLabel')} hint={t('optimizeModelHint')}>
+      <Field label={t('optimizeModelLabel')} hint={t('optimizeModelHint')}>
             <select
               value={drafts.optimizeProvider !== undefined || drafts.optimizeModel !== undefined
                 ? `${drafts.optimizeProvider ?? s.optimizeProvider}\u0000${drafts.optimizeModel ?? s.optimizeModel}`
@@ -352,19 +341,6 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
               style={inputStyle}
             />
           </Field>
-        </>
-      ) : null}
-
-      <Field label={t('composerSliderLabel')} hint={t('composerSliderHint')}>
-        <label style={switchStyle}>
-          <input
-            type="checkbox"
-            checked={s.composerEffortSlider}
-            onChange={(event) => void save({ composerEffortSlider: event.target.checked })}
-          />
-          <span>{s.composerEffortSlider ? t('on') : t('off')}</span>
-        </label>
-      </Field>
 
       <p style={hintStyle}>
         {t('routesStatus')}: {routes.status === 'ready' ? `${routes.routes.length}` : routes.detail || t('routesUnavailable')}
@@ -410,6 +386,16 @@ function AboutUpdateSection(props: {
               style={{ color: 'var(--dsh-color-primary, #4f8cff)' }}
             >
               {t('aboutRepositoryLabel')}: {repository}
+            </a>
+          ) : null}
+          {repository !== '' ? (
+            <a
+              href={`${repository.replace(/\/+$/, '')}/blob/main/CHANGELOG.md`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: 'var(--dsh-color-primary, #4f8cff)' }}
+            >
+              {t('aboutChangelogLabel')}
             </a>
           ) : null}
         </div>
