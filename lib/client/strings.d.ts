@@ -53,6 +53,7 @@ export type BetterInputStrings = {
     optimizeAdopt: string;
     optimizeCancel: string;
     optimizeNotConfigured: string;
+    optimizeSectionLabel: string;
     optimizeModelLabel: string;
     optimizeModelHint: string;
     optimizeEffortLabel: string;
@@ -65,6 +66,7 @@ export type BetterInputStrings = {
     aboutTitle: string;
     aboutVersionLabel: string;
     aboutRepositoryLabel: string;
+    aboutChangelogLabel: string;
     aboutLicenseLabel: string;
     checkUpdateButton: string;
     checkingUpdate: string;
