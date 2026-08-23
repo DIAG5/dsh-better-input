@@ -21,6 +21,7 @@
   <img src="https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1a73e8?style=flat-square" alt="Platform">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
   <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
+  <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.en.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.en.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
 
 > 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: voice recognition, AI polishing, prompt optimization, turning files into clean structured Markdown, and interaction UX refinements — **making every input you feed an agent better**.
@@ -42,10 +43,6 @@
 <tr>
 <td align="center">✨<br/><b>Prompt optimization</b></td>
 <td>An icon at the top right of the composer — the AI refines your prompt to be more precise; a <strong>before / after comparison panel</strong> pops up so you can review before adopting. Reuses your dsh models — no extra key.</td>
-</tr>
-<tr>
-<td align="center">🧠<br/><b>Reasoning-effort control</b></td>
-<td>Polish and optimization each pick their own effort tier. <strong>Thinking is off by default</strong> (explicitly sends the model's `off` tier when supported, so no reasoning tokens are spent), and you can raise it manually.<br/>The slider-style adjustment idea in the composer is inspired by <a href="https://github.com/HanaAyane/dsh-reasoning-effort">@HanaAyane/dsh-reasoning-effort</a>.</td>
 </tr>
 <tr>
 <td align="center">🐘<br/><b>Edit-safe guard</b></td>
@@ -88,7 +85,7 @@ Turn docs, sheets, and decks into clean, structured Markdown so the agent reads 
 ### Interaction refinements
 
 Input isn't just about features — it's also how comfortable and polished it feels.
-- [x] 🎚️ **Effort slider** — the slider-style reasoning-effort adjustment is inspired by <a href="https://github.com/HanaAyane/dsh-reasoning-effort">@HanaAyane/dsh-reasoning-effort</a>; install that plugin directly if you want the experience
+- [x] 🎚️ **Effort slider** — removed; for slider-style reasoning-effort adjustment, install <a href="https://github.com/HanaAyane/dsh-reasoning-effort">@HanaAyane/dsh-reasoning-effort</a>
 - [ ] ✍️ **Auto-complete suggestions** — contextual continuations while you type, adopt in one click
 - [ ] 🧮 **Variable fill** — `{{date}}`, `{{cwd}}` and other tokens replaced automatically in the input
 

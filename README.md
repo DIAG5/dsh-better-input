@@ -21,6 +21,7 @@
   <img src="https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1a73e8?style=flat-square" alt="Platform">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
   <a href="https://github.com/DIAG5/dsh-better-input/stargazers"><img src="https://img.shields.io/github/stars/DIAG5/dsh-better-input?style=flat-square" alt="Stars"></a>
+  <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
 
 > 💡 **它解决什么？** 与智能体对话，输入不只靠键盘打字。BetterInput 是一套**输入增强套件**：从语音识别、AI 润色、提示词一键优化，到把 PDF / DOCX / PPT / XLSX 等各类文件转成结构清晰的 Markdown，再到交互细节都打磨的体验优化——**把每一种「喂给智能体的输入」都变得更好**。
@@ -42,10 +43,6 @@
 <tr>
 <td align="center">✨<br/><b>提示词优化</b></td>
 <td>输入框右上角一个图标，AI 帮你把写好的提示词优化得更精准；点击后弹出<strong>原文 / 优化结果对比</strong>，确认满意再采用。复用 dsh 模型，无需额外 Key。</td>
-</tr>
-<tr>
-<td align="center">🧠<br/><b>思考强度控制</b></td>
-<td>润色 / 优化各自可独立选择推理档位，<strong>默认关闭思考</strong>（模型支持 `off` 档则显式关闭，不产生思考过程），也可手动选更高档位。<br/>对话栏里的滑块式调节思路参考 <a href="https://github.com/HanaAyane/dsh-reasoning-effort">@HanaAyane/dsh-reasoning-effort</a>。</td>
 </tr>
 <tr>
 <td align="center">🐘<br/><b>防覆盖保护</b></td>
@@ -89,7 +86,7 @@ BetterInput 是一套完整的**输入增强套件**：不只是某一类输入�
 ### 交互体验优化
 
 输入不只是功能，也讲究好用与美观——把交互细节打磨到位。
-- [x] 🎚️ **思考强度滑块** — 滑块式思考强度调节思路来自 <a href="https://github.com/HanaAyane/dsh-reasoning-effort">@HanaAyane/dsh-reasoning-effort</a>，如需该交互体验可直接使用其插件
+- [x] 🎚️ **思考强度滑块** — 已移除；如需滑块式推理强度调节，可安装 <a href="https://github.com/HanaAyane/dsh-reasoning-effort">@HanaAyane/dsh-reasoning-effort</a>
 - [ ] ✍️ **半自动补全** — 输入时基于上下文给出续写建议，可一键采纳
 - [ ] 🧮 **变量填充** — 输入框里用 `{{日期}}`、`{{当前目录}}` 等变量自动替换
 
