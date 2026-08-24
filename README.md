@@ -24,7 +24,7 @@
   <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
 
-> 💡 **它解决什么？** 与智能体对话，输入不只靠键盘打字。BetterInput 是一套**输入增强套件**：从语音识别、AI 润色、提示词一键优化，到把 PDF / DOCX / PPT / XLSX 等各类文件转成结构清晰的 Markdown，再到交互细节都打磨的体验优化——**把每一种「喂给智能体的输入」都变得更好**。
+> 💡 **它解决什么？** 与智能体对话，输入不只靠键盘打字。BetterInput 是一套**输入增强套件**：语音识别、AI 润色、提示词一键优化、更多格式的本地文件输入与转 Markdown，再到交互细节都打磨的体验优化——**把每一种「喂给智能体的输入」都变得更好**。
 
 ***
 
@@ -43,6 +43,14 @@
 <tr>
 <td align="center">✨<br/><b>提示词优化</b></td>
 <td>输入框右上角一个图标，AI 帮你把写好的提示词优化得更精准；点击后弹出<strong>原文 / 优化结果对比</strong>，确认满意再采用。复用 dsh 模型，无需额外 Key。</td>
+</tr>
+<tr>
+<td align="center">📎<br/><b>更多文件格式输入</b></td>
+<td>输入框右上角「添加文件」按钮（默认收起）。把本地文件带进输入：纯文本（<code>.txt / .json / .py / .md</code> 等）可<strong>直接发送</strong>；文档类先转换再以 <code>@<文件名></code> 引用芯片插入输入框。不带转换需求也能引入非工作区文件。</td>
+</tr>
+<tr>
+<td align="center">🔄<br/><b>文件转 Markdown</b></td>
+<td>把 PDF / DOCX / XLSX / PPTX / HTML / EPUB / CSV / JSON / XML 等转成结构清晰的 Markdown，发送时自动展开成正文；转换结果可二次编辑。</td>
 </tr>
 <tr>
 <td align="center">🐘<br/><b>防覆盖保护</b></td>
@@ -71,8 +79,8 @@ BetterInput 是一套完整的**输入增强套件**：不只是某一类输入�
 > 📷 图片输入：**DSH** **`rc.8`** **起已原生支持**。DeepSeek API 已原生支持图片输入，**不再提供图片相关的插件功能**。
 
 把文稿、表格、演示文件一键转成结构清晰的 Markdown，让 AI 一看就懂。
-- [ ] 🧾 **PDF 转结构化** — PDF → AI 友好的易读格式（Markdown / 纯文本）
-- [ ] 📄 **Office 文档解析** — DOCX / PPT / XLSX 一键转成清晰的 Markdown 结构
+- [x] 🧾 **PDF 转结构化** — PDF → AI 友好的易读格式（Markdown / 纯文本）
+- [x] 📄 **Office 文档解析** — DOCX / PPT / XLSX 一键转成清晰的 Markdown 结构
 - [ ] 🎬 **音视频转写** — 粘贴本地音视频文件 → 转成文字（语音输入的进阶）
 
 ### 文字 & 提示词
@@ -181,7 +189,21 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 > 默认关闭思考，追求快速、低成本的直出结果。从设置页可手动提高思考强度以获得更深层的优化。
 
-### 4. 检查更新
+### 4. 添加文件 / 文件转 Markdown
+
+1. 点击输入框右上角的 **📎 添加文件** 按钮，展开文件面板（再点收起）
+2. 点击「**添加文件**」挑选文件（可多选），文件会以小标签列在面板里
+3. **纯文本文件**（`.txt / .md / .json / .py` 等）会直接标记 ✓，输入 `@` 即可选入发送，无需转换——这是「更多文件格式输入」的能力
+4. **文档文件**（`.pdf / .docx / .xlsx` 等）点击「**开始转换**」——这是「文件转 Markdown」的能力：
+   - 转换成功后标记 ✓
+   - 输入框里敲 `@`，从候选中选择该文件，插入成 `@<文件名>` 引用芯片
+   - 发送时该芯片自动展开成转换后的 Markdown 正文
+   - 面板里保留「**编辑**」按钮，可二次修改转换结果
+5. 不需要的文件点 `×` 移除
+
+> 转换在本地通过内置解析完成（PDF / Word / Excel / PPT / EPUB / HTML / CSV / JSON / XML 等），生成的 Markdown 随消息发送给 AI，方便它快速读懂文档内容。
+
+### 5. 检查更新
 
 1. 打开设置 → **BetterInput** → 拉到最底部「**关于与更新**」分节
 2. 点击「**检查更新**」
@@ -198,7 +220,7 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 > 说明：DSH 不会在你进入时自动更新第三方插件，需手动执行上面命令才会拉到新版。这个分节就是帮你及时发现并跟进更新。
 
-### 5. 设置
+### 6. 设置
 
 | 设置项      | 说明                                   |
 | -------- | ------------------------------------ |
@@ -236,9 +258,10 @@ npm run build    # 构建 lib/（Host ESM + 浏览器 bundle）
 ## 🏗️ 架构
 
 - `src/index.ts` — Host 插件入口，挂载润色服务
-- `src/polish/service.ts` — `BetterInputPolishService`（Typert remote）：设置、dsh 模型路由发现、LLM 润色与提示词优化（复用 `ctx.llm`）
+- `src/polish/service.ts` — `BetterInputPolishService`（Typert remote）：设置、dsh 模型路由发现、LLM 润色与提示词优化、文件转 Markdown（`convertFile`，复用 `ctx.llm`）
+- `src/converter/` — 纯 TypeScript 文件→Markdown 转换层（PDF / DOCX / XLSX / PPT / EPUB / HTML / CSV / JSON / XML / ZIP），仅在 Host 端打包
 - `src/about.ts` — 插件身份读取与 npm 版本检查（「关于与更新」）
-- `src/client/` — 浏览器端：麦克风按钮/优化按钮（`conversation.input.right`）、识别条（`conversation.input.dock`）、设置页（`settings.section`）
+- `src/client/` — 浏览器端：麦克风/优化/选择文件按钮（`conversation.input.right`）、识别条/文件面板（`conversation.input.dock`）、设置页（`settings.section`）、`@` 引用芯片源（`conversion-source`）
 - `src/typert.ts` / `src/remote.ts` — Client↔Host 类型化通信契约
 
 ## 📄 License

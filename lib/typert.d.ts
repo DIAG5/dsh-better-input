@@ -308,6 +308,66 @@ export declare const TYPERT: {
             readonly typeSymbol: "string";
             readonly schema: import("zod").ZodString;
         };
+    }, {
+        readonly id: "dsh-better-input#betterInput/convertFile";
+        readonly service: "BetterInputPolish";
+        readonly namespace: "betterInput";
+        readonly method: "convertFile";
+        readonly invocation: {
+            readonly kind: "direct";
+        };
+        readonly parameters: readonly [{
+            readonly name: "fileName";
+            readonly wire: "fileName";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
+        }, {
+            readonly name: "fileData";
+            readonly wire: "fileData";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
+        }];
+        readonly cancellation: {
+            readonly parameter: "signal";
+        };
+        readonly result: {
+            readonly mode: "strict";
+            readonly typeSymbol: "dsh-better-input#ConvertFileResult";
+            readonly schema: import("zod").ZodObject<{
+                success: import("zod").ZodBoolean;
+                format: import("zod").ZodEnum<{
+                    text: "text";
+                    pdf: "pdf";
+                    docx: "docx";
+                    xlsx: "xlsx";
+                    xls: "xls";
+                    pptx: "pptx";
+                    html: "html";
+                    epub: "epub";
+                    csv: "csv";
+                    json: "json";
+                    xml: "xml";
+                    zip: "zip";
+                }>;
+                markdown: import("zod").ZodString;
+                warnings: import("zod").ZodArray<import("zod").ZodString>;
+                metadata: import("zod").ZodOptional<import("zod").ZodObject<{
+                    pageCount: import("zod").ZodOptional<import("zod").ZodNumber>;
+                    slideCount: import("zod").ZodOptional<import("zod").ZodNumber>;
+                    sheetCount: import("zod").ZodOptional<import("zod").ZodNumber>;
+                    wordCount: import("zod").ZodOptional<import("zod").ZodNumber>;
+                    fileCount: import("zod").ZodOptional<import("zod").ZodNumber>;
+                }, import("zod/v4/core").$strip>>;
+            }, import("zod/v4/core").$strip>;
+        };
     }];
     readonly model: {
         readonly services: readonly [{
@@ -365,6 +425,12 @@ export declare const TYPERT: {
                 readonly signature: "optimize(text: string, provider: string, model: string, context: string, signal: AbortSignal): Promise<string>";
                 readonly summary: "Optimize one prompt through a selected dsh route.";
                 readonly jsDoc: "/** Optimize one prompt through a selected dsh route. */";
+            }, {
+                readonly kind: "method";
+                readonly name: "convertFile";
+                readonly signature: "convertFile(fileName: string, fileData: string, signal: AbortSignal): Promise<ConvertFileResult>";
+                readonly summary: "Convert a binary file to Markdown on the Host.";
+                readonly jsDoc: "/** Convert a binary file to Markdown on the Host. */";
             }];
             readonly types: readonly [{
                 readonly name: "BetterInputSettingsView";
@@ -381,6 +447,9 @@ export declare const TYPERT: {
             }, {
                 readonly name: "UpdateCheckResult";
                 readonly declaration: "export type UpdateCheckResult = { status: 'up-to-date' | 'update-available' | 'unpublished' | 'error'; installed: string; latest: string | null; updateCommand: string; updateCommandNpx: string }";
+            }, {
+                readonly name: "ConvertFileResult";
+                readonly declaration: "export type ConvertFileResult = { success: boolean; format: 'text' | 'pdf' | 'docx' | 'xlsx' | 'xls' | 'pptx' | 'html' | 'epub' | 'csv' | 'json' | 'xml' | 'zip'; markdown: string; warnings: readonly string[]; metadata?: { pageCount?: number; slideCount?: number; sheetCount?: number; wordCount?: number; fileCount?: number } }";
             }];
         }];
         readonly events: readonly [];

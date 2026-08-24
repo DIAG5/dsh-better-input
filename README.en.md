@@ -24,7 +24,7 @@
   <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.en.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.en.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
 
-> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: voice recognition, AI polishing, prompt optimization, turning files into clean structured Markdown, and interaction UX refinements — **making every input you feed an agent better**.
+> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: voice recognition, AI polishing, prompt optimization, more local file formats you can bring into the input, and file-to-Markdown — plus the small UX refinements — **making every input you feed an agent better**.
 
 ---
 
@@ -43,6 +43,14 @@
 <tr>
 <td align="center">✨<br/><b>Prompt optimization</b></td>
 <td>An icon at the top right of the composer — the AI refines your prompt to be more precise; a <strong>before / after comparison panel</strong> pops up so you can review before adopting. Reuses your dsh models — no extra key.</td>
+</tr>
+<tr>
+<td align="center">📎<br/><b>More file formats input</b></td>
+<td>An "Add file" button at the top right of the composer (collapsed by default). Bring local files into the input: plain text (<code>.txt / .json / .py / .md</code> etc.) can be <strong>sent directly</strong>; documents are converted first and inserted as an <code>@<filename></code> reference chip. Bring in files outside the workspace even without any conversion need.</td>
+</tr>
+<tr>
+<td align="center">🔄<br/><b>File-to-Markdown</b></td>
+<td>Convert PDF / DOCX / XLSX / PPTX / HTML / EPUB / CSV / JSON / XML into clean, structured Markdown, expanded into the message on send; results can be re-edited.</td>
 </tr>
 <tr>
 <td align="center">🐘<br/><b>Edit-safe guard</b></td>
@@ -71,8 +79,8 @@ BetterInput is a complete **input-enhancement suite**: not just one kind of inpu
 > 📷 Image input: **natively supported by DSH since `rc.8`** — the DeepSeek API supports image input natively, so we **no longer ship an image plugin**.
 
 Turn docs, sheets, and decks into clean, structured Markdown so the agent reads them at a glance.
-- [ ] 🧾 **PDF → structured** — PDF into an AI-friendly readable format (Markdown / plain text)
-- [ ] 📄 **Office parsing** — DOCX / PPT / XLSX into clean Markdown structure in one click
+- [x] 🧾 **PDF → structured** — PDF into an AI-friendly readable format (Markdown / plain text)
+- [x] 📄 **Office parsing** — DOCX / PPT / XLSX into clean Markdown structure in one click
 - [ ] 🎬 **Audio/video transcription** — paste a local media file and get text (an upgrade to voice input)
 
 ### Text & prompts
@@ -180,7 +188,21 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 
 > Thinking is off by default for fast, low-cost output. You can raise the effort tier in settings for deeper optimization.
 
-### 4. Check for updates
+### 4. Add file / file-to-Markdown
+
+1. Click the **📎 Add file** button at the top right of the composer to expand the file panel (click again to collapse).
+2. Click "**Add file**" to pick files (multiple allowed); they appear as small tags in the panel.
+3. **Plain-text files** (`.txt / .md / .json / .py` etc.) are marked ✓ immediately — type `@` to insert and send them directly, no conversion. This is the "more file formats input" capability.
+4. **Document files** (`.pdf / .docx / .xlsx` etc.): click "**Start conversion**" — this is the "file-to-Markdown" capability:
+   - Once converted they are marked ✓.
+   - Type `@` in the composer and pick the file from the candidates — it inserts as an `@<filename>` reference chip.
+   - On send the chip expands into the converted Markdown body.
+   - The panel keeps an "**Edit**" button so you can revise the converted result.
+5. Remove an unwanted file with `×`.
+
+> Conversion runs locally via built-in parsers (PDF / Word / Excel / PPT / EPUB / HTML / CSV / JSON / XML etc.); the generated Markdown is sent with your message so the agent can read the document at a glance.
+
+### 5. Check for updates
 
 1. Open Settings → **BetterInput** → scroll to the bottom to the "**About & Updates**" section
 2. Click "**Check for updates**"
@@ -197,7 +219,7 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 
 > Note: DSH does not auto-update third-party plugins on launch — run the command above to pull the new release. This section simply helps you notice and follow updates promptly.
 
-### 5. Settings
+### 6. Settings
 
 | Setting | Meaning |
 | --- | --- |
@@ -235,9 +257,10 @@ Client-only UI: `npm run dev:watch`, then refresh the UI. Host changes: restart 
 ## 🏗️ Architecture
 
 - `src/index.ts` — Host plugin entry, mounts the polish service
-- `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing & prompt optimization via `ctx.llm`
+- `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing & prompt optimization, file-to-Markdown (`convertFile`, via `ctx.llm`)
+- `src/converter/` — pure-TypeScript file→Markdown conversion layer (PDF / DOCX / XLSX / PPT / EPUB / HTML / CSV / JSON / XML / ZIP), bundled on the Host only
 - `src/about.ts` — plugin identity and npm version check (About & Updates)
-- `src/client/` — browser half: microphone/optimize buttons (`conversation.input.right`), recognition bar (`conversation.input.dock`), settings page (`settings.section`)
+- `src/client/` — browser half: microphone/optimize/choose-file buttons (`conversation.input.right`), recognition bar/file panel (`conversation.input.dock`), settings page (`settings.section`), `@` reference-chip source (`conversion-source`)
 - `src/typert.ts` / `src/remote.ts` — Client↔Host typed contract
 
 ## 📄 License

@@ -1,4 +1,4 @@
-import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
+import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
 
 export const TYPERT = {
   package: 'dsh-better-input',
@@ -174,6 +174,33 @@ export const TYPERT = {
         typeSymbol: 'string',
         schema: optimizeResultSchema
       }
+    },
+    {
+      id: 'dsh-better-input#betterInput/convertFile',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'convertFile',
+      invocation: { kind: 'direct' },
+      parameters: [
+        {
+          name: 'fileName',
+          wire: 'fileName',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'fileData',
+          wire: 'fileData',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        }
+      ],
+      cancellation: { parameter: 'signal' },
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#ConvertFileResult',
+        schema: convertFileResultSchema
+      }
     }
   ],
   model: {
@@ -241,6 +268,13 @@ export const TYPERT = {
             signature: 'optimize(text: string, provider: string, model: string, context: string, signal: AbortSignal): Promise<string>',
             summary: 'Optimize one prompt through a selected dsh route.',
             jsDoc: '/** Optimize one prompt through a selected dsh route. */'
+          },
+          {
+            kind: 'method',
+            name: 'convertFile',
+            signature: 'convertFile(fileName: string, fileData: string, signal: AbortSignal): Promise<ConvertFileResult>',
+            summary: 'Convert a binary file to Markdown on the Host.',
+            jsDoc: '/** Convert a binary file to Markdown on the Host. */'
           }
         ],
         types: [
@@ -263,6 +297,10 @@ export const TYPERT = {
           {
             name: 'UpdateCheckResult',
             declaration: "export type UpdateCheckResult = { status: 'up-to-date' | 'update-available' | 'unpublished' | 'error'; installed: string; latest: string | null; updateCommand: string; updateCommandNpx: string }"
+          },
+          {
+            name: 'ConvertFileResult',
+            declaration: "export type ConvertFileResult = { success: boolean; format: 'text' | 'pdf' | 'docx' | 'xlsx' | 'xls' | 'pptx' | 'html' | 'epub' | 'csv' | 'json' | 'xml' | 'zip'; markdown: string; warnings: readonly string[]; metadata?: { pageCount?: number; slideCount?: number; sheetCount?: number; wordCount?: number; fileCount?: number } }"
           }
         ]
       }

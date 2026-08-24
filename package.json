@@ -1,7 +1,7 @@
 {
   "name": "dsh-better-input",
-  "version": "0.1.4",
-  "description": "Better input experience for DeepSeek Harness: voice input, AI polishing, PDF and image input (voice input first)",
+  "version": "0.1.5",
+  "description": "Better input experience for DeepSeek Harness: voice input, AI polishing, prompt optimization, and local file input / file-to-Markdown",
   "license": "MIT",
   "author": "DIAG5",
   "homepage": "https://github.com/DIAG5/dsh-better-input#readme",
@@ -77,6 +77,7 @@
     "@deepseek-ai/dsh-client-runtime": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
     "@deepseek-ai/dsh-client-ui-conversation": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
     "@deepseek-ai/dsh-client-ui-slots": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-input-trigger": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
     "@deepseek-ai/dsh-client-locale": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
     "@deepseek-ai/dsh-api-remotes": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
     "@deepseek-ai/dsh-llm": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
@@ -86,13 +87,21 @@
     "zod": "^4.4.3"
   },
   "dependencies": {
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "fast-xml-parser": "^4.5.0",
+    "jszip": "^3.10.1",
+    "mammoth": "^1.8.0",
+    "papaparse": "^5.4.1",
+    "pdfjs-dist": "^3.11.174",
+    "turndown": "^7.2.0",
+    "xlsx": "0.18.5"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.1",
     "@deepseek-ai/dsh-client-runtime": "0.1.0-rc.8",
     "@deepseek-ai/dsh-client-ui-conversation": "0.1.0-rc.8",
     "@deepseek-ai/dsh-client-ui-slots": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-input-trigger": "0.1.0-rc.8",
     "@deepseek-ai/dsh-client-locale": "0.1.0-rc.8",
     "@deepseek-ai/dsh-api-remotes": "0.1.0-rc.8",
     "@deepseek-ai/dsh-llm": "0.1.0-rc.8",
@@ -100,6 +109,8 @@
     "@deepseek-ai/dsh-typert-protocol": "0.1.0-rc.8",
     "@deepseek-ai/schemastery": "3.18.1",
     "@types/node": "^22.20.1",
+    "@types/papaparse": "^5.3.14",
+    "@types/turndown": "^5.0.5",
     "@types/react": "~18.3.31",
     "@types/react-dom": "~18.3.7",
     "react": "^18.3.1",

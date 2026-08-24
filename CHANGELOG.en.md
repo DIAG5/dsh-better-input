@@ -2,6 +2,20 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.1.5] - 2026-08-24
+
+### Added
+
+- **Choose file / file-to-Markdown**: a new "Choose file" button at the top right of the composer (collapsed by default, click to expand). Convert PDF / DOCX / XLSX / PPTX / HTML / EPUB / CSV / JSON / XML and more into clean, structured Markdown, then insert it as an `@<filename>` reference chip; on send the converted text is expanded into the message. Results can be re-edited in the dock.
+- **Plain-text files send directly, no conversion**: for text formats DSH already reads natively — `.txt / .md / .py / .js / .ts / .json / .yaml / .xml / .ini / .toml / .env` — files can be sent directly without conversion, covering the "bring in a file outside the workspace" case.
+- **`@` candidate lists every added file**: typing `@` shows all added files; plain-text and converted documents can be inserted right away, while unconverted binary documents are flagged "convert first".
+
+### Changed
+
+- **Toolbar UI**: the file feature is no longer always visible — it's now a small button at the top right of the composer that expands/collapses the conversion panel (with a non-linear animation).
+- **Conversion layer**: added `src/converter/`, a pure-TypeScript file-to-Markdown layer (mammoth / turndown / papaparse / SheetJS / pdfjs / jszip / fast-xml-parser), bundled on the Host only — no added browser bundle size.
+- **Skip images**: images inside Word / HTML / EPUB are no longer dumped as base64 binary — they are skipped.
+
 ## [0.1.4] - 2026-08-23
 
 ### Added

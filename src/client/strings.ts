@@ -77,6 +77,27 @@ export type BetterInputStrings = {
   updateCommandLabel: string
   updateCommandNpxLabel: string
   updateCommandPick: string
+  convertAttach: string
+  convertAddFile: string
+  convertToggle: string
+  convertPlainReady: string
+  convertStart: string
+  convertEdit: string
+  convertSave: string
+  convertRemove: string
+  convertBusy: string
+  convertFailed: string
+  convertUnsupported: string
+  convertEmptyFile: string
+  convertTooLarge: string
+  convertPreviewTitle: string
+  convertPreviewFileLabel: string
+  convertPreviewFormatLabel: string
+  convertPreviewWarning: string
+  convertOverwriteLabel: string
+  convertCancel: string
+  convertNoFile: string
+  convertFileTooLarge: string
 }
 
 export const zh: BetterInputStrings = {
@@ -151,7 +172,28 @@ export const zh: BetterInputStrings = {
   updateCheckFailed: '检查更新失败',
   updateCommandLabel: '已全局安装 dsh CLI，执行',
   updateCommandNpxLabel: '未全局安装，改用 npx 执行',
-  updateCommandPick: '按你的安装方式二选一即可'
+  updateCommandPick: '按你的安装方式二选一即可',
+  convertAttach: '添加文件',
+  convertAddFile: '添加文件',
+  convertToggle: '添加文件',
+  convertPlainReady: '该文件 DSH 原生支持，无需转换，可直接发送',
+  convertStart: '开始转换',
+  convertEdit: '编辑',
+  convertSave: '保存',
+  convertRemove: '移除',
+  convertBusy: '转换中…',
+  convertFailed: '转换失败，请重试',
+  convertUnsupported: '不支持的文件类型',
+  convertEmptyFile: '文件内容为空',
+  convertTooLarge: '文件过大，已超过转换上限',
+  convertPreviewTitle: '文件转换结果',
+  convertPreviewFileLabel: '文件',
+  convertPreviewFormatLabel: '格式',
+  convertPreviewWarning: '提示',
+  convertOverwriteLabel: '覆盖输入框',
+  convertCancel: '取消',
+  convertNoFile: '请先添加文件',
+  convertFileTooLarge: '该文件超过转换大小上限，无法转换'
 }
 
 export const en: BetterInputStrings = {
@@ -226,7 +268,28 @@ export const en: BetterInputStrings = {
   updateCheckFailed: 'Update check failed',
   updateCommandLabel: 'With a global dsh CLI, run',
   updateCommandNpxLabel: 'Without a global dsh CLI, run via npx',
-  updateCommandPick: 'Use either one depending on how you installed DSH'
+  updateCommandPick: 'Use either one depending on how you installed DSH',
+  convertAttach: 'Add file',
+  convertAddFile: 'Add file',
+  convertToggle: 'Add file',
+  convertPlainReady: 'DSH natively supports this file — no conversion needed, send it directly',
+  convertStart: 'Start conversion',
+  convertEdit: 'Edit',
+  convertSave: 'Save',
+  convertRemove: 'Remove',
+  convertBusy: 'Converting…',
+  convertFailed: 'Conversion failed, please retry',
+  convertUnsupported: 'Unsupported file type',
+  convertEmptyFile: 'File is empty',
+  convertTooLarge: 'File too large, exceeds the conversion limit',
+  convertPreviewTitle: 'File conversion result',
+  convertPreviewFileLabel: 'File',
+  convertPreviewFormatLabel: 'Format',
+  convertPreviewWarning: 'Notice',
+  convertOverwriteLabel: 'Overwrite the input box',
+  convertCancel: 'Cancel',
+  convertNoFile: 'Please add a file first',
+  convertFileTooLarge: 'This file exceeds the conversion size limit'
 }
 
 /** Namespace owning every BetterInput surface string. Registered into the DSH

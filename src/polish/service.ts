@@ -8,6 +8,9 @@ import { DEFAULT_SETTINGS, MAX_OPTIMIZED_CHARACTERS, MAX_OPTIMIZE_CHARACTERS, MA
 import { BetterInputSettingsSchema } from '../config-schema.js'
 import { checkForPluginUpdate, readInstalledAboutInfo, type AboutInfo, type UpdateCheckResult } from '../about.js'
 import { optimizeUserText, polishUserText, resolveOptimizeSystemPrompt, resolvePolishSystemPrompt, OPTIMIZE_SYSTEM_PROMPT, POLISH_SYSTEM_PROMPT } from './prompts.js'
+import { convertFile } from '../converter/to-markdown.js'
+import type { ConvertibleFormat } from '../converter/types.js'
+import { MAX_CONVERTED_CHARACTERS } from '../converter/types.js'
 
 /** Host-side settings file shape (flat for hand editing). */
 type StoredSettings = BetterInputSettings
@@ -239,6 +242,30 @@ export class BetterInputPolishService extends TypertRemoteService {
   }
 
   /**
+   * Convert a binary file to Markdown on the Host. The raw bytes arrive as a
+   * base64 string; we decode once and hand them to the converter package.
+   * This runs only on the Host so the heavy parsing libraries never ship to
+   * the browser.
+   */
+  async convertFile(
+    fileName: string,
+    fileData: string,
+    signal: AbortSignal
+  ): Promise<{ success: boolean; format: ConvertibleFormat; markdown: string; warnings: readonly string[]; metadata?: { pageCount?: number; slideCount?: number; sheetCount?: number; wordCount?: number; fileCount?: number } }> {
+    signal.throwIfAborted()
+    const data = decodeBase64(fileData)
+    if (data.length === 0) {
+      throw new Error('文件内容为空')
+    }
+    // The converter respects MAX_CONVERTED_CHARACTERS internally; guard against
+    // an unexpectedly huge decoded payload before parsing begins.
+    if (data.byteLength > MAX_CONVERTED_CHARACTERS * 8) {
+      throw new Error('文件过大，无法转换')
+    }
+    return convertFile(fileName, data)
+  }
+
+  /**
    * Resolve the effective reasoning-effort wire config for one route. An
    * explicit stored selection is forwarded as-is. The empty default means
    * "thinking off": when the model advertises an `off` tier we send it, and
@@ -285,6 +312,18 @@ function text(value: unknown): string {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+/** Decode a base64 string into bytes, tolerating a missing padding. */
+function decodeBase64(input: string): Uint8Array {
+  const clean = input.replace(/\s+/g, '')
+  const padded = clean + '='.repeat((4 - (clean.length % 4)) % 4)
+  const binary = atob(padded)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+  return bytes
 }
 
 async function collectText(stream: AsyncIterable<StreamChunk>, maxCharacters: number, label: string): Promise<string> {

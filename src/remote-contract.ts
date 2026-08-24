@@ -87,8 +87,42 @@ export const updateCheckResultSchema = z.object({
   updateCommandNpx: z.string()
 })
 
+/** Supported file formats the converter can produce Markdown for. */
+export const convertibleFormatSchema = z.enum([
+  'text',
+  'pdf',
+  'docx',
+  'xlsx',
+  'xls',
+  'pptx',
+  'html',
+  'epub',
+  'csv',
+  'json',
+  'xml',
+  'zip'
+])
+
+export const convertMetadataSchema = z.object({
+  pageCount: z.number().optional(),
+  slideCount: z.number().optional(),
+  sheetCount: z.number().optional(),
+  wordCount: z.number().optional(),
+  fileCount: z.number().optional()
+})
+
+export const convertFileResultSchema = z.object({
+  success: z.boolean(),
+  format: convertibleFormatSchema,
+  markdown: z.string(),
+  warnings: z.array(z.string()),
+  metadata: convertMetadataSchema.optional()
+})
+
 export type AboutInfoWire = z.infer<typeof aboutInfoSchema>
 export type UpdateCheckResultWire = z.infer<typeof updateCheckResultSchema>
+export type ConvertibleFormatWire = z.infer<typeof convertibleFormatSchema>
+export type ConvertFileResultWire = z.infer<typeof convertFileResultSchema>
 
 export type BetterInputSettingsWire = z.infer<typeof betterInputSettingsSchema>
 export type BetterInputSettingsPatchWire = z.infer<typeof betterInputSettingsPatchSchema>

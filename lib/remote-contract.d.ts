@@ -111,8 +111,58 @@ export declare const updateCheckResultSchema: z.ZodObject<{
     updateCommand: z.ZodString;
     updateCommandNpx: z.ZodString;
 }, z.core.$strip>;
+/** Supported file formats the converter can produce Markdown for. */
+export declare const convertibleFormatSchema: z.ZodEnum<{
+    text: "text";
+    pdf: "pdf";
+    docx: "docx";
+    xlsx: "xlsx";
+    xls: "xls";
+    pptx: "pptx";
+    html: "html";
+    epub: "epub";
+    csv: "csv";
+    json: "json";
+    xml: "xml";
+    zip: "zip";
+}>;
+export declare const convertMetadataSchema: z.ZodObject<{
+    pageCount: z.ZodOptional<z.ZodNumber>;
+    slideCount: z.ZodOptional<z.ZodNumber>;
+    sheetCount: z.ZodOptional<z.ZodNumber>;
+    wordCount: z.ZodOptional<z.ZodNumber>;
+    fileCount: z.ZodOptional<z.ZodNumber>;
+}, z.core.$strip>;
+export declare const convertFileResultSchema: z.ZodObject<{
+    success: z.ZodBoolean;
+    format: z.ZodEnum<{
+        text: "text";
+        pdf: "pdf";
+        docx: "docx";
+        xlsx: "xlsx";
+        xls: "xls";
+        pptx: "pptx";
+        html: "html";
+        epub: "epub";
+        csv: "csv";
+        json: "json";
+        xml: "xml";
+        zip: "zip";
+    }>;
+    markdown: z.ZodString;
+    warnings: z.ZodArray<z.ZodString>;
+    metadata: z.ZodOptional<z.ZodObject<{
+        pageCount: z.ZodOptional<z.ZodNumber>;
+        slideCount: z.ZodOptional<z.ZodNumber>;
+        sheetCount: z.ZodOptional<z.ZodNumber>;
+        wordCount: z.ZodOptional<z.ZodNumber>;
+        fileCount: z.ZodOptional<z.ZodNumber>;
+    }, z.core.$strip>>;
+}, z.core.$strip>;
 export type AboutInfoWire = z.infer<typeof aboutInfoSchema>;
 export type UpdateCheckResultWire = z.infer<typeof updateCheckResultSchema>;
+export type ConvertibleFormatWire = z.infer<typeof convertibleFormatSchema>;
+export type ConvertFileResultWire = z.infer<typeof convertFileResultSchema>;
 export type BetterInputSettingsWire = z.infer<typeof betterInputSettingsSchema>;
 export type BetterInputSettingsPatchWire = z.infer<typeof betterInputSettingsPatchSchema>;
 export type BetterInputSettingsViewWire = z.infer<typeof betterInputSettingsViewSchema>;
