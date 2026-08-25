@@ -4,7 +4,7 @@
 
 <h1 align="center">🎤 dsh-better-input</h1>
 
-<p align="center"><b>给 DeepSeek Harness 的智能体换一副更顺手的「输入」。</b></p>
+<p align="center"><b>给 DeepSeek Harness 更好的「输入」体验。</b></p>
 
 <p align="center">
   开源输入体验增强插件 · BetterInput for your DeepSeek Harness agent
