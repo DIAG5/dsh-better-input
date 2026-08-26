@@ -4,9 +4,18 @@ Versioned release notes for this repository, maintained from here on. This is th
 
 ## [0.1.6] - 2026-08-26
 
+### Added
+
+- **OCR vision recognition (scanned PDF / PPT)**: after adding a PDF or PPT and clicking "Start conversion", you're asked whether to use OCR. When chosen, PDF pages are rendered to images (or PPT `ppt/media/` embedded images are extracted) and sent one at a time to the "OCR vision model" you configure separately in Settings, producing Markdown — ideal for scanned documents, image-only PDFs, and PPTs whose slides are pictures without a text layer.
+- **OCR vision model setting**: a new "OCR vision model" dropdown in Settings picks the vision model used to read scanned pages / embedded images. It is **independent of the polish model** and must be selected separately; without one, OCR is unavailable.
+- **Soft prompt when no model is configured**: without an OCR model, clicking "Use OCR" shows a neutral info toast guiding you to Settings instead of a red error.
+- **OCR modality guard**: before converting, the selected model's declared input modalities are checked; if it explicitly does not support image input, you're told upfront "this model does not support image input" instead of getting a confusing empty result.
+- **Settings section headings**: the Settings page now groups "Voice Recognition" and "Prompt Polishing" under their own section titles.
+
 ### Fixed
 
 - **File-size limit no longer rejects image-heavy documents by mistake**: the Host previously applied a faulty conversion (`200_000 × 8` ≈ 1.6 MB) as the input cap, so any document larger than 1.6 MB but with very little text (e.g. an image-heavy PDF / Word) was refused with "file too large to convert". This is now an independent input guard, `MAX_INPUT_BYTES` (200 MB), that only blocks files large enough to risk blowing up parse memory — byte size is no longer confused with character count.
+- **pdfjs Node render warning**: fixed the "Cannot polyfill DOMMatrix/Path2D" warning that fell back to `node-canvas` during PDF rendering — the equivalents are now supplied by `@napi-rs/canvas`, and pdfjs loads only after the globals are in place.
 
 ### Changed
 

@@ -12,6 +12,7 @@ export declare const MAX_TRANSCRIPT_CHARACTERS = 12000;
 export declare const MAX_OPTIMIZE_CHARACTERS = 12000;
 export declare const MAX_POLISHED_CHARACTERS = 24000;
 export declare const MAX_OPTIMIZED_CHARACTERS = 24000;
+export declare const MAX_OCR_CHARACTERS = 120000;
 export declare const POLISH_TIMEOUT_MS = 20000;
 export declare const OPTIMIZE_TIMEOUT_MS = 20000;
 export interface BetterInputSettings {
@@ -41,6 +42,10 @@ export interface BetterInputSettings {
     optimizePrompt: string;
     /** Number of recent conversation turns to include as context for optimization. 0 disables context. */
     contextTurns: number;
+    /** dsh OCR vision provider id; empty reuses the polish route. */
+    ocrProvider: string;
+    /** dsh OCR vision model id; empty reuses the polish route. */
+    ocrModel: string;
 }
 /**
  * Out-of-the-box defaults: every toggle ON so new users get the full

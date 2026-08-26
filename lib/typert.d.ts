@@ -31,6 +31,8 @@ export declare const TYPERT: {
                     optimizeReasoningEffort: import("zod").ZodString;
                     optimizePrompt: import("zod").ZodString;
                     contextTurns: import("zod").ZodNumber;
+                    ocrProvider: import("zod").ZodString;
+                    ocrModel: import("zod").ZodString;
                 }, import("zod/v4/core").$strip>;
                 overridden: import("zod").ZodArray<import("zod").ZodString>;
                 defaultPolishPrompt: import("zod").ZodString;
@@ -66,6 +68,8 @@ export declare const TYPERT: {
                     optimizeReasoningEffort: import("zod").ZodOptional<import("zod").ZodString>;
                     optimizePrompt: import("zod").ZodOptional<import("zod").ZodString>;
                     contextTurns: import("zod").ZodOptional<import("zod").ZodNumber>;
+                    ocrProvider: import("zod").ZodOptional<import("zod").ZodString>;
+                    ocrModel: import("zod").ZodOptional<import("zod").ZodString>;
                 }, import("zod/v4/core").$strip>;
             };
         }];
@@ -92,6 +96,8 @@ export declare const TYPERT: {
                     optimizeReasoningEffort: import("zod").ZodString;
                     optimizePrompt: import("zod").ZodString;
                     contextTurns: import("zod").ZodNumber;
+                    ocrProvider: import("zod").ZodString;
+                    ocrModel: import("zod").ZodString;
                 }, import("zod/v4/core").$strip>;
                 overridden: import("zod").ZodArray<import("zod").ZodString>;
                 defaultPolishPrompt: import("zod").ZodString;
@@ -334,6 +340,15 @@ export declare const TYPERT: {
                 readonly typeSymbol: "string";
                 readonly schema: import("zod").ZodString;
             };
+        }, {
+            readonly name: "ocr";
+            readonly wire: "ocr";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "boolean";
+                readonly schema: import("zod").ZodOptional<import("zod").ZodBoolean>;
+            };
         }];
         readonly cancellation: {
             readonly parameter: "signal";
@@ -428,9 +443,9 @@ export declare const TYPERT: {
             }, {
                 readonly kind: "method";
                 readonly name: "convertFile";
-                readonly signature: "convertFile(fileName: string, fileData: string, signal: AbortSignal): Promise<ConvertFileResult>";
-                readonly summary: "Convert a binary file to Markdown on the Host.";
-                readonly jsDoc: "/** Convert a binary file to Markdown on the Host. */";
+                readonly signature: "convertFile(fileName: string, fileData: string, ocr?: boolean, signal: AbortSignal): Promise<ConvertFileResult>";
+                readonly summary: "Convert a binary file to Markdown on the Host. With ocr=true, scanned PDF pages / PPTX images are read by the vision model.";
+                readonly jsDoc: "/** Convert a binary file to Markdown on the Host. With ocr=true, scanned PDF pages / PPTX images are read by the vision model. */";
             }];
             readonly types: readonly [{
                 readonly name: "BetterInputSettingsView";

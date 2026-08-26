@@ -15,5 +15,7 @@ export const BetterInputSettingsSchema = s.object({
   optimizeModel: s.string().default(DEFAULT_SETTINGS.optimizeModel).description('dsh optimize model id'),
   optimizeReasoningEffort: s.string().default(DEFAULT_SETTINGS.optimizeReasoningEffort).description('dsh optimize reasoning effort id, empty uses the adapter default (lowest tier)'),
   optimizePrompt: s.string().default(DEFAULT_SETTINGS.optimizePrompt).description('Custom optimize system prompt, empty for built-in'),
-  contextTurns: s.number().default(DEFAULT_SETTINGS.contextTurns).description('Recent conversation turns included as context for optimization (0 = disabled)')
+  contextTurns: s.number().default(DEFAULT_SETTINGS.contextTurns).description('Recent conversation turns included as context for optimization (0 = disabled)'),
+  ocrProvider: s.string().default(DEFAULT_SETTINGS.ocrProvider).description('dsh OCR vision provider id, empty reuses the polish route'),
+  ocrModel: s.string().default(DEFAULT_SETTINGS.ocrModel).description('dsh OCR vision model id, empty reuses the polish route')
 })

@@ -98,6 +98,16 @@ export type BetterInputStrings = {
   convertCancel: string
   convertNoFile: string
   convertFileTooLarge: string
+  ocrModelLabel: string
+  ocrModelHint: string
+  ocrNotConfiguredInfo: string
+  voiceSectionLabel: string
+  polishSectionLabel: string
+  ocrConfirmTitle: string
+  ocrConfirmBody: string
+  ocrConfirmRegular: string
+  ocrConfirmOcr: string
+  ocrConfirmCancel: string
 }
 
 export const zh: BetterInputStrings = {
@@ -193,7 +203,17 @@ export const zh: BetterInputStrings = {
   convertOverwriteLabel: '覆盖输入框',
   convertCancel: '取消',
   convertNoFile: '请先添加文件',
-  convertFileTooLarge: '该文件超过转换大小上限，无法转换'
+  convertFileTooLarge: '该文件超过转换大小上限，无法转换',
+  ocrModelLabel: 'OCR 视觉模型',
+  ocrModelHint: '识别扫描件 / 内嵌图片的视觉模型，需单独选择；未选择时无法使用 OCR。不影响普通润色。',
+  ocrNotConfiguredInfo: '请先在设置页选择 OCR 视觉模型，再使用 OCR 转换。',
+  voiceSectionLabel: '语音识别',
+  polishSectionLabel: '提示词润色',
+  ocrConfirmTitle: '是否使用 OCR？',
+  ocrConfirmBody: '该文件可能包含扫描页或内嵌图片，普通转换只能提取文本层。使用 OCR 视觉模型可识别图片中的文字。',
+  ocrConfirmRegular: '普通转换',
+  ocrConfirmOcr: '使用 OCR',
+  ocrConfirmCancel: '取消'
 }
 
 export const en: BetterInputStrings = {
@@ -289,7 +309,17 @@ export const en: BetterInputStrings = {
   convertOverwriteLabel: 'Overwrite the input box',
   convertCancel: 'Cancel',
   convertNoFile: 'Please add a file first',
-  convertFileTooLarge: 'This file exceeds the conversion size limit'
+  convertFileTooLarge: 'This file exceeds the conversion size limit',
+  ocrModelLabel: 'OCR vision model',
+  ocrModelHint: 'Vision model to read scanned pages / embedded images. Must be selected separately; OCR is unavailable without one. Does not affect regular polishing.',
+  ocrNotConfiguredInfo: 'Please select an OCR vision model in Settings before using OCR conversion.',
+  voiceSectionLabel: 'Voice Recognition',
+  polishSectionLabel: 'Prompt Polishing',
+  ocrConfirmTitle: 'Use OCR?',
+  ocrConfirmBody: 'This file may contain scanned pages or embedded images. Regular conversion only extracts the text layer; OCR reads the actual pixels.',
+  ocrConfirmRegular: 'Regular conversion',
+  ocrConfirmOcr: 'Use OCR',
+  ocrConfirmCancel: 'Cancel'
 }
 
 /** Namespace owning every BetterInput surface string. Registered into the DSH

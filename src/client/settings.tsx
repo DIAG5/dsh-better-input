@@ -127,12 +127,16 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
   const polishPromptField = field('polishPrompt', s.polishPrompt)
   const optimizePromptField = field('optimizePrompt', s.optimizePrompt)
   const contextTurnsField = field('contextTurns', String(s.contextTurns))
+  const ocrProviderField = field('ocrProvider', s.ocrProvider)
+  const ocrModelField = field('ocrModel', s.ocrModel)
 
   return (
     <SectionFrame title={t('settingsTitle')}>
       <p style={hintStyle}>{t('settingsDescription')}</p>
 
       {saveFailed ? <p style={errorStyle}>{t('saveFailed')}</p> : null}
+
+      <h3 style={sectionTitleStyle}>{t('voiceSectionLabel')}</h3>
 
       <Field label={t('languageLabel')} hint={t('languageHint')}>
         <input
@@ -160,6 +164,8 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
           style={inputStyle}
         />
       </Field>
+
+      <h3 style={sectionTitleStyle}>{t('polishSectionLabel')}</h3>
 
       <Field label={t('polishLabel')} hint={t('polishHint')}>
         <label style={switchStyle}>
@@ -342,6 +348,27 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
             />
           </Field>
 
+          <Field label={t('ocrModelLabel')} hint={t('ocrModelHint')}>
+            <select
+              value={ocrProviderField.text !== undefined || ocrModelField.text !== undefined
+                ? `${ocrProviderField.text !== undefined ? ocrProviderField.text : s.ocrProvider}\u0000${ocrModelField.text !== undefined ? ocrModelField.text : s.ocrModel}`
+                : `${s.ocrProvider}\u0000${s.ocrModel}`}
+              onChange={(event) => {
+                const [provider, model] = event.target.value.split('\u0000')
+                void save({ ocrProvider: provider ?? '', ocrModel: model ?? '' })
+              }}
+              style={inputStyle}
+              disabled={routes.status !== 'ready' || routes.routes.length === 0}
+            >
+              <option value={'\u0000'}>{t('polishModelNone')}</option>
+              {routes.status === 'ready' && routes.routes.map((route) => (
+                <option key={`${route.provider}\u0000${route.model}`} value={`${route.provider}\u0000${route.model}`}>
+                  {route.providerName} / {route.modelName}
+                </option>
+              ))}
+            </select>
+          </Field>
+
       <p style={hintStyle}>
         {t('routesStatus')}: {routes.status === 'ready' ? `${routes.routes.length}` : routes.detail || t('routesUnavailable')}
       </p>
@@ -514,6 +541,11 @@ const dividerStyle: React.CSSProperties = {
   margin: '8px 0',
   border: 'none',
   borderTop: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))'
+}
+
+const sectionTitleStyle: React.CSSProperties = {
+  margin: '16px 0 0',
+  fontSize: 14
 }
 
 const codeStyle: React.CSSProperties = {

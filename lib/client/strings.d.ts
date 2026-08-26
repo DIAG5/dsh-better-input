@@ -98,6 +98,16 @@ export type BetterInputStrings = {
     convertCancel: string;
     convertNoFile: string;
     convertFileTooLarge: string;
+    ocrModelLabel: string;
+    ocrModelHint: string;
+    ocrNotConfiguredInfo: string;
+    voiceSectionLabel: string;
+    polishSectionLabel: string;
+    ocrConfirmTitle: string;
+    ocrConfirmBody: string;
+    ocrConfirmRegular: string;
+    ocrConfirmOcr: string;
+    ocrConfirmCancel: string;
 };
 export declare const zh: BetterInputStrings;
 export declare const en: BetterInputStrings;

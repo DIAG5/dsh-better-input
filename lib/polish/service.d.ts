@@ -32,8 +32,14 @@ export declare class BetterInputPolishService extends TypertRemoteService {
      * base64 string; we decode once and hand them to the converter package.
      * This runs only on the Host so the heavy parsing libraries never ship to
      * the browser.
+     *
+     * When `ocr` is true and the detected format is a raster-friendly document
+     * (PDF pages / PPTX embedded images), conversion routes through the vision
+     * model instead of the text-layer converters — for scanned or image-heavy
+     * files whose text layer is empty. Any other file with `ocr` set falls back
+     * to the normal text-layer conversion.
      */
-    convertFile(fileName: string, fileData: string, signal: AbortSignal): Promise<{
+    convertFile(fileName: string, fileData: string, ocr: boolean | undefined, signal: AbortSignal): Promise<{
         success: boolean;
         format: ConvertibleFormat;
         markdown: string;
@@ -46,6 +52,16 @@ export declare class BetterInputPolishService extends TypertRemoteService {
             fileCount?: number;
         };
     }>;
+    /**
+     * OCR one scanned document through the configured vision model. Every page
+     * (PDF) or embedded image (PPTX) is saved through the attachment store and
+     * read by the model sequentially (one image per call), then concatenated
+     * into a single Markdown document. A per-image failure is recorded as a
+     * comment rather than aborting the whole conversion.
+     */
+    private ocrConvert;
+    /** Run one vision-model read of a single saved image, returning its Markdown. */
+    private ocrOne;
     /**
      * Resolve the effective reasoning-effort wire config for one route. An
      * explicit stored selection is forwarded as-is. The empty default means

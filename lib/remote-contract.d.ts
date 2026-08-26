@@ -1,5 +1,6 @@
 import { z } from 'zod';
 export declare const textSchema: z.ZodString;
+export declare const booleanSchema: z.ZodOptional<z.ZodBoolean>;
 export declare const betterInputSettingsSchema: z.ZodObject<{
     language: z.ZodString;
     maxRecordingSeconds: z.ZodNumber;
@@ -14,6 +15,8 @@ export declare const betterInputSettingsSchema: z.ZodObject<{
     optimizeReasoningEffort: z.ZodString;
     optimizePrompt: z.ZodString;
     contextTurns: z.ZodNumber;
+    ocrProvider: z.ZodString;
+    ocrModel: z.ZodString;
 }, z.core.$strip>;
 export declare const betterInputSettingsPatchSchema: z.ZodObject<{
     language: z.ZodOptional<z.ZodString>;
@@ -29,6 +32,8 @@ export declare const betterInputSettingsPatchSchema: z.ZodObject<{
     optimizeReasoningEffort: z.ZodOptional<z.ZodString>;
     optimizePrompt: z.ZodOptional<z.ZodString>;
     contextTurns: z.ZodOptional<z.ZodNumber>;
+    ocrProvider: z.ZodOptional<z.ZodString>;
+    ocrModel: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 export declare const betterInputSettingsViewSchema: z.ZodObject<{
     available: z.ZodBoolean;
@@ -47,6 +52,8 @@ export declare const betterInputSettingsViewSchema: z.ZodObject<{
         optimizeReasoningEffort: z.ZodString;
         optimizePrompt: z.ZodString;
         contextTurns: z.ZodNumber;
+        ocrProvider: z.ZodString;
+        ocrModel: z.ZodString;
     }, z.core.$strip>;
     overridden: z.ZodArray<z.ZodString>;
     defaultPolishPrompt: z.ZodString;

@@ -15,6 +15,7 @@ export const MAX_TRANSCRIPT_CHARACTERS = 12_000
 export const MAX_OPTIMIZE_CHARACTERS = 12_000
 export const MAX_POLISHED_CHARACTERS = 24_000
 export const MAX_OPTIMIZED_CHARACTERS = 24_000
+export const MAX_OCR_CHARACTERS = 120_000
 export const POLISH_TIMEOUT_MS = 20_000
 export const OPTIMIZE_TIMEOUT_MS = 20_000
 
@@ -45,6 +46,10 @@ export interface BetterInputSettings {
   optimizePrompt: string
   /** Number of recent conversation turns to include as context for optimization. 0 disables context. */
   contextTurns: number
+  /** dsh OCR vision provider id; empty reuses the polish route. */
+  ocrProvider: string
+  /** dsh OCR vision model id; empty reuses the polish route. */
+  ocrModel: string
 }
 
 /**
@@ -69,6 +74,8 @@ export const DEFAULT_SETTINGS: BetterInputSettings = Object.freeze({
   optimizeReasoningEffort: '',
   optimizePrompt: '',
   contextTurns: 3,
+  ocrProvider: '',
+  ocrModel: '',
 })
 
 export type BetterInputSettingsPatch = Partial<BetterInputSettings>

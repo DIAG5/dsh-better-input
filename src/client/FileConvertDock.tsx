@@ -54,7 +54,9 @@ function refOf(name: string): string {
 export function FileConvertDock({ sessionId, remote, controller, t }: FileConvertDockProps) {
   const [files, setFiles] = useState<PendingFile[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [info, setInfo] = useState<string | null>(null)
   const [editingRef, setEditingRef] = useState<string | null>(null)
+  const [ocrAsk, setOcrAsk] = useState<PendingFile | null>(null)
   const [expanded, setExpanded] = useState(controller.store.isExpanded())
   const inputRef = useRef<HTMLInputElement>(null)
   const abortRef = useRef<AbortController | null>(null)
@@ -108,7 +110,7 @@ export function FileConvertDock({ sessionId, remote, controller, t }: FileConver
     if (inputRef.current) inputRef.current.value = ''
   }
 
-  const handleConvert = async (file: PendingFile) => {
+  const handleConvert = async (file: PendingFile, useOcr: boolean) => {
     if (file.state === 'converting') return
     if (file.data.byteLength === 0) {
       setError(t('convertEmptyFile'))
@@ -122,7 +124,7 @@ export function FileConvertDock({ sessionId, remote, controller, t }: FileConver
     abortRef.current = controller2
 
     try {
-      const result = await remote.convertFile(file.name, bytesToBase64(file.data), controller2.signal)
+      const result = await remote.convertFile(file.name, bytesToBase64(file.data), useOcr, controller2.signal)
       if (controller2.signal.aborted) return
       if (!result.ok) {
         setError(result.error.message)
@@ -170,6 +172,23 @@ export function FileConvertDock({ sessionId, remote, controller, t }: FileConver
     setFiles((prev) => prev.filter((p) => p.id !== id))
   }
 
+  /** Start an OCR conversion, but first verify a vision model is configured.
+   *  Without one we show a friendly info toast instead of running the Host
+   *  (which would surface as an error). */
+  const startOcrWithCheck = async (file: PendingFile) => {
+    try {
+      const view = await remote.getSettings()
+      const settings = view.ok ? view.value.settings : undefined
+      if (settings === undefined || settings.ocrProvider.trim() === '' || settings.ocrModel.trim() === '') {
+        setInfo(t('ocrNotConfiguredInfo'))
+        return
+      }
+    } catch {
+      // If the settings read fails, let the Host decide (it still guards).
+    }
+    await handleConvert(file, true)
+  }
+
   const releaseAbort = () => {
     abortRef.current?.abort()
     abortRef.current = null
@@ -197,7 +216,13 @@ export function FileConvertDock({ sessionId, remote, controller, t }: FileConver
                 ) : ready ? (
                   <span style={okBadgeStyle}>✓</span>
                 ) : (
-                  <button type="button" style={convertBtnStyle} onClick={() => handleConvert(file)} title={t('convertStart')}>
+                  <button type="button" style={convertBtnStyle} onClick={() => {
+                    if (file.format === 'pdf' || file.format === 'pptx') {
+                      setOcrAsk(file)
+                    } else {
+                      void handleConvert(file, false)
+                    }
+                  }} title={t('convertStart')}>
                     {t('convertStart')}
                   </button>
                 )}
@@ -229,6 +254,26 @@ export function FileConvertDock({ sessionId, remote, controller, t }: FileConver
           onClose={() => setEditingRef(null)}
         />
       ) : null}
+
+      {ocrAsk ? (
+        <OcrConfirmModal
+          fileName={ocrAsk.name}
+          t={t}
+          onRegular={() => {
+            const f = ocrAsk
+            setOcrAsk(null)
+            void handleConvert(f, false)
+          }}
+          onOcr={() => {
+            const f = ocrAsk
+            setOcrAsk(null)
+            void startOcrWithCheck(f)
+          }}
+          onClose={() => setOcrAsk(null)}
+        />
+      ) : null}
+
+      {info ? <InfoToast message={info} onDismiss={() => setInfo(null)} /> : null}
 
       {error ? <ErrorToast message={error} onDismiss={() => setError(null)} /> : null}
     </>
@@ -287,6 +332,31 @@ function EditModal(props: {
   )
 }
 
+// --- OCR confirm modal: ask whether to run the vision model on PDF/PPT ---
+
+function OcrConfirmModal(props: {
+  fileName: string
+  t: Translate
+  onRegular: () => void
+  onOcr: () => void
+  onClose: () => void
+}) {
+  const { fileName, t, onRegular, onOcr, onClose } = props
+  return (
+    <ModalShell onClose={onClose} title={t('ocrConfirmTitle')}>
+      <p style={modalBodyStyle}>{t('ocrConfirmBody')}</p>
+      <div style={metaRowStyle}>
+        <span style={metaItemStyle}>{fileName}</span>
+      </div>
+      <div style={actionsStyle}>
+        <button type="button" style={cancelBtnStyle} onClick={onClose}>{t('ocrConfirmCancel')}</button>
+        <button type="button" style={linkBtnStyle} onClick={onRegular}>{t('ocrConfirmRegular')}</button>
+        <button type="button" style={overwriteBtnStyle} onClick={onOcr}>{t('ocrConfirmOcr')}</button>
+      </div>
+    </ModalShell>
+  )
+}
+
 // --- Portals & styles reuse the plugin's existing modal/doc patterns ---
 
 function ModalShell(props: { title: string; onClose: () => void; children: React.ReactNode }) {
@@ -305,6 +375,18 @@ function ErrorToast({ message, onDismiss }: { message: string; onDismiss: () => 
   return createPortal(
     <div style={toastOverlayStyle} onClick={onDismiss}>
       <div style={toastStyle} onClick={(e) => e.stopPropagation()}>
+        <div style={{ flex: 1 }}>{message}</div>
+        <button type="button" style={toastCloseStyle} onClick={onDismiss}>×</button>
+      </div>
+    </div>,
+    document.body
+  )
+}
+
+function InfoToast({ message, onDismiss }: { message: string; onDismiss: () => void }) {
+  return createPortal(
+    <div style={toastOverlayStyle} onClick={onDismiss}>
+      <div style={infoToastStyle} onClick={(e) => e.stopPropagation()}>
         <div style={{ flex: 1 }}>{message}</div>
         <button type="button" style={toastCloseStyle} onClick={onDismiss}>×</button>
       </div>
@@ -379,8 +461,10 @@ const metaRowStyle: React.CSSProperties = { display: 'flex', gap: 16, marginBott
 const metaItemStyle: React.CSSProperties = { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 const editableStyle: React.CSSProperties = { flex: 1, minHeight: 240, maxHeight: '46vh', padding: 10, fontSize: 12, lineHeight: 1.6, borderRadius: 6, border: '1px solid var(--dsh-color-border, #e8e8e8)', background: 'var(--dsh-color-surface-muted, #f9f9f9)', color: 'var(--dsh-color-text, inherit)', fontFamily: 'inherit', resize: 'none', whiteSpace: 'pre-wrap' }
 const actionsStyle: React.CSSProperties = { display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }
+const modalBodyStyle: React.CSSProperties = { margin: '0 0 8px', fontSize: 13, lineHeight: 1.6, color: 'var(--dsh-color-text, inherit)' }
 const overwriteBtnStyle: React.CSSProperties = { padding: '6px 16px', border: 'none', borderRadius: 6, background: 'var(--dsh-color-primary, #4f8cff)', color: '#fff', cursor: 'pointer', fontSize: 13 }
 const cancelBtnStyle: React.CSSProperties = { padding: '6px 16px', border: '1px solid var(--dsh-color-border, #ddd)', borderRadius: 6, background: 'transparent', color: 'var(--dsh-color-text, inherit)', cursor: 'pointer', fontSize: 13 }
 const toastOverlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', zIndex: 99998, pointerEvents: 'none', paddingTop: 16 }
 const toastStyle: React.CSSProperties = { padding: '10px 14px', borderRadius: 8, background: 'var(--dsh-color-surface, #fff)', border: '1px solid var(--dsh-color-danger, #f5c2c7)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', color: 'var(--dsh-color-danger-text, #c33)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 480, pointerEvents: 'auto' }
+const infoToastStyle: React.CSSProperties = { padding: '10px 14px', borderRadius: 8, background: 'var(--dsh-color-surface, #fff)', border: '1px solid var(--dsh-color-border, #ddd)', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', color: 'var(--dsh-color-text, inherit)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 480, pointerEvents: 'auto' }
 const toastCloseStyle: React.CSSProperties = { border: 'none', background: 'transparent', color: 'inherit', cursor: 'pointer', fontSize: 18, padding: 0, lineHeight: 1, flex: 'none' }

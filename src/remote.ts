@@ -1,6 +1,6 @@
 import type { RemoteResult, TypertRemoteContribution } from '@deepseek-ai/dsh-typert-protocol'
 import type { ClientRemote } from '@deepseek-ai/dsh-api-remotes/client'
-import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
+import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, booleanSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
 import type { AboutInfoWire, BetterInputSettingsPatch, BetterInputSettingsView, ConvertFileResultWire, PolishRoute, ReasoningEffortInfo, UpdateCheckResultWire } from './remote-contract.js'
 
 export type BetterInputRemote = ClientRemote['betterInput']
@@ -15,7 +15,7 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
     checkForUpdate: (signal?: AbortSignal) => Promise<RemoteResult<UpdateCheckResultWire>>
     polish: (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
     optimize: (text: string, provider: string, model: string, context: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
-    convertFile: (fileName: string, fileData: string, signal?: AbortSignal) => Promise<RemoteResult<ConvertFileResultWire>>
+    convertFile: (fileName: string, fileData: string, ocr?: boolean, signal?: AbortSignal) => Promise<RemoteResult<ConvertFileResultWire>>
   }
 
   interface TypertRemoteMap {
@@ -27,7 +27,7 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
     'betterInput/checkForUpdate': (signal?: AbortSignal) => Promise<RemoteResult<UpdateCheckResultWire>>
     'betterInput/polish': (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
     'betterInput/optimize': (text: string, provider: string, model: string, context: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
-    'betterInput/convertFile': (fileName: string, fileData: string, signal?: AbortSignal) => Promise<RemoteResult<ConvertFileResultWire>>
+    'betterInput/convertFile': (fileName: string, fileData: string, ocr?: boolean, signal?: AbortSignal) => Promise<RemoteResult<ConvertFileResultWire>>
   }
 
   interface TypertRemoteNamespaceMap {
@@ -226,6 +226,12 @@ export const TYPERT_REMOTE: TypertRemoteContribution = {
           wire: 'fileData',
           source: 'json',
           codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'ocr',
+          wire: 'ocr',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'boolean', schema: booleanSchema }
         }
       ],
       cancellation: { parameter: 'signal' },

@@ -1,4 +1,4 @@
-import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
+import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, booleanSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
 
 export const TYPERT = {
   package: 'dsh-better-input',
@@ -193,6 +193,12 @@ export const TYPERT = {
           wire: 'fileData',
           source: 'json',
           codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        },
+        {
+          name: 'ocr',
+          wire: 'ocr',
+          source: 'json',
+          codec: { mode: 'strict', typeSymbol: 'boolean', schema: booleanSchema }
         }
       ],
       cancellation: { parameter: 'signal' },
@@ -272,9 +278,9 @@ export const TYPERT = {
           {
             kind: 'method',
             name: 'convertFile',
-            signature: 'convertFile(fileName: string, fileData: string, signal: AbortSignal): Promise<ConvertFileResult>',
-            summary: 'Convert a binary file to Markdown on the Host.',
-            jsDoc: '/** Convert a binary file to Markdown on the Host. */'
+            signature: 'convertFile(fileName: string, fileData: string, ocr?: boolean, signal: AbortSignal): Promise<ConvertFileResult>',
+            summary: 'Convert a binary file to Markdown on the Host. With ocr=true, scanned PDF pages / PPTX images are read by the vision model.',
+            jsDoc: '/** Convert a binary file to Markdown on the Host. With ocr=true, scanned PDF pages / PPTX images are read by the vision model. */'
           }
         ],
         types: [

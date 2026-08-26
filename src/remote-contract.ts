@@ -3,6 +3,8 @@ import type { BetterInputSettings, BetterInputSettingsPatch, BetterInputSettings
 
 export const textSchema = z.string()
 
+export const booleanSchema = z.boolean().optional()
+
 export const betterInputSettingsSchema = z.object({
   language: z.string(),
   maxRecordingSeconds: z.number(),
@@ -16,7 +18,9 @@ export const betterInputSettingsSchema = z.object({
   optimizeModel: z.string(),
   optimizeReasoningEffort: z.string(),
   optimizePrompt: z.string(),
-  contextTurns: z.number()
+  contextTurns: z.number(),
+  ocrProvider: z.string(),
+  ocrModel: z.string()
 })
 
 export const betterInputSettingsPatchSchema = z.object({
@@ -32,7 +36,9 @@ export const betterInputSettingsPatchSchema = z.object({
   optimizeModel: z.string().optional(),
   optimizeReasoningEffort: z.string().optional(),
   optimizePrompt: z.string().optional(),
-  contextTurns: z.number().optional()
+  contextTurns: z.number().optional(),
+  ocrProvider: z.string().optional(),
+  ocrModel: z.string().optional()
 })
 
 export const betterInputSettingsViewSchema = z.object({

@@ -14,6 +14,8 @@ export declare const BetterInputSettingsSchema: s<Schemastery.ObjectS<{
     optimizeReasoningEffort: s<string, string>;
     optimizePrompt: s<string, string>;
     contextTurns: s<number, number>;
+    ocrProvider: s<string, string>;
+    ocrModel: s<string, string>;
 }>, Schemastery.ObjectT<{
     language: s<string, string>;
     maxRecordingSeconds: s<number, number>;
@@ -28,4 +30,6 @@ export declare const BetterInputSettingsSchema: s<Schemastery.ObjectS<{
     optimizeReasoningEffort: s<string, string>;
     optimizePrompt: s<string, string>;
     contextTurns: s<number, number>;
+    ocrProvider: s<string, string>;
+    ocrModel: s<string, string>;
 }>>;

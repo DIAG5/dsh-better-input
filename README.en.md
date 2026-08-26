@@ -208,7 +208,18 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 
 > Conversion runs locally via built-in parsers (PDF / Word / Excel / PPT / EPUB / HTML / CSV / JSON / XML etc.); the generated Markdown is sent with your message so the agent can read the document at a glance.
 
-### 5. Check for updates
+### 5. OCR vision recognition (scanned PDF / PPT)
+
+For documents **without a text layer** — scanned PDFs, image-only PDFs, or PPTs whose slides are just pictures — regular conversion yields little or no text. Use OCR to let a vision model "read the pixels":
+
+1. First, in Settings → **BetterInput**, pick an "**OCR vision model**" (a vision model supporting image input; independent of the polish model)
+2. Add a `.pdf` / `.pptx` file and click "**Start conversion**" — you'll be asked "Use OCR?"
+3. Choose "**Use OCR**": PDF pages are rendered to images (or PPT embedded images extracted) and fed one at a time to the vision model as Markdown
+4. Choosing "Regular conversion" keeps the built-in text-layer extraction
+
+> If no OCR model is set, clicking "Use OCR" shows a neutral toast guiding you to Settings instead of a red error; if the chosen model explicitly declares it does not support image input, you're told upfront to switch, avoiding a confusing empty result.
+
+### 6. Check for updates
 
 1. Open Settings → **BetterInput** → scroll to the bottom to the "**About & Updates**" section
 2. Click "**Check for updates**"
@@ -225,7 +236,7 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 
 > Note: DSH does not auto-update third-party plugins on launch — run the command above to pull the new release. This section simply helps you notice and follow updates promptly.
 
-### 6. Settings
+### 7. Settings
 
 | Setting | Meaning |
 | --- | --- |
@@ -240,6 +251,7 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 | Optimize model | A dsh model route |
 | Optimize reasoning effort | Default: thinking off; optional higher tiers the model supports |
 | Custom optimize prompt | Optional replacement of the built-in optimize prompt |
+| OCR vision model | Vision model for scanned pages / embedded images; independent of the polish model. OCR is unavailable without one |
 | About & Updates | Shows installed version / license / repo, and a one-click "Check for updates" for the latest release and update command |
 
 > Polish and optimization are configured independently — model, effort, and prompt each.

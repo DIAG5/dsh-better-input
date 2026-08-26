@@ -3,20 +3,23 @@ import type { Context } from '@deepseek-ai/cordis'
 import { TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 import { settingsNamespace } from '@deepseek-ai/dsh-settings'
 import type { SettingsScope } from '@deepseek-ai/dsh-settings'
+import type { ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
 import type { LlmModelInfo, LlmResolvedModelInfo, StreamChunk } from '@deepseek-ai/dsh-llm'
-import { DEFAULT_SETTINGS, MAX_OPTIMIZED_CHARACTERS, MAX_OPTIMIZE_CHARACTERS, MAX_POLISHED_CHARACTERS, MAX_TRANSCRIPT_CHARACTERS, OPTIMIZE_TIMEOUT_MS, POLISH_TIMEOUT_MS, SETTINGS_NAMESPACE, validateSettings, type BetterInputSettings, type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js'
+import { DEFAULT_SETTINGS, MAX_OCR_CHARACTERS, MAX_OPTIMIZED_CHARACTERS, MAX_OPTIMIZE_CHARACTERS, MAX_POLISHED_CHARACTERS, MAX_TRANSCRIPT_CHARACTERS, OPTIMIZE_TIMEOUT_MS, POLISH_TIMEOUT_MS, SETTINGS_NAMESPACE, validateSettings, type BetterInputSettings, type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js'
 import { BetterInputSettingsSchema } from '../config-schema.js'
 import { checkForPluginUpdate, readInstalledAboutInfo, type AboutInfo, type UpdateCheckResult } from '../about.js'
-import { optimizeUserText, polishUserText, resolveOptimizeSystemPrompt, resolvePolishSystemPrompt, OPTIMIZE_SYSTEM_PROMPT, POLISH_SYSTEM_PROMPT } from './prompts.js'
+import { optimizeUserText, polishUserText, resolveOptimizeSystemPrompt, resolvePolishSystemPrompt, OCR_SYSTEM_PROMPT, ocrUserText, OPTIMIZE_SYSTEM_PROMPT, POLISH_SYSTEM_PROMPT } from './prompts.js'
 import { convertFile } from '../converter/to-markdown.js'
-import type { ConvertibleFormat } from '../converter/types.js'
+import { detectFormat } from '../converter/detect.js'
+import { extractPptxImages, renderPdfPages, type OcrImage } from '../converter/ocr.js'
+import type { ConvertibleFormat, ConvertResult } from '../converter/types.js'
 import { MAX_INPUT_BYTES } from '../converter/types.js'
 
 /** Host-side settings file shape (flat for hand editing). */
 type StoredSettings = BetterInputSettings
 
 export class BetterInputPolishService extends TypertRemoteService {
-  static inject = ['llm']
+  static inject = ['llm', 'attachments']
   private settings: SettingsScope<Record<string, unknown>> | undefined
 
   constructor(ctx: Context) {
@@ -246,10 +249,17 @@ export class BetterInputPolishService extends TypertRemoteService {
    * base64 string; we decode once and hand them to the converter package.
    * This runs only on the Host so the heavy parsing libraries never ship to
    * the browser.
+   *
+   * When `ocr` is true and the detected format is a raster-friendly document
+   * (PDF pages / PPTX embedded images), conversion routes through the vision
+   * model instead of the text-layer converters — for scanned or image-heavy
+   * files whose text layer is empty. Any other file with `ocr` set falls back
+   * to the normal text-layer conversion.
    */
   async convertFile(
     fileName: string,
     fileData: string,
+    ocr: boolean | undefined,
     signal: AbortSignal
   ): Promise<{ success: boolean; format: ConvertibleFormat; markdown: string; warnings: readonly string[]; metadata?: { pageCount?: number; slideCount?: number; sheetCount?: number; wordCount?: number; fileCount?: number } }> {
     signal.throwIfAborted()
@@ -263,7 +273,109 @@ export class BetterInputPolishService extends TypertRemoteService {
     if (data.byteLength > MAX_INPUT_BYTES) {
       throw new Error('文件过大，无法转换')
     }
+    if (ocr) {
+      const format = detectFormat(fileName, data)
+      if (format === 'pdf' || format === 'pptx') {
+        return this.ocrConvert(format, data, signal)
+      }
+    }
     return convertFile(fileName, data)
+  }
+
+  /**
+   * OCR one scanned document through the configured vision model. Every page
+   * (PDF) or embedded image (PPTX) is saved through the attachment store and
+   * read by the model sequentially (one image per call), then concatenated
+   * into a single Markdown document. A per-image failure is recorded as a
+   * comment rather than aborting the whole conversion.
+   */
+  private async ocrConvert(
+    format: 'pdf' | 'pptx',
+    data: Uint8Array,
+    signal: AbortSignal
+  ): Promise<{ success: boolean; format: ConvertibleFormat; markdown: string; warnings: readonly string[]; metadata?: { pageCount?: number; slideCount?: number; sheetCount?: number; wordCount?: number; fileCount?: number } }> {
+    const settings = this.settings === undefined ? DEFAULT_SETTINGS : flattenStoredSettings(this.settings.get())
+    // OCR uses its own dedicated vision route — it deliberately does NOT fall
+    // back to the polish model, so a scanned file can only be OCR-ready once
+    // the user explicitly picked a vision model in Settings.
+    const provider = settings.ocrProvider.trim()
+    const model = settings.ocrModel.trim()
+    if (provider === '' || model === '') {
+      return { success: false, format, markdown: '', warnings: ['未配置 OCR 视觉模型，请在设置页选择'] }
+    }
+    if (this.ctx.attachments === undefined) {
+      return { success: false, format, markdown: '', warnings: ['附件服务不可用，无法执行 OCR'] }
+    }
+
+    // Modality guard: only block when the route *explicitly* declares it does
+    // NOT accept image input. A provider that omits the modality list is
+    // "unknown", so we conservatively let it through — the adapter may still
+    // upload images even if it does not advertise vision.
+    try {
+      const info = await this.ctx.llm.resolveModelInfo(provider, model, signal)
+      const modalities = info.inputModalities
+      if (modalities !== undefined && !modalities.includes('image')) {
+        return { success: false, format, markdown: '', warnings: ['所选 OCR 模型不支持图片输入，请更换支持视觉的模型'] }
+      }
+    } catch {
+      // Unknown modality — do not reject on a lookup failure.
+    }
+
+    let images: OcrImage[]
+    try {
+      images = format === 'pdf' ? await renderPdfPages(data) : await extractPptxImages(data)
+    } catch (error) {
+      return { success: false, format, markdown: '', warnings: [error instanceof Error ? error.message : 'OCR 图像解析失败'] }
+    }
+    signal.throwIfAborted()
+    if (images.length === 0) {
+      return { success: false, format, markdown: '', warnings: ['未从文件中提取到可识别的图片'] }
+    }
+
+    const parts: string[] = []
+    for (const image of images) {
+      signal.throwIfAborted()
+      let text: string
+      try {
+        const ref = await this.ctx.attachments.saveImage({ data: image.data, mediaType: image.mediaType, name: image.name })
+        text = await this.ocrOne(provider, model, ref, image.name, signal)
+      } catch (error) {
+        if (signal.aborted) throw error
+        parts.push(`<!-- ${image.name}：OCR 中断（${error instanceof Error ? error.message : '未知错误'}） -->\n`)
+        continue
+      }
+      if (text !== '') parts.push(`## ${image.name}\n\n${text}\n`)
+    }
+
+    const markdown = parts.join('\n').trim()
+    if (markdown === '') {
+      return { success: false, format, markdown: '', warnings: ['OCR 未能提取到有效内容'] }
+    }
+    return {
+      success: true,
+      format,
+      markdown,
+      warnings: [],
+      metadata: format === 'pdf' ? { pageCount: images.length } : { slideCount: images.length },
+    }
+  }
+
+  /** Run one vision-model read of a single saved image, returning its Markdown. */
+  private async ocrOne(provider: string, model: string, ref: ImageAttachmentRef, imageName: string, signal: AbortSignal): Promise<string> {
+    const prepared = await this.ctx.llm.prepareCall({ provider, model }, signal)
+    const message = createUserMessage({
+      content: [
+        { type: 'image', attachment: ref },
+        { type: 'text', text: ocrUserText(imageName) },
+      ],
+      source: { kind: 'user' },
+    })
+    return collectText(prepared.stream({
+      ...prepared.config,
+      messages: [message],
+      system: OCR_SYSTEM_PROMPT,
+      signal,
+    }), MAX_OCR_CHARACTERS, 'OCR')
   }
 
   /**
@@ -304,6 +416,8 @@ function flattenStoredSettings(raw: unknown): BetterInputSettings {
     optimizeReasoningEffort: text(record.optimizeReasoningEffort),
     optimizePrompt: typeof record.optimizePrompt === 'string' ? record.optimizePrompt : '',
     contextTurns: typeof record.contextTurns === 'number' ? record.contextTurns : DEFAULT_SETTINGS.contextTurns,
+    ocrProvider: text(record.ocrProvider),
+    ocrModel: text(record.ocrModel),
   }
 }
 
