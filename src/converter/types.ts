@@ -66,5 +66,11 @@ export type Converter = (
   data: Uint8Array
 ) => Promise<ConvertResult>
 
-/** Max markdown characters produced by one converter (guards runaway output). */
-export const MAX_CONVERTED_CHARACTERS = 200_000
+/**
+ * Hard ceiling on the raw input bytes accepted for conversion. This guards the
+ * Host against parsing an unexpectedly huge payload (which would build a large
+ * in-memory document model), independent of any conversion result — a big file
+ * with little text (e.g. an image-heavy PDF) must not be rejected merely
+ * because we cannot infer characters from bytes.
+ */
+export const MAX_INPUT_BYTES = 200_000_000

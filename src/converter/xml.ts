@@ -1,6 +1,5 @@
 import { XMLParser } from 'fast-xml-parser'
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert an XML file to structured Markdown.
@@ -99,11 +98,6 @@ export const xmlConverter: Converter = async (_filePath, data): Promise<ConvertR
   const markdown = renderValue(root, 0).trim()
 
   const warnings: string[] = []
-  const capped = markdown.length > MAX_CONVERTED_CHARACTERS
-  const output = capped
-    ? `${markdown.slice(0, MAX_CONVERTED_CHARACTERS)}\n\n<!-- truncated: output exceeds ${MAX_CONVERTED_CHARACTERS} characters -->`
-    : markdown
-  if (capped) warnings.push('XML 过大，已截断输出')
 
-  return { success: true, format: 'xml', markdown: output, warnings }
+  return { success: true, format: 'xml', markdown, warnings }
 }

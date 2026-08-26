@@ -1,7 +1,6 @@
 import mammoth from 'mammoth'
 import TurndownService from 'turndown'
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert a .docx file to Markdown.
@@ -30,17 +29,12 @@ export const docxConverter: Converter = async (_filePath, data): Promise<Convert
   const markdown = turndown.turndown(html).trim()
 
   const warnings: string[] = []
-  const capped = markdown.length > MAX_CONVERTED_CHARACTERS
-  const output = capped
-    ? `${markdown.slice(0, MAX_CONVERTED_CHARACTERS)}\n\n<!-- truncated: output exceeds ${MAX_CONVERTED_CHARACTERS} characters -->`
-    : markdown
-  if (capped) warnings.push('文档过大，已截断输出')
 
-  const wordCount = output.split(/\s+/).filter(Boolean).length
+  const wordCount = markdown.split(/\s+/).filter(Boolean).length
   return {
     success: true,
     format: 'docx',
-    markdown: output,
+    markdown,
     warnings,
     metadata: { wordCount },
   }

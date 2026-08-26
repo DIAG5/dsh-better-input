@@ -1,7 +1,6 @@
 import JSZip from 'jszip'
 import { XMLParser } from 'fast-xml-parser'
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert a .pptx to Markdown.
@@ -89,17 +88,12 @@ export const pptxConverter: Converter = async (_filePath, data): Promise<Convert
   const markdown = slides.join('\n\n').trim()
 
   const warnings: string[] = []
-  const capped = markdown.length > MAX_CONVERTED_CHARACTERS
-  const output = capped
-    ? `${markdown.slice(0, MAX_CONVERTED_CHARACTERS)}\n\n<!-- truncated: output exceeds ${MAX_CONVERTED_CHARACTERS} characters -->`
-    : markdown
-  if (capped) warnings.push('PPT 过大，已截断输出')
   warnings.push('PPT 仅提取文字内容，不保留排版/图表/图片')
 
   return {
     success: true,
     format: 'pptx',
-    markdown: output,
+    markdown,
     warnings,
     metadata: { slideCount: slideNames.length },
   }

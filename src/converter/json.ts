@@ -1,5 +1,4 @@
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert a JSON file to structured Markdown.
@@ -68,11 +67,6 @@ export const jsonConverter: Converter = async (_filePath, data): Promise<Convert
   const markdown = convertValue(parsed, '$').trim()
 
   const warnings: string[] = []
-  const capped = markdown.length > MAX_CONVERTED_CHARACTERS
-  const output = capped
-    ? `${markdown.slice(0, MAX_CONVERTED_CHARACTERS)}\n\n<!-- truncated: output exceeds ${MAX_CONVERTED_CHARACTERS} characters -->`
-    : markdown
-  if (capped) warnings.push('JSON 过大，已截断输出')
 
-  return { success: true, format: 'json', markdown: output, warnings }
+  return { success: true, format: 'json', markdown, warnings }
 }

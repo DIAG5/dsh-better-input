@@ -1,6 +1,5 @@
 import TurndownService from 'turndown'
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert an HTML file to Markdown with turndown.
@@ -29,17 +28,12 @@ export const htmlConverter: Converter = async (_filePath, data): Promise<Convert
   const markdown = turndown.turndown(cleaned).trim()
 
   const warnings: string[] = []
-  const capped = markdown.length > MAX_CONVERTED_CHARACTERS
-  const output = capped
-    ? `${markdown.slice(0, MAX_CONVERTED_CHARACTERS)}\n\n<!-- truncated: output exceeds ${MAX_CONVERTED_CHARACTERS} characters -->`
-    : markdown
-  if (capped) warnings.push('HTML 过大，已截断输出')
 
   return {
     success: true,
     format: 'html',
-    markdown: output,
+    markdown,
     warnings,
-    metadata: { wordCount: output.split(/\s+/).filter(Boolean).length },
+    metadata: { wordCount: markdown.split(/\s+/).filter(Boolean).length },
   }
 }

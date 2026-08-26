@@ -32,5 +32,11 @@ export interface ConvertResult {
  * bytes; `filePath` is used only for detecting the format and messages.
  */
 export type Converter = (filePath: string, data: Uint8Array) => Promise<ConvertResult>;
-/** Max markdown characters produced by one converter (guards runaway output). */
-export declare const MAX_CONVERTED_CHARACTERS = 200000;
+/**
+ * Hard ceiling on the raw input bytes accepted for conversion. This guards the
+ * Host against parsing an unexpectedly huge payload (which would build a large
+ * in-memory document model), independent of any conversion result — a big file
+ * with little text (e.g. an image-heavy PDF) must not be rejected merely
+ * because we cannot infer characters from bytes.
+ */
+export declare const MAX_INPUT_BYTES = 200000000;

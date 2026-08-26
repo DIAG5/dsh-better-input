@@ -1,7 +1,6 @@
 import JSZip from 'jszip'
 import TurndownService from 'turndown'
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert an .epub to Markdown.
@@ -82,10 +81,6 @@ export const epubConverter: Converter = async (_filePath, data): Promise<Convert
     if (md === '') continue
     chapterCount += 1
     chapters.push(`## ${href}\n\n${md}`)
-    if (chapters.join('\n').length > MAX_CONVERTED_CHARACTERS) {
-      chapters.push('\n<!-- truncated: epub exceeds output limit -->')
-      break
-    }
   }
 
   if (chapterCount === 0) throw new Error('EPUB 未解析出任何章节文本')

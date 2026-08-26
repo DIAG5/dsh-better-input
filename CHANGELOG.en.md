@@ -2,6 +2,17 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.1.6] - 2026-08-26
+
+### Fixed
+
+- **File-size limit no longer rejects image-heavy documents by mistake**: the Host previously applied a faulty conversion (`200_000 × 8` ≈ 1.6 MB) as the input cap, so any document larger than 1.6 MB but with very little text (e.g. an image-heavy PDF / Word) was refused with "file too large to convert". This is now an independent input guard, `MAX_INPUT_BYTES` (200 MB), that only blocks files large enough to risk blowing up parse memory — byte size is no longer confused with character count.
+
+### Changed
+
+- **Removed the character cap on conversion output**: converted Markdown is now emitted in full, no more 200,000-character truncation (`MAX_CONVERTED_CHARACTERS` deleted). Long documents, big tables and long histories are sent into the conversation intact.
+- **Upload limit adjusted**: the front-end upload cap was raised from 25 MB to 200 MB, matching the Host input guard.
+
 ## [0.1.5] - 2026-08-24
 
 ### Added

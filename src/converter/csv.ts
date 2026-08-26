@@ -1,6 +1,5 @@
 import Papa from 'papaparse'
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert a delimited text file (CSV/TSV) to a Markdown table.
@@ -61,16 +60,11 @@ export const csvConverter: Converter = async (_filePath, data): Promise<ConvertR
 
   const rowsMd = [headerRow, sepRow, ...bodyRows].join('\n')
   const warnings: string[] = []
-  const capped = rowsMd.length > MAX_CONVERTED_CHARACTERS
-  const output = capped
-    ? `${rowsMd.slice(0, MAX_CONVERTED_CHARACTERS)}\n\n<!-- truncated: output exceeds ${MAX_CONVERTED_CHARACTERS} characters -->`
-    : rowsMd
-  if (capped) warnings.push('CSV 过大，已截断输出')
 
   return {
     success: true,
     format: 'csv',
-    markdown: output,
+    markdown: rowsMd,
     warnings,
     metadata: { wordCount: matrix.length },
   }

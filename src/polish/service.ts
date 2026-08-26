@@ -10,7 +10,7 @@ import { checkForPluginUpdate, readInstalledAboutInfo, type AboutInfo, type Upda
 import { optimizeUserText, polishUserText, resolveOptimizeSystemPrompt, resolvePolishSystemPrompt, OPTIMIZE_SYSTEM_PROMPT, POLISH_SYSTEM_PROMPT } from './prompts.js'
 import { convertFile } from '../converter/to-markdown.js'
 import type { ConvertibleFormat } from '../converter/types.js'
-import { MAX_CONVERTED_CHARACTERS } from '../converter/types.js'
+import { MAX_INPUT_BYTES } from '../converter/types.js'
 
 /** Host-side settings file shape (flat for hand editing). */
 type StoredSettings = BetterInputSettings
@@ -257,9 +257,10 @@ export class BetterInputPolishService extends TypertRemoteService {
     if (data.length === 0) {
       throw new Error('文件内容为空')
     }
-    // The converter respects MAX_CONVERTED_CHARACTERS internally; guard against
-    // an unexpectedly huge decoded payload before parsing begins.
-    if (data.byteLength > MAX_CONVERTED_CHARACTERS * 8) {
+    // Independently guard the raw input size so an unexpectedly huge decoded
+    // payload (e.g. an image-heavy PDF that is large on disk but yields little
+    // text) cannot stall parsing — without conflating bytes with characters.
+    if (data.byteLength > MAX_INPUT_BYTES) {
       throw new Error('文件过大，无法转换')
     }
     return convertFile(fileName, data)

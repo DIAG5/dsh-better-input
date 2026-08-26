@@ -1,6 +1,5 @@
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.js'
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert a PDF to Markdown with pdfjs-dist.
@@ -31,15 +30,11 @@ export const pdfConverter: Converter = async (_filePath, data): Promise<ConvertR
         continue
       }
       pages.push(`### 第 ${n} 页\n\n${text.trim()}`)
-      if (pages.join('\n').length > MAX_CONVERTED_CHARACTERS) break
     }
 
     const warnings: string[] = []
     if (emptyPageCount > 0) {
       warnings.push(`检测到 ${emptyPageCount} 页无文字层，可能为扫描件，未做 OCR`)
-    }
-    if (pdf.numPages > 100) {
-      warnings.push('PDF 页数较多，已截断解析')
     }
 
     return {

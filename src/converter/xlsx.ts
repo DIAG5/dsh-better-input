@@ -1,6 +1,5 @@
 import * as XLSX from 'xlsx'
 import type { Converter, ConvertResult } from './types.js'
-import { MAX_CONVERTED_CHARACTERS } from './types.js'
 
 /**
  * Convert an Excel workbook (.xlsx / .xls) to Markdown.
@@ -52,16 +51,11 @@ export const xlsxConverter: Converter = async (filePath, data): Promise<ConvertR
   const markdown = parts.join('\n').trim()
 
   const warnings: string[] = []
-  const capped = markdown.length > MAX_CONVERTED_CHARACTERS
-  const output = capped
-    ? `${markdown.slice(0, MAX_CONVERTED_CHARACTERS)}\n\n<!-- truncated: output exceeds ${MAX_CONVERTED_CHARACTERS} characters -->`
-    : markdown
-  if (capped) warnings.push('表格过大，已截断输出')
 
   return {
     success: true,
     format: isXls ? 'xls' : 'xlsx',
-    markdown: output,
+    markdown,
     warnings,
     metadata: { sheetCount },
   }

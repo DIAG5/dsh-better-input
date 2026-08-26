@@ -30,8 +30,11 @@ type PendingFile = {
   error?: string
 }
 
-/** Maximum bytes we send to the Host for conversion. */
-const MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+/** Maximum bytes we send to the Host for conversion.
+ *  Wide enough to admit image-heavy documents (large on disk, little text) that
+ *  users may legitimately want converted; the Host independently caps the raw
+ *  payload to avoid parsing an absurdly huge buffer. */
+const MAX_UPLOAD_BYTES = 200 * 1024 * 1024
 
 let nextRefId = 0
 
