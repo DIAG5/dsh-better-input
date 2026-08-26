@@ -28,6 +28,12 @@
 
 ---
 
+## 🎬 Feature Demo
+
+https://github.com/user-attachments/assets/caae08fc-2d8e-43c6-8bab-ade2d278337f
+
+> V0.1.5 version demo of four core features
+
 ## ✨ Implemented today
 
 <table>
