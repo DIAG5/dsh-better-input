@@ -1,4 +1,3 @@
-import { getDocument } from 'pdfjs-dist/legacy/build/pdf.js'
 import type { Converter, ConvertResult } from './types.js'
 
 /**
@@ -10,6 +9,10 @@ import type { Converter, ConvertResult } from './types.js'
  */
 
 export const pdfConverter: Converter = async (_filePath, data): Promise<ConvertResult> => {
+  // Dynamic import: pdfjs-dist/legacy is CommonJS and cannot be named-imported
+  // from ESM under Node.js (Named export 'getDocument' not found). Matches the
+  // pattern already used in ocr.ts.
+  const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.js')
   const task = getDocument({
     data: new Uint8Array(data),
     isEvalSupported: false,
