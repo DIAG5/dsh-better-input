@@ -2,6 +2,12 @@
 
 本仓库的版本记录从这里开始，持续维护。中文内容以本文件为准，英文镜像见 [CHANGELOG.en.md](CHANGELOG.en.md)。
 
+## [0.1.7] - 2026-08-27
+
+### 修复
+
+- **修复插件在部分 Node 版本下启动失败**：`lib/` 以 ESM 输出，`pdf.ts` 顶层 `import { getDocument } from "pdfjs-dist/legacy/build/pdf.js"` 对 CommonJS bundle 的命名导出依赖 Node 的静态分析（cjs-module-lexer），不同 Node 版本下识别结果不一致，部分环境在加载插件时即报 `Named export 'getDocument' not found` 导致 `dsh web` 启动崩溃。现改为函数内动态 `await import()`，与 `ocr.ts` 的既有做法保持一致，不再依赖对 CJS 产物的命名导出识别，任何 Node 版本下都稳定。感谢 [@kennyxiongxy](https://github.com/kennyxiongxy) 的贡献。
+
 ## [0.1.6] - 2026-08-26
 
 ### 新增

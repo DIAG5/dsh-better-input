@@ -2,6 +2,12 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.1.7] - 2026-08-27
+
+### Fixed
+
+- **Fix startup failure on some Node versions**: `lib/` is emitted as ESM, and `pdf.ts`'s top-level `import { getDocument } from "pdfjs-dist/legacy/build/pdf.js"` relies on Node's static analysis (cjs-module-lexer) to detect named exports from the CommonJS bundle. That detection is inconsistent across Node versions, so some environments crash on plugin load with `Named export 'getDocument' not found`. It now uses a function-level dynamic `await import()`, matching the existing pattern in `ocr.ts`, and no longer depends on named-export detection of the CJS artifact — stable on every Node version. Thanks to [@kennyxiongxy](https://github.com/kennyxiongxy) for the contribution.
+
 ## [0.1.6] - 2026-08-26
 
 ### Added
