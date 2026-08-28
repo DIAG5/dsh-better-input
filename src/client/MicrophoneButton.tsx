@@ -266,8 +266,8 @@ function buttonStyle(active: boolean, busy: boolean, polishUnconfigured: boolean
     padding: 0,
     border: 'none',
     borderRadius: 6,
-    background: active ? 'var(--dsh-color-primary, #4f8cff)' : 'transparent',
-    color: active ? '#fff' : 'var(--dsh-color-text, inherit)',
+    background: active ? 'var(--dsw-alias-state-business-primary, #4f8cff)' : 'transparent',
+    color: active ? '#fff' : 'var(--dsw-alias-label-primary, inherit)',
     cursor: busy ? 'default' : 'pointer',
     opacity: busy ? 0.5 : polishUnconfigured ? 0.75 : 1,
     flex: 'none'

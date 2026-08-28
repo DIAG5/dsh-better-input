@@ -440,31 +440,31 @@ const foldStyle = (expanded: boolean): React.CSSProperties => ({
 const dockStyle: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: 8, padding: '4px 10px', borderRadius: 8,
   fontSize: 12, lineHeight: '18px',
-  background: 'var(--dsh-color-surface-raised, rgba(0,0,0,0.04))',
-  color: 'var(--dsh-color-text, inherit)'
+  background: 'var(--dsw-alias-bg-layer-3, rgba(0,0,0,0.04))',
+  color: 'var(--dsw-alias-label-primary, inherit)'
 }
 const railStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 6, flex: 1, overflowX: 'auto', minWidth: 0 }
-const chipStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '2px 6px', borderRadius: 6, background: 'var(--dsh-color-surface, #fff)', border: '1px solid var(--dsh-color-border, #e0e0e0)', whiteSpace: 'nowrap' }
+const chipStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '2px 6px', borderRadius: 6, background: 'var(--dsw-alias-bg-layer-2, #fff)', border: '1px solid var(--dsw-alias-border-l2, #e0e0e0)', whiteSpace: 'nowrap' }
 const chipNameStyle: React.CSSProperties = { maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: 'inherit' }
-const okBadgeStyle: React.CSSProperties = { color: 'var(--dsh-color-success, #2f9e44)', fontWeight: 600 }
-const busyStyle: React.CSSProperties = { color: 'var(--dsh-color-text-secondary, #888)' }
-const convertBtnStyle: React.CSSProperties = { padding: '1px 6px', border: 'none', borderRadius: 4, background: 'var(--dsh-color-primary, #4f8cff)', color: '#fff', cursor: 'pointer', fontSize: 11 }
-const linkBtnStyle: React.CSSProperties = { padding: '1px 6px', border: '1px solid var(--dsh-color-border, #ddd)', borderRadius: 4, background: 'transparent', color: 'var(--dsh-color-text, inherit)', cursor: 'pointer', fontSize: 11 }
-const addBtnStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', border: '1px solid var(--dsh-color-border, #ddd)', borderRadius: 6, background: 'transparent', color: 'var(--dsh-color-text, inherit)', cursor: 'pointer', fontSize: 12, flex: 'none' }
-const closeBtnStyle: React.CSSProperties = { border: 'none', background: 'transparent', color: 'var(--dsh-color-text-secondary, #888)', cursor: 'pointer', fontSize: 14, padding: 0, lineHeight: 1 }
-const placeholderStyle: React.CSSProperties = { color: 'var(--dsh-color-text-secondary, #888)' }
+const okBadgeStyle: React.CSSProperties = { color: 'var(--dsw-alias-state-success-primary, #2f9e44)', fontWeight: 600 }
+const busyStyle: React.CSSProperties = { color: 'var(--dsw-alias-label-secondary, #888)' }
+const convertBtnStyle: React.CSSProperties = { padding: '1px 6px', border: 'none', borderRadius: 4, background: 'var(--dsw-alias-state-business-primary, #4f8cff)', color: '#fff', cursor: 'pointer', fontSize: 11 }
+const linkBtnStyle: React.CSSProperties = { padding: '1px 6px', border: '1px solid var(--dsw-alias-border-l2, #ddd)', borderRadius: 4, background: 'transparent', color: 'var(--dsw-alias-label-primary, inherit)', cursor: 'pointer', fontSize: 11 }
+const addBtnStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', border: '1px solid var(--dsw-alias-border-l2, #ddd)', borderRadius: 6, background: 'transparent', color: 'var(--dsw-alias-label-primary, inherit)', cursor: 'pointer', fontSize: 12, flex: 'none' }
+const closeBtnStyle: React.CSSProperties = { border: 'none', background: 'transparent', color: 'var(--dsw-alias-label-secondary, #888)', cursor: 'pointer', fontSize: 14, padding: 0, lineHeight: 1 }
+const placeholderStyle: React.CSSProperties = { color: 'var(--dsw-alias-label-secondary, #888)' }
 
 const overlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99998 }
-const modalStyle: React.CSSProperties = { padding: 14, borderRadius: 10, background: 'var(--dsh-color-surface, #fff)', border: '1px solid var(--dsh-color-border, #e0e0e0)', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', width: 'min(680px, 92vw)', maxHeight: '80vh', display: 'flex', flexDirection: 'column', zIndex: 99999 }
-const modalTitleStyle: React.CSSProperties = { fontSize: 14, fontWeight: 600, marginBottom: 10, color: 'var(--dsh-color-text, inherit)' }
-const metaRowStyle: React.CSSProperties = { display: 'flex', gap: 16, marginBottom: 8, fontSize: 12, color: 'var(--dsh-color-text-secondary, #888)' }
+const modalStyle: React.CSSProperties = { padding: 14, borderRadius: 10, background: 'var(--dsw-alias-bg-layer-2, #fff)', border: '1px solid var(--dsw-alias-border-l2, #e0e0e0)', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', width: 'min(680px, 92vw)', maxHeight: '80vh', display: 'flex', flexDirection: 'column', zIndex: 99999 }
+const modalTitleStyle: React.CSSProperties = { fontSize: 14, fontWeight: 600, marginBottom: 10, color: 'var(--dsw-alias-label-primary, inherit)' }
+const metaRowStyle: React.CSSProperties = { display: 'flex', gap: 16, marginBottom: 8, fontSize: 12, color: 'var(--dsw-alias-label-secondary, #888)' }
 const metaItemStyle: React.CSSProperties = { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
-const editableStyle: React.CSSProperties = { flex: 1, minHeight: 240, maxHeight: '46vh', padding: 10, fontSize: 12, lineHeight: 1.6, borderRadius: 6, border: '1px solid var(--dsh-color-border, #e8e8e8)', background: 'var(--dsh-color-surface-muted, #f9f9f9)', color: 'var(--dsh-color-text, inherit)', fontFamily: 'inherit', resize: 'none', whiteSpace: 'pre-wrap' }
+const editableStyle: React.CSSProperties = { flex: 1, minHeight: 240, maxHeight: '46vh', padding: 10, fontSize: 12, lineHeight: 1.6, borderRadius: 6, border: '1px solid var(--dsw-alias-border-l2, #e8e8e8)', background: 'var(--dsw-alias-bg-layer-1, #f9f9f9)', color: 'var(--dsw-alias-label-primary, inherit)', fontFamily: 'inherit', resize: 'none', whiteSpace: 'pre-wrap' }
 const actionsStyle: React.CSSProperties = { display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }
-const modalBodyStyle: React.CSSProperties = { margin: '0 0 8px', fontSize: 13, lineHeight: 1.6, color: 'var(--dsh-color-text, inherit)' }
-const overwriteBtnStyle: React.CSSProperties = { padding: '6px 16px', border: 'none', borderRadius: 6, background: 'var(--dsh-color-primary, #4f8cff)', color: '#fff', cursor: 'pointer', fontSize: 13 }
-const cancelBtnStyle: React.CSSProperties = { padding: '6px 16px', border: '1px solid var(--dsh-color-border, #ddd)', borderRadius: 6, background: 'transparent', color: 'var(--dsh-color-text, inherit)', cursor: 'pointer', fontSize: 13 }
+const modalBodyStyle: React.CSSProperties = { margin: '0 0 8px', fontSize: 13, lineHeight: 1.6, color: 'var(--dsw-alias-label-primary, inherit)' }
+const overwriteBtnStyle: React.CSSProperties = { padding: '6px 16px', border: 'none', borderRadius: 6, background: 'var(--dsw-alias-state-business-primary, #4f8cff)', color: '#fff', cursor: 'pointer', fontSize: 13 }
+const cancelBtnStyle: React.CSSProperties = { padding: '6px 16px', border: '1px solid var(--dsw-alias-border-l2, #ddd)', borderRadius: 6, background: 'transparent', color: 'var(--dsw-alias-label-primary, inherit)', cursor: 'pointer', fontSize: 13 }
 const toastOverlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', zIndex: 99998, pointerEvents: 'none', paddingTop: 16 }
-const toastStyle: React.CSSProperties = { padding: '10px 14px', borderRadius: 8, background: 'var(--dsh-color-surface, #fff)', border: '1px solid var(--dsh-color-danger, #f5c2c7)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', color: 'var(--dsh-color-danger-text, #c33)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 480, pointerEvents: 'auto' }
-const infoToastStyle: React.CSSProperties = { padding: '10px 14px', borderRadius: 8, background: 'var(--dsh-color-surface, #fff)', border: '1px solid var(--dsh-color-border, #ddd)', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', color: 'var(--dsh-color-text, inherit)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 480, pointerEvents: 'auto' }
+const toastStyle: React.CSSProperties = { padding: '10px 14px', borderRadius: 8, background: 'var(--dsw-alias-bg-layer-2, #fff)', border: '1px solid var(--dsw-alias-state-error-secondary, #f5c2c7)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', color: 'var(--dsw-alias-state-error-primary, #c33)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 480, pointerEvents: 'auto' }
+const infoToastStyle: React.CSSProperties = { padding: '10px 14px', borderRadius: 8, background: 'var(--dsw-alias-bg-layer-2, #fff)', border: '1px solid var(--dsw-alias-border-l2, #ddd)', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', color: 'var(--dsw-alias-label-primary, inherit)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 480, pointerEvents: 'auto' }
 const toastCloseStyle: React.CSSProperties = { border: 'none', background: 'transparent', color: 'inherit', cursor: 'pointer', fontSize: 18, padding: 0, lineHeight: 1, flex: 'none' }
