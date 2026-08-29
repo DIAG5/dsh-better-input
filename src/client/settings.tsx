@@ -457,7 +457,7 @@ function AboutUpdateSection(props: {
             if (status === 'update-available') {
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <p style={{ ...hintStyle, color: '#e5484d' }}>
+                  <p style={{ ...hintStyle, color: 'var(--dsw-alias-state-error-primary, #e5484d)' }}>
                     {t('updateAvailable')}: {update.update.installed} → {update.update.latest}
                   </p>
                   <span style={hintStyle}>{t('updateCommandLabel')}:</span>
@@ -502,7 +502,7 @@ const inputStyle: React.CSSProperties = {
   padding: '6px 8px',
   borderRadius: 6,
   border: '1px solid var(--dsw-alias-border-l2, rgba(128,128,128,0.4))',
-  background: 'var(--dsh-color-surface, transparent)',
+  background: 'var(--dsw-alias-bg-layer-1, #f9f9f9)',
   color: 'var(--dsw-alias-label-primary, inherit)',
   fontSize: 13
 }
@@ -516,7 +516,7 @@ const hintStyle: React.CSSProperties = {
 const errorStyle: React.CSSProperties = {
   margin: 0,
   fontSize: 12,
-  color: '#e5484d'
+  color: 'var(--dsw-alias-state-error-primary, #e5484d)'
 }
 
 const switchStyle: React.CSSProperties = {

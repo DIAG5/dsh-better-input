@@ -2,6 +2,16 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.1.8] - 2026-08-29
+
+### Fixed
+
+- **Full dark-theme adaptation**: the plugin previously used self-invented `--dsh-color-*` variables (undefined in DSH), leaving the confirm dialog, error toasts, and the file panel white-on-white under the dark theme. Everything now uses DSH's official theme tokens (`--dsw-alias-*`), so the whole plugin UI follows light/dark automatically. Thanks to [@virggle](https://github.com/virggle) for the contribution (#2 / #3).
+- **Settings dropdowns unreadable in dark theme**: a native `<select>` popup cannot be transparent and falls back to a white background, which combined with light label text in dark mode made options nearly invisible (e.g. "Reasoning Effort"). All dropdowns, inputs, and textareas in Settings now use the background token and render correctly in both themes.
+- **Ctrl+A inside the optimize compare box selects only that block**: pressing Ctrl/Cmd+A within the original/optimized panes now selects just that pane's text instead of the whole page.
+- **Drag-select release no longer closes the dialog**: finishing a text selection by releasing the mouse over the overlay no longer closes the dialog nor loses the selection (the same guard applies to the error toast).
+- **Error text and recording dot now use theme tokens**: three previously hardcoded reds (#e5484d) — the settings error hints, the update notice, and the voice-recording dot — now follow the theme as well.
+
 ## [0.1.7] - 2026-08-27
 
 ### Fixed

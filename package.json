@@ -1,6 +1,6 @@
 {
   "name": "dsh-better-input",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Better input experience for DeepSeek Harness: voice input, AI polishing, prompt optimization, and local file input / file-to-Markdown",
   "license": "MIT",
   "author": "DIAG5",

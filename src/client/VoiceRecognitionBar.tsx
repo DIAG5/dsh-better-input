@@ -82,7 +82,7 @@ function PulsingDot() {
         width: 8,
         height: 8,
         borderRadius: '50%',
-        background: '#e5484d',
+        background: 'var(--dsw-alias-state-error-secondary, #e5484d)',
         animation: 'dsh-better-input-pulse 1.2s ease-in-out infinite'
       }}
     />
