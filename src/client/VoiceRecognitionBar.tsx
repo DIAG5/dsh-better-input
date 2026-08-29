@@ -43,8 +43,8 @@ export function VoiceRecognitionBar({ voiceSession, t }: RecognitionBarProps) {
         borderRadius: 8,
         fontSize: 12,
         lineHeight: '18px',
-        background: 'var(--dsh-color-surface-raised, rgba(0,0,0,0.04))',
-        color: 'var(--dsh-color-text, inherit)'
+        background: 'var(--dsw-alias-bg-layer-3, rgba(0,0,0,0.04))',
+        color: 'var(--dsw-alias-label-primary, inherit)'
       }}
     >
       {active ? <PulsingDot /> : null}
@@ -62,7 +62,7 @@ export function VoiceRecognitionBar({ voiceSession, t }: RecognitionBarProps) {
             border: 'none',
             borderRadius: 6,
             fontSize: 12,
-            background: 'var(--dsh-color-danger, #e5484d)',
+            background: 'var(--dsw-alias-state-error-secondary, #e5484d)',
             color: '#fff',
             cursor: 'pointer'
           }}

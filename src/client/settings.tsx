@@ -241,8 +241,8 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
                       wordBreak: 'break-word',
                       fontSize: 11,
                       lineHeight: 1.5,
-                      background: 'var(--dsh-color-surface, rgba(0,0,0,0.03))',
-                      border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))',
+                      background: 'var(--dsw-alias-bg-layer-1, rgba(0,0,0,0.03))',
+                      border: '1px solid var(--dsw-alias-border-l2, rgba(128,128,128,0.3))',
                       borderRadius: 6,
                       fontFamily: 'monospace'
                     }}
@@ -319,8 +319,8 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
                       wordBreak: 'break-word',
                       fontSize: 11,
                       lineHeight: 1.5,
-                      background: 'var(--dsh-color-surface, rgba(0,0,0,0.03))',
-                      border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))',
+                      background: 'var(--dsw-alias-bg-layer-1, rgba(0,0,0,0.03))',
+                      border: '1px solid var(--dsw-alias-border-l2, rgba(128,128,128,0.3))',
                       borderRadius: 6,
                       fontFamily: 'monospace'
                     }}
@@ -410,7 +410,7 @@ function AboutUpdateSection(props: {
               href={repository}
               target="_blank"
               rel="noreferrer"
-              style={{ color: 'var(--dsh-color-primary, #4f8cff)' }}
+              style={{ color: 'var(--dsw-alias-state-business-primary, #4f8cff)' }}
             >
               {t('aboutRepositoryLabel')}: {repository}
             </a>
@@ -420,7 +420,7 @@ function AboutUpdateSection(props: {
               href={`${repository.replace(/\/+$/, '')}/blob/main/CHANGELOG.md`}
               target="_blank"
               rel="noreferrer"
-              style={{ color: 'var(--dsh-color-primary, #4f8cff)' }}
+              style={{ color: 'var(--dsw-alias-state-business-primary, #4f8cff)' }}
             >
               {t('aboutChangelogLabel')}
             </a>
@@ -436,9 +436,9 @@ function AboutUpdateSection(props: {
             width: 'fit-content',
             padding: '6px 12px',
             borderRadius: 6,
-            border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.4))',
+            border: '1px solid var(--dsw-alias-border-l2, rgba(128,128,128,0.4))',
             background: 'var(--dsh-color-surface, transparent)',
-            color: 'var(--dsh-color-text, inherit)',
+            color: 'var(--dsw-alias-label-primary, inherit)',
             fontSize: 13,
             cursor: update.status === 'loading' ? 'default' : 'pointer'
           }}
@@ -501,9 +501,9 @@ function Field({ label, hint, children }: { label: string; hint: string; childre
 const inputStyle: React.CSSProperties = {
   padding: '6px 8px',
   borderRadius: 6,
-  border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.4))',
+  border: '1px solid var(--dsw-alias-border-l2, rgba(128,128,128,0.4))',
   background: 'var(--dsh-color-surface, transparent)',
-  color: 'var(--dsh-color-text, inherit)',
+  color: 'var(--dsw-alias-label-primary, inherit)',
   fontSize: 13
 }
 
@@ -531,7 +531,7 @@ const toggleLinkStyle: React.CSSProperties = {
   padding: 0,
   border: 'none',
   background: 'none',
-  color: 'var(--dsh-color-primary, #4f8cff)',
+  color: 'var(--dsw-alias-state-business-primary, #4f8cff)',
   fontSize: 12,
   cursor: 'pointer',
   textDecoration: 'underline'
@@ -540,7 +540,7 @@ const toggleLinkStyle: React.CSSProperties = {
 const dividerStyle: React.CSSProperties = {
   margin: '8px 0',
   border: 'none',
-  borderTop: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))'
+  borderTop: '1px solid var(--dsw-alias-border-l2, rgba(128,128,128,0.3))'
 }
 
 const sectionTitleStyle: React.CSSProperties = {
@@ -555,7 +555,7 @@ const codeStyle: React.CSSProperties = {
   wordBreak: 'break-all',
   fontSize: 12,
   fontFamily: 'monospace',
-  background: 'var(--dsh-color-surface, rgba(0,0,0,0.03))',
-  border: '1px solid var(--dsh-color-border, rgba(128,128,128,0.3))',
+  background: 'var(--dsw-alias-bg-layer-1, rgba(0,0,0,0.03))',
+  border: '1px solid var(--dsw-alias-border-l2, rgba(128,128,128,0.3))',
   borderRadius: 6
 }

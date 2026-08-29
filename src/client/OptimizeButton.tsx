@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ConversationSnapshot } from '@deepseek-ai/dsh-client-runtime/client'
@@ -168,6 +168,20 @@ export function OptimizeButton({ input, inputActions, session, remote, useSettin
   )
 }
 
+/** Ctrl/Cmd+A inside a `<pre>` selects only that block's text. */
+function selectAllInPre(e: KeyboardEvent<HTMLPreElement>) {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'a') {
+    e.preventDefault()
+    const range = document.createRange()
+    range.selectNodeContents(e.currentTarget)
+    const selection = window.getSelection()
+    if (selection) {
+      selection.removeAllRanges()
+      selection.addRange(range)
+    }
+  }
+}
+
 function OptimizeConfirmPanel(props: {
   title: string
   originalLabel: string
@@ -185,11 +199,11 @@ function OptimizeConfirmPanel(props: {
       <div style={compareRowStyle}>
         <div style={compareColStyle}>
           <div style={compareLabelStyle}>{props.originalLabel}</div>
-          <pre style={preStyle}>{props.original}</pre>
+          <pre style={preStyle} tabIndex={0} onKeyDown={selectAllInPre}>{props.original}</pre>
         </div>
         <div style={compareColStyle}>
           <div style={compareLabelStyle}>{props.optimizedLabel}</div>
-          <pre style={{ ...preStyle, borderColor: 'var(--dsh-color-primary, #4f8cff)' }}>{props.optimized}</pre>
+          <pre style={{ ...preStyle, borderColor: 'var(--dsw-alias-state-business-primary, #4f8cff)' }} tabIndex={0} onKeyDown={selectAllInPre}>{props.optimized}</pre>
         </div>
       </div>
       <div style={panelActionsStyle}>
@@ -217,7 +231,17 @@ function ConfirmModalPortal(props: {
   onCancel: () => void
 }) {
   return createPortal(
-    <div style={modalOverlayStyle} onClick={props.onCancel}>
+    <div
+      style={modalOverlayStyle}
+      onClick={(e) => {
+        // Ignore clicks that finish a text drag-select (selection not
+        // collapsed), so releasing the mouse outside the modal neither
+        // closes it nor loses the selection.
+        const selection = window.getSelection()
+        if (selection && !selection.isCollapsed) return
+        props.onCancel()
+      }}
+    >
       <div onClick={(e) => e.stopPropagation()}>
         <OptimizeConfirmPanel {...props} />
       </div>
@@ -232,7 +256,14 @@ function ConfirmModalPortal(props: {
  */
 function ErrorToastPortal({ message, onDismiss }: { message: string; onDismiss: () => void }) {
   return createPortal(
-    <div style={modalOverlayStyle} onClick={onDismiss}>
+    <div
+      style={modalOverlayStyle}
+      onClick={(e) => {
+        const selection = window.getSelection()
+        if (selection && !selection.isCollapsed) return
+        onDismiss()
+      }}
+    >
       <div style={errorModalStyle} onClick={(e) => e.stopPropagation()}>
         <div style={{ flex: 1 }}>{message}</div>
         <button type="button" style={errorDismissStyle} onClick={onDismiss}>×</button>
@@ -318,7 +349,7 @@ const buttonStyle = (disabled: boolean): React.CSSProperties => ({
   border: 'none',
   borderRadius: 6,
   background: 'transparent',
-  color: 'var(--dsh-color-text-secondary, inherit)',
+  color: 'var(--dsw-alias-label-secondary, inherit)',
   cursor: disabled ? 'not-allowed' : 'pointer',
   opacity: disabled ? 0.5 : 1,
   fontSize: 12,
@@ -340,8 +371,8 @@ const modalOverlayStyle: React.CSSProperties = {
 const modalContentStyle: React.CSSProperties = {
   padding: 14,
   borderRadius: 10,
-  background: 'var(--dsh-color-surface, #fff)',
-  border: '1px solid var(--dsh-color-border, #e0e0e0)',
+  background: 'var(--dsw-alias-bg-layer-2, #fff)',
+  border: '1px solid var(--dsw-alias-border-l2, #e0e0e0)',
   boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
   width: 'min(640px, 92vw)',
   zIndex: 99999
@@ -351,7 +382,7 @@ const panelTitleStyle: React.CSSProperties = {
   fontSize: 14,
   fontWeight: 600,
   marginBottom: 10,
-  color: 'var(--dsh-color-text, inherit)'
+  color: 'var(--dsw-alias-label-primary, inherit)'
 }
 
 const compareRowStyle: React.CSSProperties = {
@@ -369,7 +400,7 @@ const compareColStyle: React.CSSProperties = {
 
 const compareLabelStyle: React.CSSProperties = {
   fontSize: 11,
-  color: 'var(--dsh-color-text-secondary, #888)',
+  color: 'var(--dsw-alias-label-secondary, #888)',
   marginBottom: 4
 }
 
@@ -383,9 +414,9 @@ const preStyle: React.CSSProperties = {
   overflow: 'auto',
   maxHeight: 240,
   borderRadius: 6,
-  border: '1px solid var(--dsh-color-border, #e8e8e8)',
-  background: 'var(--dsh-color-surface-muted, #f9f9f9)',
-  color: 'var(--dsh-color-text, inherit)',
+  border: '1px solid var(--dsw-alias-border-l2, #e8e8e8)',
+  background: 'var(--dsw-alias-bg-layer-1, #f9f9f9)',
+  color: 'var(--dsw-alias-label-primary, inherit)',
   fontFamily: 'inherit'
 }
 
@@ -400,7 +431,7 @@ const adoptBtnStyle: React.CSSProperties = {
   padding: '6px 16px',
   border: 'none',
   borderRadius: 6,
-  background: 'var(--dsh-color-primary, #4f8cff)',
+  background: 'var(--dsw-alias-state-business-primary, #4f8cff)',
   color: '#fff',
   cursor: 'pointer',
   fontSize: 13
@@ -408,10 +439,10 @@ const adoptBtnStyle: React.CSSProperties = {
 
 const cancelBtnStyle: React.CSSProperties = {
   padding: '6px 16px',
-  border: '1px solid var(--dsh-color-border, #ddd)',
+  border: '1px solid var(--dsw-alias-border-l2, #ddd)',
   borderRadius: 6,
   background: 'transparent',
-  color: 'var(--dsh-color-text, inherit)',
+  color: 'var(--dsw-alias-label-primary, inherit)',
   cursor: 'pointer',
   fontSize: 13
 }
@@ -420,10 +451,10 @@ const cancelBtnStyle: React.CSSProperties = {
 const errorModalStyle: React.CSSProperties = {
   padding: '10px 14px',
   borderRadius: 8,
-  background: 'var(--dsh-color-surface, #fff)',
-  border: '1px solid var(--dsh-color-danger, #f5c2c7)',
+  background: 'var(--dsw-alias-bg-layer-2, #fff)',
+  border: '1px solid var(--dsw-alias-state-error-secondary, #f5c2c7)',
   boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-  color: 'var(--dsh-color-danger-text, #c33)',
+  color: 'var(--dsw-alias-state-error-primary, #c33)',
   fontSize: 13,
   display: 'flex',
   alignItems: 'center',
