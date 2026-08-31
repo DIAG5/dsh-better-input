@@ -21,6 +21,8 @@ export const zipConverter: Converter = async (_filePath, data): Promise<ConvertR
   let fileCount = 0
   let skipped = 0
 
+  const { convertFile } = await import('./to-markdown.js')
+
   for (const entry of Object.values(zip.files)) {
     if (entry.dir) continue
     // Skip Mac resource forks and other meta entries.
@@ -33,7 +35,6 @@ export const zipConverter: Converter = async (_filePath, data): Promise<ConvertR
     }
 
     const content = await entry.async('uint8array')
-    const { convertFile } = await import('./to-markdown.js')
     const result = await convertFile(entry.name, content)
     if (result.success) {
       parts.push(`## ${entry.name}\n\n${result.markdown}`)

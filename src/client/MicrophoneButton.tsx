@@ -153,6 +153,7 @@ export function MicrophoneButton({ input, inputActions, voiceSession, remote, us
 
     speechRef.current = session
     session.start()
+    if (failed) return
     setState('recording')
     // Auto-stop at the configured recording limit so an abandoned session
     // never holds the microphone forever.

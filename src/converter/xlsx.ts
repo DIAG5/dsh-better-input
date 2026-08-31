@@ -14,11 +14,14 @@ function escapeCell(value: unknown): string {
   return String(value).replace(/\|/g, '\\|').replace(/\r?\n/g, '<br>')
 }
 
+const MAX_ROWS_PER_SHEET = 5000
+
 export const xlsxConverter: Converter = async (filePath, data): Promise<ConvertResult> => {
   const isXls = /\.xls$/i.test(filePath)
   const workbook = XLSX.read(data, { type: 'buffer', cellDates: false })
 
   const parts: string[] = []
+  const warnings: string[] = []
   let sheetCount = 0
 
   for (const sheetName of workbook.SheetNames) {
@@ -40,8 +43,11 @@ export const xlsxConverter: Converter = async (filePath, data): Promise<ConvertR
     const headers = Object.keys(json[0]!)
     const headerRow = `| ${headers.map(escapeCell).join(' | ')} |`
     const sepRow = `| ${headers.map(() => '---').join(' | ')} |`
+    if (json.length > MAX_ROWS_PER_SHEET) {
+      warnings.push(`工作表 ${sheetName} 超过 ${MAX_ROWS_PER_SHEET} 行，仅保留前 ${MAX_ROWS_PER_SHEET} 行`)
+    }
     const bodyRows = json
-      .slice(0, 5000)
+      .slice(0, MAX_ROWS_PER_SHEET)
       .map((row) => `| ${headers.map((h) => escapeCell(row[h])).join(' | ')} |`)
 
     const rowsMd = [title, headerRow, sepRow, ...bodyRows].join('\n')
@@ -49,8 +55,6 @@ export const xlsxConverter: Converter = async (filePath, data): Promise<ConvertR
   }
 
   const markdown = parts.join('\n').trim()
-
-  const warnings: string[] = []
 
   return {
     success: true,

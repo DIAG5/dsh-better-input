@@ -23,7 +23,7 @@ export const htmlConverter: Converter = async (_filePath, data): Promise<Convert
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<(img|video|audio|svg)\b[^>]*>/gi, ' ')
-    .replace(/<\/(head)>/gi, ' $1 ')
+    .replace(/<\/head>/gi, ' ')
 
   const markdown = turndown.turndown(cleaned).trim()
 

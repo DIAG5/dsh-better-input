@@ -113,5 +113,5 @@ export async function convertBuffer(
 
 function extLabel(filePath: string): string {
   const dot = filePath.lastIndexOf('.')
-  return dot >= 0 ? filePath.slice(dot + 1) : ''
+  return dot >= 0 ? filePath.slice(dot + 1).toLowerCase() : ''
 }

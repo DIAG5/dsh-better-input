@@ -51,10 +51,13 @@ export const csvConverter: Converter = async (_filePath, data): Promise<ConvertR
   const header = matrix[0]!.map((cell, i) => escapeCell(cell) || `Col ${i + 1}`)
   const body = matrix.slice(1)
 
-  const width = Math.max(header.length, ...body.map((r) => r.length))
+  let width = header.length
+  for (const row of body) {
+    if (row.length > width) width = row.length
+  }
   const pad = (r: unknown[], i: number) => escapeCell(r[i] ?? '')
 
-  const headerRow = `| ${header.join(' | ')} |`
+  const headerRow = `| ${Array.from({ length: width }, (_, i) => header[i] ?? `Col ${i + 1}`).join(' | ')} |`
   const sepRow = `| ${Array.from({ length: width }, () => '---').join(' | ')} |`
   const bodyRows = body.map((r) => `| ${Array.from({ length: width }, (_, i) => pad(r, i)).join(' | ')} |`)
 

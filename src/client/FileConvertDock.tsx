@@ -144,7 +144,7 @@ export function FileConvertDock({ sessionId, remote, controller, t }: FileConver
           format: result.value.format,
           sendable: true,
         })
-        setError(t('convertPlainReady'))
+        setInfo(t('convertPlainReady'))
         return
       }
       // Converted binary document: now sendable — store the Markdown and open

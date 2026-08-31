@@ -2,6 +2,22 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.1.9] - 2026-08-31
+
+### Fixed
+
+- **Voice start failure no longer sticks at "recording"**: when `recognition.start()` threw synchronously (e.g. microphone permission denied), the error state was set first but then unconditionally overwritten by "recording", leaving the button stuck active with a session that had in fact already ended. A synchronous failure now keeps the error state and settles normally.
+- **Duplicate filenames no longer leak internal entries**: adding a file whose name already existed wrote a new conversion-panel store entry before the dedupe check, leaving an orphan entry with no UI reference on every duplicate. The dedupe check now runs first; the store is written only when the file is accepted.
+- **Uppercase plain-text extensions no longer misreport "unsupported file type"**: files like `README.MD`, `NOTES.TXT` or `script.PY` previously failed to match the lowercase extension table and were misjudged as non-convertible. Extensions are now lowercased before lookup.
+- **HTML conversion no longer leaks a literal " head " into the output**: the `</head>` cleanup regex substituted the capture group as replacement text, turning every `</head>` into a visible " head ". It is now replaced with whitespace.
+- **Huge CSV conversion no longer crashes**: table width was computed via `Math.max(...spread)`, which overflows the call stack on six-figure row counts (RangeError). Width is now accumulated in a loop; when data rows are wider than the header, the header is padded with column names so the Markdown table stays well-formed.
+- **Excel truncation now warns**: sheets beyond 5,000 rows were silently dropped. The conversion result now carries a warning: "sheet X exceeds 5,000 rows, keeping the first 5,000".
+- **"No conversion needed, send directly" notice no longer shows as a red error**: the notice previously reused the error toast; it now uses the neutral info toast (consistent with the unconfigured-OCR prompt).
+
+### Changed
+
+- **ZIP nested-conversion entry hoisted out of the loop**: the dynamic `import('to-markdown.js')` now resolves once before the loop instead of once per entry. It remains a function-level lazy import, so the module-level cycle avoidance is untouched.
+
 ## [0.1.8] - 2026-08-29
 
 ### Fixed
