@@ -3,9 +3,11 @@ import { TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol';
 import { type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js';
 import { type AboutInfo, type UpdateCheckResult } from '../about.js';
 import type { ConvertibleFormat } from '../converter/types.js';
+import type { TemplateInputWire, TemplateWire } from '../remote-contract.js';
 export declare class BetterInputPolishService extends TypertRemoteService {
     static inject: string[];
     private settings;
+    private readonly templateStore;
     constructor(ctx: Context);
     getSettings(): BetterInputSettingsView;
     updateSettings(patch: BetterInputSettingsPatch, signal: AbortSignal): Promise<BetterInputSettingsView>;
@@ -51,6 +53,22 @@ export declare class BetterInputPolishService extends TypertRemoteService {
             wordCount?: number;
             fileCount?: number;
         };
+    }>;
+    /** List all saved prompt templates (newest first). */
+    templatesList(): Promise<{
+        templates: TemplateWire[];
+    }>;
+    /**
+     * Create or update one prompt template. Storage lives at
+     * `~/.dsh/better-input/templates.json` on the Host machine — it survives
+     * plugin updates, unlike anything stored inside the package directory.
+     */
+    templatesSave(template: TemplateInputWire, signal: AbortSignal): Promise<{
+        template: TemplateWire;
+    }>;
+    /** Remove one prompt template by id. Missing ids resolve to `removed: false`. */
+    templatesRemove(id: string, signal: AbortSignal): Promise<{
+        removed: boolean;
     }>;
     /**
      * OCR one scanned document through the configured vision model. Every page

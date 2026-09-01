@@ -108,6 +108,26 @@ export type BetterInputStrings = {
   ocrConfirmRegular: string
   ocrConfirmOcr: string
   ocrConfirmCancel: string
+  templatesTitle: string
+  templatesDescription: string
+  templatesNew: string
+  templatesEdit: string
+  templatesSave: string
+  templatesCancel: string
+  templatesDelete: string
+  templatesDeleteConfirm: string
+  templatesEmpty: string
+  templatesLoadFailed: string
+  templatesRetry: string
+  templatesActionFailed: string
+  templatesNameLabel: string
+  templatesNamePlaceholder: string
+  templatesDescriptionLabel: string
+  templatesDescriptionPlaceholder: string
+  templatesContentLabel: string
+  templatesContentPlaceholder: string
+  templatesTagsLabel: string
+  templatesTagsHint: string
 }
 
 export const zh: BetterInputStrings = {
@@ -213,7 +233,27 @@ export const zh: BetterInputStrings = {
   ocrConfirmBody: '该文件可能包含扫描页或内嵌图片，普通转换只能提取文本层。使用 OCR 视觉模型可识别图片中的文字。',
   ocrConfirmRegular: '普通转换',
   ocrConfirmOcr: '使用 OCR',
-  ocrConfirmCancel: '取消'
+  ocrConfirmCancel: '取消',
+  templatesTitle: '提示词模板',
+  templatesDescription: '把常用提示词存成模板，在输入框键入 / 即可搜索并插入。',
+  templatesNew: '新建模板',
+  templatesEdit: '编辑',
+  templatesSave: '保存',
+  templatesCancel: '取消',
+  templatesDelete: '删除',
+  templatesDeleteConfirm: '再次点击确认删除',
+  templatesEmpty: '还没有模板，点击「新建模板」创建第一个。',
+  templatesLoadFailed: '模板加载失败',
+  templatesRetry: '重试',
+  templatesActionFailed: '操作失败，请重试',
+  templatesNameLabel: '名称',
+  templatesNamePlaceholder: '例如：代码评审助手',
+  templatesDescriptionLabel: '描述',
+  templatesDescriptionPlaceholder: '可选：这个模板用来做什么',
+  templatesContentLabel: '内容',
+  templatesContentPlaceholder: '插入输入框的提示词正文…',
+  templatesTagsLabel: '标签',
+  templatesTagsHint: '逗号分隔，最多 8 个，用于菜单搜索。'
 }
 
 export const en: BetterInputStrings = {
@@ -319,7 +359,27 @@ export const en: BetterInputStrings = {
   ocrConfirmBody: 'This file may contain scanned pages or embedded images. Regular conversion only extracts the text layer; OCR reads the actual pixels.',
   ocrConfirmRegular: 'Regular conversion',
   ocrConfirmOcr: 'Use OCR',
-  ocrConfirmCancel: 'Cancel'
+  ocrConfirmCancel: 'Cancel',
+  templatesTitle: 'Prompt Templates',
+  templatesDescription: 'Save frequently used prompts as templates, then type / in the input box to search and insert.',
+  templatesNew: 'New template',
+  templatesEdit: 'Edit',
+  templatesSave: 'Save',
+  templatesCancel: 'Cancel',
+  templatesDelete: 'Delete',
+  templatesDeleteConfirm: 'Click again to confirm',
+  templatesEmpty: 'No templates yet. Create your first one with "New template".',
+  templatesLoadFailed: 'Failed to load templates',
+  templatesRetry: 'Retry',
+  templatesActionFailed: 'Action failed, please retry',
+  templatesNameLabel: 'Name',
+  templatesNamePlaceholder: 'e.g. Code review assistant',
+  templatesDescriptionLabel: 'Description',
+  templatesDescriptionPlaceholder: 'Optional: what this template is for',
+  templatesContentLabel: 'Content',
+  templatesContentPlaceholder: 'Prompt body inserted into the input box…',
+  templatesTagsLabel: 'Tags',
+  templatesTagsHint: 'Comma separated, up to 8, used for menu search.'
 }
 
 /** Namespace owning every BetterInput surface string. Registered into the DSH

@@ -2,6 +2,14 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.2.0] - 2026-09-02
+
+### Added
+
+- **Prompt template library**: store frequently used prompts (coding / summarizing / translating / role-play…) as templates and insert them on demand. Create / edit / delete them in Settings → BetterInput → "Prompt templates"; each template has a name, an optional description, a body, and optional comma-separated tags (used for search); the list is sorted by most recently updated. All data lives in a local file on the host machine (`~/.dsh/better-input/templates.json`) — nothing leaves your machine. Writes go through a temp file + atomic rename; a corrupted file is quarantined as `*.corrupt-<timestamp>` and rebuilt instead of breaking the plugin.
+- **`/` trigger in the composer**: typing `/` pops up template candidates; keep typing to filter live by name / description / tag (up to 50 shown). Picking one replaces the `/` token with the template body in the draft, ready to edit further before sending. The list is prefetched when the input mounts, so the very first `/` already shows entries.
+- **Limits**: up to 200 templates; name ≤ 60 chars, description ≤ 200, body ≤ 8,000, tags ≤ 8 (each ≤ 20 chars; trimmed, deduplicated case-insensitively on save).
+
 ## [0.1.9] - 2026-08-31
 
 ### Fixed

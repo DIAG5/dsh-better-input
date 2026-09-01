@@ -22,7 +22,7 @@
   <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
 
-> 💡 **它解决什么？** 与智能体对话，输入不只靠键盘打字。BetterInput 是一套**输入增强套件**：语音识别、提示词优化、更多格式的本地文件输入与转 Markdown，再到交互细节都打磨的体验优化——**把每一种「喂给智能体的输入」都变得更好**。
+> 💡 **它解决什么？** 与智能体对话，输入不只靠键盘打字。BetterInput 是一套**输入增强套件**：语音识别、提示词优化、提示词模板随用随插、更多格式的本地文件输入与转 Markdown，再到交互细节都打磨的体验优化——**把每一种「喂给智能体的输入」都变得更好**。
 
 ***
 
@@ -47,6 +47,10 @@ https://github.com/user-attachments/assets/caae08fc-2d8e-43c6-8bab-ade2d278337f
 <tr>
 <td align="center">✨<br/><b>提示词优化</b></td>
 <td>输入框右上角一个图标，AI 帮你把写好的提示词优化得更精准；点击后弹出<strong>原文 / 优化结果对比</strong>，确认满意再采用。复用 dsh 模型，无需额外 Key。</td>
+</tr>
+<tr>
+<td align="center">📝<br/><b>提示词模板</b></td>
+<td>常用提示词存成模板，输入框键入 <code>/</code> 搜索并一键插入正文；设置页内新建 / 编辑 / 删除，<strong>本地存储</strong>不经服务器。</td>
 </tr>
 <tr>
 <td align="center">📎<br/><b>更多文件格式输入</b></td>
@@ -90,7 +94,7 @@ BetterInput 是一套完整的**输入增强套件**：不只是某一类输入�
 ### 文字 & 提示词
 
 - [x] ✨ **提示词优化** — 输入框旁点一个图标，AI 帮你润色/优化写好的提示词，让提问更能命中
-- [ ] 📝 **提示词模板库** — 一键插入常用模板（写代码 / 总结 / 翻译 / 角色扮演…）
+- [x] 📝 **提示词模板库** — 输入框键入 `/` 搜索并插入常用模板（写代码 / 总结 / 翻译 / 角色扮演…）
 - [ ] 🧹 **文本清洗** — 粘贴乱码 / 带行号 / 时间戳的文本，自动整理成干净正文
 - [ ] 🔤 **即时翻译** — 写中文一键转英文给 AI（或反之）
 - [ ] 📋 **智能粘贴** — 粘贴自动识别是代码 / 表格 / URL / 引用，智能包裹成合适格式
@@ -193,7 +197,18 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 > 默认关闭思考，追求快速、低成本的直出结果。从设置页可手动提高思考强度以获得更深层的优化。
 
-### 4. 添加文件 / 文件转 Markdown
+### 4. 提示词模板
+
+把常用的提示词（写代码 / 总结 / 翻译 / 角色扮演…）存成模板，随用随插：
+
+1. 到 设置 → **BetterInput** → 「**提示词模板**」分节，点「**新建模板**」
+2. 填写名称、描述（可选）、正文与标签（可选，逗号分隔，用于搜索），保存
+3. 回到输入框键入 `/`，模板候选即弹出；继续输入按名称 / 描述 / 标签实时过滤
+4. 选中候选，模板正文直接插入输入框，可继续修改后发送
+
+> 模板保存在宿主本地 `~/.dsh/better-input/templates.json`，不经服务器、不上传；最多 200 个模板，正文上限 8000 字，列表按最近更新排序。
+
+### 5. 添加文件 / 文件转 Markdown
 
 1. 点击输入框右上角的 **📎 添加文件** 按钮，展开文件面板（再点收起）
 2. 点击「**添加文件**」挑选文件（可多选），文件会以小标签列在面板里
@@ -207,7 +222,7 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 > 转换在本地通过内置解析完成（PDF / Word / Excel / PPT / EPUB / HTML / CSV / JSON / XML 等），生成的 Markdown 随消息发送给 AI，方便它快速读懂文档内容。
 
-### 5. OCR 视觉识别（扫描 PDF / PPT）
+### 6. OCR 视觉识别（扫描 PDF / PPT）
 
 针对**没有文本层**的文档——如扫描件 PDF、图片型 PDF、只有图片没有文字的 PPT——普通转换只能抽出有限或空的文本。此时可用 OCR 让视觉模型直接「看图识字」：
 
@@ -218,7 +233,7 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 > 未配置 OCR 模型时点「使用 OCR」只会弹出中性提示引导去设置页，不会报红错；若所选模型明确声明不支持图片输入，会提前提示更换，避免无效的空白结果。
 
-### 6. 检查更新
+### 7. 检查更新
 
 1. 打开设置 → **BetterInput** → 拉到最底部「**关于与更新**」分节
 2. 点击「**检查更新**」
@@ -235,7 +250,7 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 > 说明：DSH 不会在你进入时自动更新第三方插件，需手动执行上面命令才会拉到新版。这个分节就是帮你及时发现并跟进更新。
 
-### 7. 设置
+### 8. 设置
 
 | 设置项      | 说明                                   |
 | -------- | ------------------------------------ |
@@ -251,6 +266,7 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 | 优化思考强度   | 默认关闭思考；可选模型支持的更高档位                   |
 | 自定义优化提示词 | 可选，替换内置优化提示词                         |
 | OCR 视觉模型   | 选择用于识别扫描页 / 内嵌图片的视觉模型；独立于润色模型，未选择时无法使用 OCR |
+| 提示词模板   | 设置页内新建 / 编辑 / 删除模板（名称、描述、正文、标签），数据保存在宿主本地 JSON 文件 |
 | 关于与更新    | 显示当前版本 / 许可证 / 仓库，一键「检查更新」获取最新版与更新命令 |
 
 > 润色与优化的模型、思考强度、提示词相互独立，可各自配置。
@@ -274,10 +290,11 @@ npm run build    # 构建 lib/（Host ESM + 浏览器 bundle）
 ## 🏗️ 架构
 
 - `src/index.ts` — Host 插件入口，挂载润色服务
-- `src/polish/service.ts` — `BetterInputPolishService`（Typert remote）：设置、dsh 模型路由发现、LLM 润色与提示词优化、文件转 Markdown（`convertFile`，复用 `ctx.llm`）
+- `src/polish/service.ts` — `BetterInputPolishService`（Typert remote）：设置、dsh 模型路由发现、LLM 润色与提示词优化、文件转 Markdown（`convertFile`，复用 `ctx.llm`）、提示词模板存取（`templatesList` / `templatesSave` / `templatesRemove`）
+- `src/templates/` — 提示词模板的数据模型与宿主端 JSON 存储（原子写入、损坏自愈）
 - `src/converter/` — 纯 TypeScript 文件→Markdown 转换层（PDF / DOCX / XLSX / PPT / EPUB / HTML / CSV / JSON / XML / ZIP），仅在 Host 端打包
 - `src/about.ts` — 插件身份读取与 npm 版本检查（「关于与更新」）
-- `src/client/` — 浏览器端：麦克风/优化/选择文件按钮（`conversation.input.right`）、识别条/文件面板（`conversation.input.dock`）、设置页（`settings.section`）、`@` 引用芯片源（`conversion-source`）
+- `src/client/` — 浏览器端：麦克风/优化/选择文件按钮（`conversation.input.right`）、识别条/文件面板（`conversation.input.dock`）、设置页与模板管理（`settings.section`）、`@` 引用芯片源（`conversion-source`）、`/` 模板候选源（input trigger）
 - `src/typert.ts` / `src/remote.ts` — Client↔Host 类型化通信契约
 
 ## 📄 License

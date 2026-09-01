@@ -14,6 +14,8 @@ import { detectFormat } from '../converter/detect.js'
 import { extractPptxImages, renderPdfPages, type OcrImage } from '../converter/ocr.js'
 import type { ConvertibleFormat, ConvertResult } from '../converter/types.js'
 import { MAX_INPUT_BYTES } from '../converter/types.js'
+import type { TemplateInputWire, TemplateWire } from '../remote-contract.js'
+import { TemplateStore } from '../templates/store.js'
 
 /** Host-side settings file shape (flat for hand editing). */
 type StoredSettings = BetterInputSettings
@@ -21,6 +23,7 @@ type StoredSettings = BetterInputSettings
 export class BetterInputPolishService extends TypertRemoteService {
   static inject = ['llm', 'attachments']
   private settings: SettingsScope<Record<string, unknown>> | undefined
+  private readonly templateStore = new TemplateStore()
 
   constructor(ctx: Context) {
     super(ctx, 'BetterInputPolish', { namespace: 'betterInput' })
@@ -280,6 +283,30 @@ export class BetterInputPolishService extends TypertRemoteService {
       }
     }
     return convertFile(fileName, data)
+  }
+
+  /** List all saved prompt templates (newest first). */
+  async templatesList(): Promise<{ templates: TemplateWire[] }> {
+    const templates = await this.templateStore.list()
+    return { templates: templates.map((template) => ({ ...template, tags: [...template.tags] })) }
+  }
+
+  /**
+   * Create or update one prompt template. Storage lives at
+   * `~/.dsh/better-input/templates.json` on the Host machine — it survives
+   * plugin updates, unlike anything stored inside the package directory.
+   */
+  async templatesSave(template: TemplateInputWire, signal: AbortSignal): Promise<{ template: TemplateWire }> {
+    signal.throwIfAborted()
+    const saved = await this.templateStore.save(template)
+    return { template: { ...saved, tags: [...saved.tags] } }
+  }
+
+  /** Remove one prompt template by id. Missing ids resolve to `removed: false`. */
+  async templatesRemove(id: string, signal: AbortSignal): Promise<{ removed: boolean }> {
+    signal.throwIfAborted()
+    const removed = await this.templateStore.remove(id)
+    return { removed }
   }
 
   /**

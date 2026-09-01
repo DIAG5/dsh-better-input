@@ -1,7 +1,7 @@
 import type { RemoteResult, TypertRemoteContribution } from '@deepseek-ai/dsh-typert-protocol'
 import type { ClientRemote } from '@deepseek-ai/dsh-api-remotes/client'
-import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, booleanSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
-import type { AboutInfoWire, BetterInputSettingsPatch, BetterInputSettingsView, ConvertFileResultWire, PolishRoute, ReasoningEffortInfo, UpdateCheckResultWire } from './remote-contract.js'
+import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, booleanSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, templateInputSchema, templateListResultSchema, templateRemoveResultSchema, templateSaveResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
+import type { AboutInfoWire, BetterInputSettingsPatch, BetterInputSettingsView, ConvertFileResultWire, PolishRoute, ReasoningEffortInfo, TemplateInputWire, TemplateWire, UpdateCheckResultWire } from './remote-contract.js'
 
 export type BetterInputRemote = ClientRemote['betterInput']
 
@@ -16,6 +16,9 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
     polish: (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
     optimize: (text: string, provider: string, model: string, context: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
     convertFile: (fileName: string, fileData: string, ocr?: boolean, signal?: AbortSignal) => Promise<RemoteResult<ConvertFileResultWire>>
+    templatesList: () => Promise<RemoteResult<{ templates: TemplateWire[] }>>
+    templatesSave: (template: TemplateInputWire, signal?: AbortSignal) => Promise<RemoteResult<{ template: TemplateWire }>>
+    templatesRemove: (id: string, signal?: AbortSignal) => Promise<RemoteResult<{ removed: boolean }>>
   }
 
   interface TypertRemoteMap {
@@ -28,6 +31,9 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
     'betterInput/polish': (transcript: string, provider: string, model: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
     'betterInput/optimize': (text: string, provider: string, model: string, context: string, signal?: AbortSignal) => Promise<RemoteResult<string>>
     'betterInput/convertFile': (fileName: string, fileData: string, ocr?: boolean, signal?: AbortSignal) => Promise<RemoteResult<ConvertFileResultWire>>
+    'betterInput/templatesList': () => Promise<RemoteResult<{ templates: TemplateWire[] }>>
+    'betterInput/templatesSave': (template: TemplateInputWire, signal?: AbortSignal) => Promise<RemoteResult<{ template: TemplateWire }>>
+    'betterInput/templatesRemove': (id: string, signal?: AbortSignal) => Promise<RemoteResult<{ removed: boolean }>>
   }
 
   interface TypertRemoteNamespaceMap {
@@ -239,6 +245,57 @@ export const TYPERT_REMOTE: TypertRemoteContribution = {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#ConvertFileResult',
         schema: convertFileResultSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/templatesList',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'templatesList',
+      invocation: { kind: 'direct' },
+      parameters: [],
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#TemplateListResult',
+        schema: templateListResultSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/templatesSave',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'templatesSave',
+      invocation: { kind: 'direct' },
+      parameters: [{
+        name: 'template',
+        wire: 'template',
+        source: 'json',
+        codec: { mode: 'strict', typeSymbol: 'dsh-better-input#TemplateInput', schema: templateInputSchema }
+      }],
+      cancellation: { parameter: 'signal' },
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#TemplateSaveResult',
+        schema: templateSaveResultSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/templatesRemove',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'templatesRemove',
+      invocation: { kind: 'direct' },
+      parameters: [{
+        name: 'id',
+        wire: 'id',
+        source: 'json',
+        codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+      }],
+      cancellation: { parameter: 'signal' },
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#TemplateRemoveResult',
+        schema: templateRemoveResultSchema
       }
     }
   ]

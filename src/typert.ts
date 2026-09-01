@@ -1,4 +1,4 @@
-import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, booleanSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
+import { aboutInfoSchema, betterInputSettingsPatchSchema, betterInputSettingsViewSchema, booleanSchema, convertFileResultSchema, listRoutesResultSchema, optimizeResultSchema, polishResultSchema, resolveModelEffortsResultSchema, templateInputSchema, templateListResultSchema, templateRemoveResultSchema, templateSaveResultSchema, textSchema, updateCheckResultSchema } from './remote-contract.js'
 
 export const TYPERT = {
   package: 'dsh-better-input',
@@ -207,6 +207,57 @@ export const TYPERT = {
         typeSymbol: 'dsh-better-input#ConvertFileResult',
         schema: convertFileResultSchema
       }
+    },
+    {
+      id: 'dsh-better-input#betterInput/templatesList',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'templatesList',
+      invocation: { kind: 'direct' },
+      parameters: [],
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#TemplateListResult',
+        schema: templateListResultSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/templatesSave',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'templatesSave',
+      invocation: { kind: 'direct' },
+      parameters: [{
+        name: 'template',
+        wire: 'template',
+        source: 'json',
+        codec: { mode: 'strict', typeSymbol: 'dsh-better-input#TemplateInput', schema: templateInputSchema }
+      }],
+      cancellation: { parameter: 'signal' },
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#TemplateSaveResult',
+        schema: templateSaveResultSchema
+      }
+    },
+    {
+      id: 'dsh-better-input#betterInput/templatesRemove',
+      service: 'BetterInputPolish',
+      namespace: 'betterInput',
+      method: 'templatesRemove',
+      invocation: { kind: 'direct' },
+      parameters: [{
+        name: 'id',
+        wire: 'id',
+        source: 'json',
+        codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+      }],
+      cancellation: { parameter: 'signal' },
+      result: {
+        mode: 'strict',
+        typeSymbol: 'dsh-better-input#TemplateRemoveResult',
+        schema: templateRemoveResultSchema
+      }
     }
   ],
   model: {
@@ -281,6 +332,27 @@ export const TYPERT = {
             signature: 'convertFile(fileName: string, fileData: string, ocr?: boolean, signal: AbortSignal): Promise<ConvertFileResult>',
             summary: 'Convert a binary file to Markdown on the Host. With ocr=true, scanned PDF pages / PPTX images are read by the vision model.',
             jsDoc: '/** Convert a binary file to Markdown on the Host. With ocr=true, scanned PDF pages / PPTX images are read by the vision model. */'
+          },
+          {
+            kind: 'method',
+            name: 'templatesList',
+            signature: 'templatesList(): Promise<TemplateListResult>',
+            summary: 'List all saved prompt templates, newest first.',
+            jsDoc: '/** List all saved prompt templates, newest first. */'
+          },
+          {
+            kind: 'method',
+            name: 'templatesSave',
+            signature: 'templatesSave(template: TemplateInput, signal: AbortSignal): Promise<TemplateSaveResult>',
+            summary: 'Create or update one prompt template on the Host filesystem.',
+            jsDoc: '/** Create or update one prompt template on the Host filesystem. */'
+          },
+          {
+            kind: 'method',
+            name: 'templatesRemove',
+            signature: 'templatesRemove(id: string, signal: AbortSignal): Promise<TemplateRemoveResult>',
+            summary: 'Remove one prompt template by id.',
+            jsDoc: '/** Remove one prompt template by id. */'
           }
         ],
         types: [
@@ -307,6 +379,26 @@ export const TYPERT = {
           {
             name: 'ConvertFileResult',
             declaration: "export type ConvertFileResult = { success: boolean; format: 'text' | 'pdf' | 'docx' | 'xlsx' | 'xls' | 'pptx' | 'html' | 'epub' | 'csv' | 'json' | 'xml' | 'zip'; markdown: string; warnings: readonly string[]; metadata?: { pageCount?: number; slideCount?: number; sheetCount?: number; wordCount?: number; fileCount?: number } }"
+          },
+          {
+            name: 'BetterInputTemplate',
+            declaration: 'export interface BetterInputTemplate { id: string; name: string; description: string; content: string; tags: readonly string[]; createdAt: number; updatedAt: number }'
+          },
+          {
+            name: 'TemplateInput',
+            declaration: 'export interface TemplateInput { id?: string; name: string; description?: string; content: string; tags?: readonly string[] }'
+          },
+          {
+            name: 'TemplateListResult',
+            declaration: 'export interface TemplateListResult { templates: readonly BetterInputTemplate[] }'
+          },
+          {
+            name: 'TemplateSaveResult',
+            declaration: 'export interface TemplateSaveResult { template: BetterInputTemplate }'
+          },
+          {
+            name: 'TemplateRemoveResult',
+            declaration: 'export interface TemplateRemoveResult { removed: boolean }'
           }
         ]
       }

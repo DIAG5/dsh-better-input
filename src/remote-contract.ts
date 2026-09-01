@@ -76,6 +76,36 @@ export const polishResultSchema = z.string()
 
 export const optimizeResultSchema = z.string()
 
+export const templateSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  content: z.string(),
+  tags: z.array(z.string()),
+  createdAt: z.number(),
+  updatedAt: z.number()
+})
+
+export const templateInputSchema = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  description: z.string().optional(),
+  content: z.string(),
+  tags: z.array(z.string()).optional()
+})
+
+export const templateListResultSchema = z.object({
+  templates: z.array(templateSchema)
+})
+
+export const templateSaveResultSchema = z.object({
+  template: templateSchema
+})
+
+export const templateRemoveResultSchema = z.object({
+  removed: z.boolean()
+})
+
 export const aboutInfoSchema = z.object({
   repository: z.string(),
   repositorySlug: z.string(),
@@ -129,6 +159,8 @@ export type AboutInfoWire = z.infer<typeof aboutInfoSchema>
 export type UpdateCheckResultWire = z.infer<typeof updateCheckResultSchema>
 export type ConvertibleFormatWire = z.infer<typeof convertibleFormatSchema>
 export type ConvertFileResultWire = z.infer<typeof convertFileResultSchema>
+export type TemplateWire = z.infer<typeof templateSchema>
+export type TemplateInputWire = z.infer<typeof templateInputSchema>
 
 export type BetterInputSettingsWire = z.infer<typeof betterInputSettingsSchema>
 export type BetterInputSettingsPatchWire = z.infer<typeof betterInputSettingsPatchSchema>

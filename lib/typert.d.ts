@@ -383,6 +383,100 @@ export declare const TYPERT: {
                 }, import("zod/v4/core").$strip>>;
             }, import("zod/v4/core").$strip>;
         };
+    }, {
+        readonly id: "dsh-better-input#betterInput/templatesList";
+        readonly service: "BetterInputPolish";
+        readonly namespace: "betterInput";
+        readonly method: "templatesList";
+        readonly invocation: {
+            readonly kind: "direct";
+        };
+        readonly parameters: readonly [];
+        readonly result: {
+            readonly mode: "strict";
+            readonly typeSymbol: "dsh-better-input#TemplateListResult";
+            readonly schema: import("zod").ZodObject<{
+                templates: import("zod").ZodArray<import("zod").ZodObject<{
+                    id: import("zod").ZodString;
+                    name: import("zod").ZodString;
+                    description: import("zod").ZodString;
+                    content: import("zod").ZodString;
+                    tags: import("zod").ZodArray<import("zod").ZodString>;
+                    createdAt: import("zod").ZodNumber;
+                    updatedAt: import("zod").ZodNumber;
+                }, import("zod/v4/core").$strip>>;
+            }, import("zod/v4/core").$strip>;
+        };
+    }, {
+        readonly id: "dsh-better-input#betterInput/templatesSave";
+        readonly service: "BetterInputPolish";
+        readonly namespace: "betterInput";
+        readonly method: "templatesSave";
+        readonly invocation: {
+            readonly kind: "direct";
+        };
+        readonly parameters: readonly [{
+            readonly name: "template";
+            readonly wire: "template";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "dsh-better-input#TemplateInput";
+                readonly schema: import("zod").ZodObject<{
+                    id: import("zod").ZodOptional<import("zod").ZodString>;
+                    name: import("zod").ZodString;
+                    description: import("zod").ZodOptional<import("zod").ZodString>;
+                    content: import("zod").ZodString;
+                    tags: import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString>>;
+                }, import("zod/v4/core").$strip>;
+            };
+        }];
+        readonly cancellation: {
+            readonly parameter: "signal";
+        };
+        readonly result: {
+            readonly mode: "strict";
+            readonly typeSymbol: "dsh-better-input#TemplateSaveResult";
+            readonly schema: import("zod").ZodObject<{
+                template: import("zod").ZodObject<{
+                    id: import("zod").ZodString;
+                    name: import("zod").ZodString;
+                    description: import("zod").ZodString;
+                    content: import("zod").ZodString;
+                    tags: import("zod").ZodArray<import("zod").ZodString>;
+                    createdAt: import("zod").ZodNumber;
+                    updatedAt: import("zod").ZodNumber;
+                }, import("zod/v4/core").$strip>;
+            }, import("zod/v4/core").$strip>;
+        };
+    }, {
+        readonly id: "dsh-better-input#betterInput/templatesRemove";
+        readonly service: "BetterInputPolish";
+        readonly namespace: "betterInput";
+        readonly method: "templatesRemove";
+        readonly invocation: {
+            readonly kind: "direct";
+        };
+        readonly parameters: readonly [{
+            readonly name: "id";
+            readonly wire: "id";
+            readonly source: "json";
+            readonly codec: {
+                readonly mode: "strict";
+                readonly typeSymbol: "string";
+                readonly schema: import("zod").ZodString;
+            };
+        }];
+        readonly cancellation: {
+            readonly parameter: "signal";
+        };
+        readonly result: {
+            readonly mode: "strict";
+            readonly typeSymbol: "dsh-better-input#TemplateRemoveResult";
+            readonly schema: import("zod").ZodObject<{
+                removed: import("zod").ZodBoolean;
+            }, import("zod/v4/core").$strip>;
+        };
     }];
     readonly model: {
         readonly services: readonly [{
@@ -446,6 +540,24 @@ export declare const TYPERT: {
                 readonly signature: "convertFile(fileName: string, fileData: string, ocr?: boolean, signal: AbortSignal): Promise<ConvertFileResult>";
                 readonly summary: "Convert a binary file to Markdown on the Host. With ocr=true, scanned PDF pages / PPTX images are read by the vision model.";
                 readonly jsDoc: "/** Convert a binary file to Markdown on the Host. With ocr=true, scanned PDF pages / PPTX images are read by the vision model. */";
+            }, {
+                readonly kind: "method";
+                readonly name: "templatesList";
+                readonly signature: "templatesList(): Promise<TemplateListResult>";
+                readonly summary: "List all saved prompt templates, newest first.";
+                readonly jsDoc: "/** List all saved prompt templates, newest first. */";
+            }, {
+                readonly kind: "method";
+                readonly name: "templatesSave";
+                readonly signature: "templatesSave(template: TemplateInput, signal: AbortSignal): Promise<TemplateSaveResult>";
+                readonly summary: "Create or update one prompt template on the Host filesystem.";
+                readonly jsDoc: "/** Create or update one prompt template on the Host filesystem. */";
+            }, {
+                readonly kind: "method";
+                readonly name: "templatesRemove";
+                readonly signature: "templatesRemove(id: string, signal: AbortSignal): Promise<TemplateRemoveResult>";
+                readonly summary: "Remove one prompt template by id.";
+                readonly jsDoc: "/** Remove one prompt template by id. */";
             }];
             readonly types: readonly [{
                 readonly name: "BetterInputSettingsView";
@@ -465,6 +577,21 @@ export declare const TYPERT: {
             }, {
                 readonly name: "ConvertFileResult";
                 readonly declaration: "export type ConvertFileResult = { success: boolean; format: 'text' | 'pdf' | 'docx' | 'xlsx' | 'xls' | 'pptx' | 'html' | 'epub' | 'csv' | 'json' | 'xml' | 'zip'; markdown: string; warnings: readonly string[]; metadata?: { pageCount?: number; slideCount?: number; sheetCount?: number; wordCount?: number; fileCount?: number } }";
+            }, {
+                readonly name: "BetterInputTemplate";
+                readonly declaration: "export interface BetterInputTemplate { id: string; name: string; description: string; content: string; tags: readonly string[]; createdAt: number; updatedAt: number }";
+            }, {
+                readonly name: "TemplateInput";
+                readonly declaration: "export interface TemplateInput { id?: string; name: string; description?: string; content: string; tags?: readonly string[] }";
+            }, {
+                readonly name: "TemplateListResult";
+                readonly declaration: "export interface TemplateListResult { templates: readonly BetterInputTemplate[] }";
+            }, {
+                readonly name: "TemplateSaveResult";
+                readonly declaration: "export interface TemplateSaveResult { template: BetterInputTemplate }";
+            }, {
+                readonly name: "TemplateRemoveResult";
+                readonly declaration: "export interface TemplateRemoveResult { removed: boolean }";
             }];
         }];
         readonly events: readonly [];

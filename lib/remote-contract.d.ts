@@ -98,6 +98,47 @@ export declare const listRoutesResultSchema: z.ZodArray<z.ZodObject<{
 }, z.core.$strip>>;
 export declare const polishResultSchema: z.ZodString;
 export declare const optimizeResultSchema: z.ZodString;
+export declare const templateSchema: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    description: z.ZodString;
+    content: z.ZodString;
+    tags: z.ZodArray<z.ZodString>;
+    createdAt: z.ZodNumber;
+    updatedAt: z.ZodNumber;
+}, z.core.$strip>;
+export declare const templateInputSchema: z.ZodObject<{
+    id: z.ZodOptional<z.ZodString>;
+    name: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    content: z.ZodString;
+    tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+}, z.core.$strip>;
+export declare const templateListResultSchema: z.ZodObject<{
+    templates: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+        description: z.ZodString;
+        content: z.ZodString;
+        tags: z.ZodArray<z.ZodString>;
+        createdAt: z.ZodNumber;
+        updatedAt: z.ZodNumber;
+    }, z.core.$strip>>;
+}, z.core.$strip>;
+export declare const templateSaveResultSchema: z.ZodObject<{
+    template: z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+        description: z.ZodString;
+        content: z.ZodString;
+        tags: z.ZodArray<z.ZodString>;
+        createdAt: z.ZodNumber;
+        updatedAt: z.ZodNumber;
+    }, z.core.$strip>;
+}, z.core.$strip>;
+export declare const templateRemoveResultSchema: z.ZodObject<{
+    removed: z.ZodBoolean;
+}, z.core.$strip>;
 export declare const aboutInfoSchema: z.ZodObject<{
     repository: z.ZodString;
     repositorySlug: z.ZodString;
@@ -170,6 +211,8 @@ export type AboutInfoWire = z.infer<typeof aboutInfoSchema>;
 export type UpdateCheckResultWire = z.infer<typeof updateCheckResultSchema>;
 export type ConvertibleFormatWire = z.infer<typeof convertibleFormatSchema>;
 export type ConvertFileResultWire = z.infer<typeof convertFileResultSchema>;
+export type TemplateWire = z.infer<typeof templateSchema>;
+export type TemplateInputWire = z.infer<typeof templateInputSchema>;
 export type BetterInputSettingsWire = z.infer<typeof betterInputSettingsSchema>;
 export type BetterInputSettingsPatchWire = z.infer<typeof betterInputSettingsPatchSchema>;
 export type BetterInputSettingsViewWire = z.infer<typeof betterInputSettingsViewSchema>;

@@ -20,6 +20,9 @@ import { createConversionSource } from './conversion-source.js'
 import { ConversionController } from './conversion-controller.js'
 import { BetterInputSettingsSection } from './settings.jsx'
 import { SettingsController, useSettingsSnapshot } from './settings-controller.js'
+import { createTemplatesSource } from './templates-source.js'
+import { TemplatesController } from './templates-controller.js'
+import { TemplatesSection } from './templates-section.jsx'
 import { VoiceInputSession } from './voice-session.js'
 
 const PULSE_KEYFRAMES = `@keyframes dsh-better-input-pulse {
@@ -56,6 +59,7 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
   await ctx.inject(['slots', 'remote', 'remote.betterInput', 'inputTriggers', 'conversation'], async (remoteCtx) => {
     const remote = remoteCtx.remote.betterInput as BetterInputRemote
     const controller = new SettingsController(remote)
+    const templatesController = new TemplatesController(remote)
 
     const voiceSessions = new Map<string, VoiceInputSession>()
     const voiceSessionFor = (sessionId: string): VoiceInputSession => {
@@ -72,11 +76,17 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
     const conversionStore = new ConversionStore()
     const disposeConversionSource = remoteCtx.inputTriggers.registerSource(createConversionSource(conversionStore))
 
+    // Prompt template library: the `/` trigger source and the settings section
+    // share one controller so both see the same optimistic updates.
+    const disposeTemplatesSource = remoteCtx.inputTriggers.registerSource(createTemplatesSource(templatesController))
+
     remoteCtx.effect(() => () => {
       for (const session of voiceSessions.values()) session.dispose()
       voiceSessions.clear()
       disposeConversionSource()
+      disposeTemplatesSource()
       controller.dispose()
+      templatesController.dispose()
     }, 'dsh-better-input sessions lifecycle')
 
     // Inject the keyframes used by the recognition bar pulse.
@@ -92,6 +102,7 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
 
     void controller.refreshSettings()
     void controller.refreshRoutes()
+    void templatesController.ensureLoaded()
 
     const useSettings = (): SettingsFace => {
       const snapshot = useSettingsSnapshot(controller)
@@ -204,6 +215,22 @@ export async function apply(ctx: ClientContext): Promise<() => Promise<void>> {
           inject: () => ({ settingsController: controller })
         },
         BetterInputSettingsSection
+      )
+    )
+
+    // Prompt template library management (list/create/edit/delete), right
+    // under the main BetterInput settings section.
+    remoteCtx.slots.inject('settings.section', () =>
+      remoteCtx.slots.register(
+        {
+          name: 'settings.section',
+          id: 'dsh-better-input-templates',
+          order: 17,
+          label: () => ctx.locale.bind(BETTER_INPUT_NS)('templatesTitle'),
+          locale: BETTER_INPUT_NS,
+          inject: () => ({ templatesController })
+        },
+        TemplatesSection
       )
     )
 

@@ -24,7 +24,7 @@
   <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.en.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.en.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
 
-> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: voice recognition, AI polishing, prompt optimization, more local file formats you can bring into the input, and file-to-Markdown — plus the small UX refinements — **making every input you feed an agent better**.
+> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: voice recognition, AI polishing, prompt optimization, on-demand prompt templates, more local file formats you can bring into the input, and file-to-Markdown — plus the small UX refinements — **making every input you feed an agent better**.
 
 ---
 
@@ -49,6 +49,10 @@ https://github.com/user-attachments/assets/caae08fc-2d8e-43c6-8bab-ade2d278337f
 <tr>
 <td align="center">✨<br/><b>Prompt optimization</b></td>
 <td>An icon at the top right of the composer — the AI refines your prompt to be more precise; a <strong>before / after comparison panel</strong> pops up so you can review before adopting. Reuses your dsh models — no extra key.</td>
+</tr>
+<tr>
+<td align="center">📝<br/><b>Prompt templates</b></td>
+<td>Save frequently used prompts as templates — type <code>/</code> in the composer to search and insert the body in one click; create / edit / delete in Settings, <strong>stored locally</strong>, nothing leaves your machine.</td>
 </tr>
 <tr>
 <td align="center">📎<br/><b>More file formats input</b></td>
@@ -91,7 +95,7 @@ Turn docs, sheets, and decks into clean, structured Markdown so the agent reads 
 
 ### Text & prompts
 - [x] ✨ **Prompt optimization** — a one-click icon beside the input to have the AI polish / improve the prompt you wrote
-- [ ] 📝 **Prompt template library** — one-click insert of common templates (coding / summarize / translate / role-play…)
+- [x] 📝 **Prompt template library** — type `/` in the composer to search & insert common templates (coding / summarize / translate / role-play…)
 - [ ] 🧹 **Text cleaning** — paste messy / line-numbered / timestamped text and get clean copy
 - [ ] 🔤 **Instant translation** — one click to turn Chinese into English (or vice versa)
 - [ ] 📋 **Smart paste** — detect code / table / URL / quote on paste and wrap it appropriately
@@ -194,7 +198,18 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 
 > Thinking is off by default for fast, low-cost output. You can raise the effort tier in settings for deeper optimization.
 
-### 4. Add file / file-to-Markdown
+### 4. Prompt templates
+
+Save frequently used prompts (coding / summarizing / translating / role-play…) as templates and insert them on demand:
+
+1. Go to Settings → **BetterInput** → the "**Prompt templates**" section and click "**New template**"
+2. Fill in the name, description (optional), body, and tags (optional, comma-separated, used for search), then save
+3. Back in the composer, type `/` — template candidates pop up; keep typing to filter live by name / description / tag
+4. Pick one and the template body is inserted into the input, ready to edit further before sending
+
+> Templates are stored locally on the host machine at `~/.dsh/better-input/templates.json` — nothing leaves your machine; up to 200 templates, 8,000 chars per body, sorted by most recently updated.
+
+### 5. Add file / file-to-Markdown
 
 1. Click the **📎 Add file** button at the top right of the composer to expand the file panel (click again to collapse).
 2. Click "**Add file**" to pick files (multiple allowed); they appear as small tags in the panel.
@@ -208,7 +223,7 @@ The built-in prompt removes fillers, fixes homophone errors, restores punctuatio
 
 > Conversion runs locally via built-in parsers (PDF / Word / Excel / PPT / EPUB / HTML / CSV / JSON / XML etc.); the generated Markdown is sent with your message so the agent can read the document at a glance.
 
-### 5. OCR vision recognition (scanned PDF / PPT)
+### 6. OCR vision recognition (scanned PDF / PPT)
 
 For documents **without a text layer** — scanned PDFs, image-only PDFs, or PPTs whose slides are just pictures — regular conversion yields little or no text. Use OCR to let a vision model "read the pixels":
 
@@ -219,7 +234,7 @@ For documents **without a text layer** — scanned PDFs, image-only PDFs, or PPT
 
 > If no OCR model is set, clicking "Use OCR" shows a neutral toast guiding you to Settings instead of a red error; if the chosen model explicitly declares it does not support image input, you're told upfront to switch, avoiding a confusing empty result.
 
-### 6. Check for updates
+### 7. Check for updates
 
 1. Open Settings → **BetterInput** → scroll to the bottom to the "**About & Updates**" section
 2. Click "**Check for updates**"
@@ -236,7 +251,7 @@ For documents **without a text layer** — scanned PDFs, image-only PDFs, or PPT
 
 > Note: DSH does not auto-update third-party plugins on launch — run the command above to pull the new release. This section simply helps you notice and follow updates promptly.
 
-### 7. Settings
+### 8. Settings
 
 | Setting | Meaning |
 | --- | --- |
@@ -252,6 +267,7 @@ For documents **without a text layer** — scanned PDFs, image-only PDFs, or PPT
 | Optimize reasoning effort | Default: thinking off; optional higher tiers the model supports |
 | Custom optimize prompt | Optional replacement of the built-in optimize prompt |
 | OCR vision model | Vision model for scanned pages / embedded images; independent of the polish model. OCR is unavailable without one |
+| Prompt templates | Create / edit / delete templates (name, description, body, tags) in Settings; data is stored in a local JSON file on the host |
 | About & Updates | Shows installed version / license / repo, and a one-click "Check for updates" for the latest release and update command |
 
 > Polish and optimization are configured independently — model, effort, and prompt each.
@@ -275,10 +291,11 @@ Client-only UI: `npm run dev:watch`, then refresh the UI. Host changes: restart 
 ## 🏗️ Architecture
 
 - `src/index.ts` — Host plugin entry, mounts the polish service
-- `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing & prompt optimization, file-to-Markdown (`convertFile`, via `ctx.llm`)
+- `src/polish/service.ts` — `BetterInputPolishService` (Typert remote): settings, dsh route discovery, LLM polishing & prompt optimization, file-to-Markdown (`convertFile`, via `ctx.llm`), prompt-template storage (`templatesList` / `templatesSave` / `templatesRemove`)
+- `src/templates/` — prompt-template data model and host-side JSON store (atomic writes, corruption self-healing)
 - `src/converter/` — pure-TypeScript file→Markdown conversion layer (PDF / DOCX / XLSX / PPT / EPUB / HTML / CSV / JSON / XML / ZIP), bundled on the Host only
 - `src/about.ts` — plugin identity and npm version check (About & Updates)
-- `src/client/` — browser half: microphone/optimize/choose-file buttons (`conversation.input.right`), recognition bar/file panel (`conversation.input.dock`), settings page (`settings.section`), `@` reference-chip source (`conversion-source`)
+- `src/client/` — browser half: microphone/optimize/choose-file buttons (`conversation.input.right`), recognition bar/file panel (`conversation.input.dock`), settings page & template management (`settings.section`), `@` reference-chip source (`conversion-source`), `/` template-candidate source (input trigger)
 - `src/typert.ts` / `src/remote.ts` — Client↔Host typed contract
 
 ## 📄 License
