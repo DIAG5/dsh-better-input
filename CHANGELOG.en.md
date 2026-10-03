@@ -2,6 +2,14 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.2.4] - unreleased
+
+### Changed
+
+- **Track dsh 0.2.0 and migrate wholesale to the 0.2.0-rc.2 track**: the minimum dsh requirement is raised to `>= 0.2.0-rc.2` — the peer ranges are narrowed to `>= 0.2.0-rc.2 <0.3.0-0` (no longer claiming compatibility with the 0.1.x track) — and the 12 dev-dependency type packages (`dsh-client-ui-conversation` / `dsh-client-ui-chat` / `dsh-client-ui-slots` / `dsh-client-ui-input-trigger` / `dsh-client-ui-settings` / `dsh-client-store` / `dsh-client-locale` / `dsh-api-remotes` / `dsh-llm` / `dsh-settings` / `dsh-typert-protocol` / `dsh-attachment`) are all bumped to `0.2.0-rc.2`. `@deepseek-ai/cordis` moves to `~4.0.4` and `@deepseek-ai/schemastery` to `~3.18.4` to line up with the peer requirements declared by the 0.2.0 packages, avoiding ERESOLVE at install time.
+- **Fix host boot failure: adapt to the breaking Typert codec change**: 0.2.0's `typert-loader` requires strict codecs to expose a `create()` factory and no longer accepts the static `schema` field. With the old shape the host logged `result codec has no create() factory` on boot, leaving the plugin entry inactive (`1 entry did not activate`). All 27 codecs in `typert.ts` (host-side manifest) and `remote.ts` (client-side contribution) — both results and parameters of every method — now use `create: () => <Schema>` instead of `schema: <Schema>` to clear the boot error.
+- **Adapt to the settings API refactor**: 0.2.0 removed the `SettingsScope` named export and `SettingsForms.register()`; a plugin's config is now owned by the Loader, which derives the entry from the plugin's own `Config` schema and auto-generates a settings page from it. A `static Config` was added, and reads/writes now go through `ctx.settings.describe()` / `ctx.settings.update()`. Because the plugin ships its own `settings.section` UI, `ctx.settings.configure({ auto: false })` suppresses the native auto page so no duplicate settings entry appears. The client settings UI keeps using the Typert RPC read/write path unchanged.
+
 ## [0.2.3] - unreleased
 
 ### Changed

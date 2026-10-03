@@ -15,7 +15,7 @@ export const TYPERT = {
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#BetterInputSettingsView',
-        schema: betterInputSettingsViewSchema
+        create: () => betterInputSettingsViewSchema
       }
     },
     {
@@ -28,13 +28,13 @@ export const TYPERT = {
         name: 'patch',
         wire: 'patch',
         source: 'json',
-        codec: { mode: 'strict', typeSymbol: 'dsh-better-input#BetterInputSettingsPatch', schema: betterInputSettingsPatchSchema }
+        codec: { mode: 'strict', typeSymbol: 'dsh-better-input#BetterInputSettingsPatch', create: () => betterInputSettingsPatchSchema }
       }],
       cancellation: { parameter: 'signal' },
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#BetterInputSettingsView',
-        schema: betterInputSettingsViewSchema
+        create: () => betterInputSettingsViewSchema
       }
     },
     {
@@ -47,7 +47,7 @@ export const TYPERT = {
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#PolishRoute[]',
-        schema: listRoutesResultSchema
+        create: () => listRoutesResultSchema
       }
     },
     {
@@ -61,19 +61,19 @@ export const TYPERT = {
           name: 'provider',
           wire: 'provider',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         },
         {
           name: 'model',
           wire: 'model',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         }
       ],
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#ResolveModelEffortsResult',
-        schema: resolveModelEffortsResultSchema
+        create: () => resolveModelEffortsResultSchema
       }
     },
     {
@@ -86,7 +86,7 @@ export const TYPERT = {
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#AboutInfo',
-        schema: aboutInfoSchema
+        create: () => aboutInfoSchema
       }
     },
     {
@@ -100,7 +100,7 @@ export const TYPERT = {
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#UpdateCheckResult',
-        schema: updateCheckResultSchema
+        create: () => updateCheckResultSchema
       }
     },
     {
@@ -114,26 +114,26 @@ export const TYPERT = {
           name: 'transcript',
           wire: 'transcript',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         },
         {
           name: 'provider',
           wire: 'provider',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         },
         {
           name: 'model',
           wire: 'model',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         }
       ],
       cancellation: { parameter: 'signal' },
       result: {
         mode: 'strict',
         typeSymbol: 'string',
-        schema: polishResultSchema
+        create: () => polishResultSchema
       }
     },
     {
@@ -147,32 +147,32 @@ export const TYPERT = {
           name: 'text',
           wire: 'text',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         },
         {
           name: 'provider',
           wire: 'provider',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         },
         {
           name: 'model',
           wire: 'model',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         },
         {
           name: 'context',
           wire: 'context',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         }
       ],
       cancellation: { parameter: 'signal' },
       result: {
         mode: 'strict',
         typeSymbol: 'string',
-        schema: optimizeResultSchema
+        create: () => optimizeResultSchema
       }
     },
     {
@@ -186,26 +186,26 @@ export const TYPERT = {
           name: 'fileName',
           wire: 'fileName',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         },
         {
           name: 'fileData',
           wire: 'fileData',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+          codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
         },
         {
           name: 'ocr',
           wire: 'ocr',
           source: 'json',
-          codec: { mode: 'strict', typeSymbol: 'boolean', schema: booleanSchema }
+          codec: { mode: 'strict', typeSymbol: 'boolean', create: () => booleanSchema }
         }
       ],
       cancellation: { parameter: 'signal' },
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#ConvertFileResult',
-        schema: convertFileResultSchema
+        create: () => convertFileResultSchema
       }
     },
     {
@@ -218,7 +218,7 @@ export const TYPERT = {
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#TemplateListResult',
-        schema: templateListResultSchema
+        create: () => templateListResultSchema
       }
     },
     {
@@ -231,13 +231,13 @@ export const TYPERT = {
         name: 'template',
         wire: 'template',
         source: 'json',
-        codec: { mode: 'strict', typeSymbol: 'dsh-better-input#TemplateInput', schema: templateInputSchema }
+        codec: { mode: 'strict', typeSymbol: 'dsh-better-input#TemplateInput', create: () => templateInputSchema }
       }],
       cancellation: { parameter: 'signal' },
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#TemplateSaveResult',
-        schema: templateSaveResultSchema
+        create: () => templateSaveResultSchema
       }
     },
     {
@@ -250,13 +250,13 @@ export const TYPERT = {
         name: 'id',
         wire: 'id',
         source: 'json',
-        codec: { mode: 'strict', typeSymbol: 'string', schema: textSchema }
+        codec: { mode: 'strict', typeSymbol: 'string', create: () => textSchema }
       }],
       cancellation: { parameter: 'signal' },
       result: {
         mode: 'strict',
         typeSymbol: 'dsh-better-input#TemplateRemoveResult',
-        schema: templateRemoveResultSchema
+        create: () => templateRemoveResultSchema
       }
     }
   ],

@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/v/dsh-better-input?style=flat-square" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/dsh-better-input"><img src="https://img.shields.io/npm/dm/dsh-better-input?style=flat-square" alt="npm downloads"></a>
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%200.1.2--rc.1-blue?style=flat-square" alt="DSH"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/dsh-%3E%3D%200.2.0--rc.2-blue?style=flat-square" alt="DSH"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT"></a>
   <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
@@ -112,7 +112,7 @@ BetterInput 是一套完整的**输入增强套件**：不只是某一类输入�
 
 ## 🚀 安装
 
-前置：[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`>= 0.1.2-rc.1`）+ Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge 浏览器。
+前置：[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`>= 0.2.0-rc.2`）+ Node.js `^22.19.0 || >=24.0.0` + Chrome/Edge 浏览器。
 
 > 💡 **两种方式，任选其一。** 装过 `dsh` CLI 的用短命令；没装或不想全局安装的，用下方 **npx 全称**——**不需要任何全局环境配置**。已发布到 [npm](https://www.npmjs.com/package/dsh-better-input)。
 
@@ -273,7 +273,7 @@ npx -y @deepseek-ai/dsh plugin --profile web add "$PWD"
 
 ## 🧩 兼容性
 
-- DeepSeek Harness `>= 0.1.2-rc.1`（已在 `0.1.5-rc.1` 下实测通过）
+- DeepSeek Harness `>= 0.2.0-rc.2`
 - Node.js `^22.19.0 || >=24.0.0`
 - Chromium 内核浏览器（Chrome / Edge）
 

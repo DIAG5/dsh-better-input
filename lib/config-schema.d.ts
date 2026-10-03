@@ -1,35 +1,35 @@
 import s from '@deepseek-ai/schemastery';
 /** Host-only dsh settings schema; keep schemastery out of the browser bundle. */
-export declare const BetterInputSettingsSchema: s<Schemastery.ObjectS<{
-    language: s<string, string>;
-    maxRecordingSeconds: s<number, number>;
-    polishingEnabled: s<boolean, boolean>;
-    polishProvider: s<string, string>;
-    polishModel: s<string, string>;
-    polishReasoningEffort: s<string, string>;
-    polishPrompt: s<string, string>;
-    optimizeEnabled: s<boolean, boolean>;
-    optimizeProvider: s<string, string>;
-    optimizeModel: s<string, string>;
-    optimizeReasoningEffort: s<string, string>;
-    optimizePrompt: s<string, string>;
-    contextTurns: s<number, number>;
-    ocrProvider: s<string, string>;
-    ocrModel: s<string, string>;
-}>, Schemastery.ObjectT<{
-    language: s<string, string>;
-    maxRecordingSeconds: s<number, number>;
-    polishingEnabled: s<boolean, boolean>;
-    polishProvider: s<string, string>;
-    polishModel: s<string, string>;
-    polishReasoningEffort: s<string, string>;
-    polishPrompt: s<string, string>;
-    optimizeEnabled: s<boolean, boolean>;
-    optimizeProvider: s<string, string>;
-    optimizeModel: s<string, string>;
-    optimizeReasoningEffort: s<string, string>;
-    optimizePrompt: s<string, string>;
-    contextTurns: s<number, number>;
-    ocrProvider: s<string, string>;
-    ocrModel: s<string, string>;
-}>>;
+export declare const BetterInputSettingsSchema: s<Schemastery.ObjectS<NoInfer<{
+    language: s<string, string, "defined">;
+    maxRecordingSeconds: s<number, number, "defined">;
+    polishingEnabled: s<boolean, boolean, "defined">;
+    polishProvider: s<string, string, "defined">;
+    polishModel: s<string, string, "defined">;
+    polishReasoningEffort: s<string, string, "defined">;
+    polishPrompt: s<string, string, "defined">;
+    optimizeEnabled: s<boolean, boolean, "defined">;
+    optimizeProvider: s<string, string, "defined">;
+    optimizeModel: s<string, string, "defined">;
+    optimizeReasoningEffort: s<string, string, "defined">;
+    optimizePrompt: s<string, string, "defined">;
+    contextTurns: s<number, number, "defined">;
+    ocrProvider: s<string, string, "defined">;
+    ocrModel: s<string, string, "defined">;
+}>>, Schemastery.ObjectT<NoInfer<{
+    language: s<string, string, "defined">;
+    maxRecordingSeconds: s<number, number, "defined">;
+    polishingEnabled: s<boolean, boolean, "defined">;
+    polishProvider: s<string, string, "defined">;
+    polishModel: s<string, string, "defined">;
+    polishReasoningEffort: s<string, string, "defined">;
+    polishPrompt: s<string, string, "defined">;
+    optimizeEnabled: s<boolean, boolean, "defined">;
+    optimizeProvider: s<string, string, "defined">;
+    optimizeModel: s<string, string, "defined">;
+    optimizeReasoningEffort: s<string, string, "defined">;
+    optimizePrompt: s<string, string, "defined">;
+    contextTurns: s<number, number, "defined">;
+    ocrProvider: s<string, string, "defined">;
+    ocrModel: s<string, string, "defined">;
+}>>, "plain">;

@@ -6,9 +6,44 @@ import type { ConvertibleFormat } from '../converter/types.js';
 import type { TemplateInputWire, TemplateWire } from '../remote-contract.js';
 export declare class BetterInputPolishService extends TypertRemoteService {
     static inject: string[];
-    private settings;
+    /** Standard config schema; the Loader derives the profile entry and settings namespace from it. */
+    static Config: import("@deepseek-ai/schemastery").default<Schemastery.ObjectS<NoInfer<{
+        language: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        maxRecordingSeconds: import("@deepseek-ai/schemastery").default<number, number, "defined">;
+        polishingEnabled: import("@deepseek-ai/schemastery").default<boolean, boolean, "defined">;
+        polishProvider: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        polishModel: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        polishReasoningEffort: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        polishPrompt: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        optimizeEnabled: import("@deepseek-ai/schemastery").default<boolean, boolean, "defined">;
+        optimizeProvider: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        optimizeModel: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        optimizeReasoningEffort: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        optimizePrompt: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        contextTurns: import("@deepseek-ai/schemastery").default<number, number, "defined">;
+        ocrProvider: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        ocrModel: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+    }>>, Schemastery.ObjectT<NoInfer<{
+        language: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        maxRecordingSeconds: import("@deepseek-ai/schemastery").default<number, number, "defined">;
+        polishingEnabled: import("@deepseek-ai/schemastery").default<boolean, boolean, "defined">;
+        polishProvider: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        polishModel: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        polishReasoningEffort: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        polishPrompt: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        optimizeEnabled: import("@deepseek-ai/schemastery").default<boolean, boolean, "defined">;
+        optimizeProvider: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        optimizeModel: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        optimizeReasoningEffort: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        optimizePrompt: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        contextTurns: import("@deepseek-ai/schemastery").default<number, number, "defined">;
+        ocrProvider: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+        ocrModel: import("@deepseek-ai/schemastery").default<string, string, "defined">;
+    }>>, "plain">;
     private readonly templateStore;
     constructor(ctx: Context);
+    /** Read the plugin's current live settings from the settings registry. */
+    private readSettings;
     getSettings(): BetterInputSettingsView;
     updateSettings(patch: BetterInputSettingsPatch, signal: AbortSignal): Promise<BetterInputSettingsView>;
     listRoutes(): Promise<PolishRoute[]>;

@@ -1,7 +1,8 @@
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
 import type { Context } from '@deepseek-ai/cordis'
 import { TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
-import type { SettingsScope } from '@deepseek-ai/dsh-settings'
+// Type-only import loads dsh-settings' `Context.settings` module augmentation.
+import type { SettingsForms } from '@deepseek-ai/dsh-settings'
 import type { ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
 import type { LlmModelInfo, LlmResolvedModelInfo, StreamChunk } from '@deepseek-ai/dsh-llm'
 import { DEFAULT_SETTINGS, MAX_OCR_CHARACTERS, MAX_OPTIMIZED_CHARACTERS, MAX_OPTIMIZE_CHARACTERS, MAX_POLISHED_CHARACTERS, MAX_TRANSCRIPT_CHARACTERS, OPTIMIZE_TIMEOUT_MS, POLISH_TIMEOUT_MS, SETTINGS_NAMESPACE, validateSettings, type BetterInputSettings, type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js'
@@ -21,23 +22,29 @@ type StoredSettings = BetterInputSettings
 
 export class BetterInputPolishService extends TypertRemoteService {
   static inject = ['llm', 'attachments']
-  private settings: SettingsScope<Record<string, unknown>> | undefined
+  /** Standard config schema; the Loader derives the profile entry and settings namespace from it. */
+  static Config = BetterInputSettingsSchema
   private readonly templateStore = new TemplateStore()
 
   constructor(ctx: Context) {
     super(ctx, 'BetterInputPolish', { namespace: 'betterInput' })
     ctx.inject(['settings'], (settingsCtx) => {
-      this.settings = settingsCtx.settings.register(SETTINGS_NAMESPACE, BetterInputSettingsSchema, {
-        validate: validateSettings
-      })
-      settingsCtx.effect(() => () => {
-        this.settings = undefined
-      }, 'dsh-better-input settings lifecycle')
+      // The plugin owns a custom settings.section UI, so suppress the native
+      // auto-generated settings page to avoid a duplicate editor.
+      const dispose = settingsCtx.settings.configure({ auto: false })
+      settingsCtx.effect(() => () => dispose(), 'dsh-better-input settings presentation')
     })
   }
 
+  /** Read the plugin's current live settings from the settings registry. */
+  private readSettings(): BetterInputSettings | undefined {
+    const descriptor = this.ctx.settings.describe({ redactSecrets: true })
+      .find((row) => String(row.ns) === SETTINGS_NAMESPACE)
+    return descriptor === undefined ? undefined : flattenStoredSettings(descriptor.value)
+  }
+
   getSettings(): BetterInputSettingsView {
-    if (this.settings === undefined) {
+    if (this.readSettings() === undefined) {
       return {
         available: false,
         writable: false,
@@ -47,13 +54,12 @@ export class BetterInputPolishService extends TypertRemoteService {
         defaultOptimizePrompt: OPTIMIZE_SYSTEM_PROMPT
       }
     }
-    const settings = flattenStoredSettings(this.settings.get())
-    const provider = this.ctx.get('settings') as { describe?: (options: { redactSecrets: boolean }) => Array<{ ns: unknown; user?: unknown }>; writable?: boolean } | undefined
-    const descriptor = provider?.describe?.({ redactSecrets: true })?.find((item) => String(item.ns) === SETTINGS_NAMESPACE)
+    const settings = this.readSettings()!
+    const descriptor = this.ctx.settings.describe({ redactSecrets: true }).find((row) => String(row.ns) === SETTINGS_NAMESPACE)
     const user = descriptor?.user
     return {
       available: true,
-      writable: provider?.writable ?? false,
+      writable: this.ctx.settings.writable,
       settings,
       overridden: isRecord(user) ? Object.keys(user) : [],
       defaultPolishPrompt: POLISH_SYSTEM_PROMPT,
@@ -62,15 +68,15 @@ export class BetterInputPolishService extends TypertRemoteService {
   }
 
   async updateSettings(patch: BetterInputSettingsPatch, signal: AbortSignal): Promise<BetterInputSettingsView> {
-    if (this.settings === undefined) return this.getSettings()
+    if (this.readSettings() === undefined) return this.getSettings()
     signal.throwIfAborted()
-    const current = flattenStoredSettings(this.settings.get())
+    const current = this.readSettings()!
     const next: BetterInputSettings = { ...current }
     for (const [key, value] of Object.entries(patch)) {
       if (value !== undefined) (next as unknown as Record<string, unknown>)[key] = value
     }
     validateSettings(next)
-    await this.settings.update(next as unknown as Record<string, unknown>)
+    await this.ctx.settings.update(SETTINGS_NAMESPACE, next as unknown as Record<string, unknown>)
     return this.getSettings()
   }
 
@@ -150,7 +156,7 @@ export class BetterInputPolishService extends TypertRemoteService {
   async polish(transcript: string, provider: string, model: string, signal: AbortSignal): Promise<string> {
     const raw = transcript.trim()
     if (raw === '' || raw.length > MAX_TRANSCRIPT_CHARACTERS || signal.aborted) return raw
-    const settings = this.settings === undefined ? DEFAULT_SETTINGS : flattenStoredSettings(this.settings.get())
+    const settings = this.readSettings() ?? DEFAULT_SETTINGS
     const storedPrompt = settings.polishPrompt
     const effort = settings.polishReasoningEffort
 
@@ -183,7 +189,7 @@ export class BetterInputPolishService extends TypertRemoteService {
   async optimize(text: string, provider: string, model: string, context: string, signal: AbortSignal): Promise<string> {
     const raw = text.trim()
     if (raw === '' || raw.length > MAX_OPTIMIZE_CHARACTERS || signal.aborted) return raw
-    const settings = this.settings === undefined ? DEFAULT_SETTINGS : flattenStoredSettings(this.settings.get())
+    const settings = this.readSettings() ?? DEFAULT_SETTINGS
     const storedPrompt = settings.optimizePrompt
     const effort = settings.optimizeReasoningEffort
 
@@ -320,7 +326,7 @@ export class BetterInputPolishService extends TypertRemoteService {
     data: Uint8Array,
     signal: AbortSignal
   ): Promise<{ success: boolean; format: ConvertibleFormat; markdown: string; warnings: readonly string[]; metadata?: { pageCount?: number; slideCount?: number; sheetCount?: number; wordCount?: number; fileCount?: number } }> {
-    const settings = this.settings === undefined ? DEFAULT_SETTINGS : flattenStoredSettings(this.settings.get())
+    const settings = this.readSettings() ?? DEFAULT_SETTINGS
     // OCR uses its own dedicated vision route — it deliberately does NOT fall
     // back to the polish model, so a scanned file can only be OCR-ready once
     // the user explicitly picked a vision model in Settings.

@@ -14,7 +14,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#BetterInputSettingsView";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 available: import("zod").ZodBoolean;
                 writable: import("zod").ZodBoolean;
                 settings: import("zod").ZodObject<{
@@ -54,7 +54,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "dsh-better-input#BetterInputSettingsPatch";
-                readonly schema: import("zod").ZodObject<{
+                readonly create: () => import("zod").ZodObject<{
                     language: import("zod").ZodOptional<import("zod").ZodString>;
                     maxRecordingSeconds: import("zod").ZodOptional<import("zod").ZodNumber>;
                     polishingEnabled: import("zod").ZodOptional<import("zod").ZodBoolean>;
@@ -79,7 +79,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#BetterInputSettingsView";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 available: import("zod").ZodBoolean;
                 writable: import("zod").ZodBoolean;
                 settings: import("zod").ZodObject<{
@@ -116,7 +116,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#PolishRoute[]";
-            readonly schema: import("zod").ZodArray<import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodArray<import("zod").ZodObject<{
                 provider: import("zod").ZodString;
                 providerName: import("zod").ZodString;
                 model: import("zod").ZodString;
@@ -144,7 +144,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }, {
             readonly name: "model";
@@ -153,13 +153,13 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }];
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#ResolveModelEffortsResult";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 efforts: import("zod").ZodArray<import("zod").ZodObject<{
                     id: import("zod").ZodString;
                     name: import("zod").ZodString;
@@ -180,7 +180,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#AboutInfo";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 repository: import("zod").ZodString;
                 repositorySlug: import("zod").ZodString;
                 version: import("zod").ZodString;
@@ -204,7 +204,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#UpdateCheckResult";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 status: import("zod").ZodEnum<{
                     "up-to-date": "up-to-date";
                     "update-available": "update-available";
@@ -232,7 +232,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }, {
             readonly name: "provider";
@@ -241,7 +241,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }, {
             readonly name: "model";
@@ -250,7 +250,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }];
         readonly cancellation: {
@@ -259,7 +259,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "string";
-            readonly schema: import("zod").ZodString;
+            readonly create: () => import("zod").ZodString;
         };
     }, {
         readonly id: "dsh-better-input#betterInput/optimize";
@@ -276,7 +276,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }, {
             readonly name: "provider";
@@ -285,7 +285,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }, {
             readonly name: "model";
@@ -294,7 +294,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }, {
             readonly name: "context";
@@ -303,7 +303,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }];
         readonly cancellation: {
@@ -312,7 +312,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "string";
-            readonly schema: import("zod").ZodString;
+            readonly create: () => import("zod").ZodString;
         };
     }, {
         readonly id: "dsh-better-input#betterInput/convertFile";
@@ -329,7 +329,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }, {
             readonly name: "fileData";
@@ -338,7 +338,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }, {
             readonly name: "ocr";
@@ -347,7 +347,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "boolean";
-                readonly schema: import("zod").ZodOptional<import("zod").ZodBoolean>;
+                readonly create: () => import("zod").ZodOptional<import("zod").ZodBoolean>;
             };
         }];
         readonly cancellation: {
@@ -356,7 +356,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#ConvertFileResult";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 success: import("zod").ZodBoolean;
                 format: import("zod").ZodEnum<{
                     text: "text";
@@ -395,7 +395,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#TemplateListResult";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 templates: import("zod").ZodArray<import("zod").ZodObject<{
                     id: import("zod").ZodString;
                     name: import("zod").ZodString;
@@ -422,7 +422,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "dsh-better-input#TemplateInput";
-                readonly schema: import("zod").ZodObject<{
+                readonly create: () => import("zod").ZodObject<{
                     id: import("zod").ZodOptional<import("zod").ZodString>;
                     name: import("zod").ZodString;
                     description: import("zod").ZodOptional<import("zod").ZodString>;
@@ -437,7 +437,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#TemplateSaveResult";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 template: import("zod").ZodObject<{
                     id: import("zod").ZodString;
                     name: import("zod").ZodString;
@@ -464,7 +464,7 @@ export declare const TYPERT: {
             readonly codec: {
                 readonly mode: "strict";
                 readonly typeSymbol: "string";
-                readonly schema: import("zod").ZodString;
+                readonly create: () => import("zod").ZodString;
             };
         }];
         readonly cancellation: {
@@ -473,7 +473,7 @@ export declare const TYPERT: {
         readonly result: {
             readonly mode: "strict";
             readonly typeSymbol: "dsh-better-input#TemplateRemoveResult";
-            readonly schema: import("zod").ZodObject<{
+            readonly create: () => import("zod").ZodObject<{
                 removed: import("zod").ZodBoolean;
             }, import("zod/v4/core").$strip>;
         };
