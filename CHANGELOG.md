@@ -2,7 +2,7 @@
 
 本仓库的版本记录从这里开始，持续维护。中文内容以本文件为准，英文镜像见 [CHANGELOG.en.md](CHANGELOG.en.md)。
 
-## [0.2.4] - 未发布
+## [0.2.4] - 2026-10-03
 
 ### 改动
 
@@ -10,13 +10,13 @@
 - **修复宿主启动失败：适配 Typert 协议的 codec 破坏性变更**：0.2.0 的 `typert-loader` 要求 strict codec 提供 `create()` 工厂，不再接受静态 `schema` 字段。旧格式下宿主启动会报 `result codec has no create() factory`，使插件条目无法激活（`1 entry did not activate`）。现把 `typert.ts`（宿主面 manifest）与 `remote.ts`（客户端面 contribution）中全部 27 处 codec——含各方法的 result 与 parameter——由 `schema: <Schema>` 改为 `create: () => <Schema>`，以消除该启动报错。
 - **适配 settings API 重构**：0.2.0 移除了 `SettingsScope` 具名导出与 `SettingsForms.register()`，插件 config 改由 Loader 依据插件自身的 `Config` schema 建条目、并据此自动生成设置页。现新增 `static Config`，读写改走 `ctx.settings.describe()` / `ctx.settings.update()`；因插件自带 `settings.section` 设置界面，调用 `ctx.settings.configure({ auto: false })` 关闭原生自动页，避免出现重复的设置入口。客户端设置界面走 Typert RPC 的读写路径不变。
 
-## [0.2.3] - 未发布
+## [0.2.3] - 2026-09-13
 
 ### 改动
 
 - **跟进 dsh 0.1.5-rc.1 并保持向后兼容**：peer 依赖保持 `>= 0.1.2-rc.1 <0.2.0-0`（该范围天然同时覆盖 0.1.2 与 0.1.5 两轨），dev 依赖的类型包（`dsh-client-ui-conversation` / `dsh-client-ui-chat` / `dsh-client-ui-slots` / `dsh-client-ui-input-trigger` / `dsh-client-ui-settings` / `dsh-client-store` / `dsh-client-locale` / `dsh-api-remotes` / `dsh-llm` / `dsh-settings` / `dsh-typert-protocol` / `dsh-attachment`）统一升级到 `0.1.5-rc.1`。已在官方 0.1.5-rc.1 下实测：核心槽位（`conversation.input.dock` / `conversation.input.right` / `settings.section`）契约未变，与旧版无冲突；0.1.5 新增的通用文件上传为 Composer 私有能力、未暴露给插件，故文件转 Markdown / OCR 入口维持现状。
 
-## [0.2.2] - 未发布
+## [0.2.2] - 2026-09-09
 
 ### 改动
 

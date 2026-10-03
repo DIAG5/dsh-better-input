@@ -2,7 +2,7 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
-## [0.2.4] - unreleased
+## [0.2.4] - 2026-10-03
 
 ### Changed
 
@@ -10,13 +10,13 @@ Versioned release notes for this repository, maintained from here on. This is th
 - **Fix host boot failure: adapt to the breaking Typert codec change**: 0.2.0's `typert-loader` requires strict codecs to expose a `create()` factory and no longer accepts the static `schema` field. With the old shape the host logged `result codec has no create() factory` on boot, leaving the plugin entry inactive (`1 entry did not activate`). All 27 codecs in `typert.ts` (host-side manifest) and `remote.ts` (client-side contribution) — both results and parameters of every method — now use `create: () => <Schema>` instead of `schema: <Schema>` to clear the boot error.
 - **Adapt to the settings API refactor**: 0.2.0 removed the `SettingsScope` named export and `SettingsForms.register()`; a plugin's config is now owned by the Loader, which derives the entry from the plugin's own `Config` schema and auto-generates a settings page from it. A `static Config` was added, and reads/writes now go through `ctx.settings.describe()` / `ctx.settings.update()`. Because the plugin ships its own `settings.section` UI, `ctx.settings.configure({ auto: false })` suppresses the native auto page so no duplicate settings entry appears. The client settings UI keeps using the Typert RPC read/write path unchanged.
 
-## [0.2.3] - unreleased
+## [0.2.3] - 2026-09-13
 
 ### Changed
 
 - **Track dsh 0.1.5-rc.1 while staying backward-compatible**: the peer ranges stay `>= 0.1.2-rc.1 <0.2.0-0` (this range naturally covers both the 0.1.2 and 0.1.5 tracks), and the dev-dependency type packages (`dsh-client-ui-conversation` / `dsh-client-ui-chat` / `dsh-client-ui-slots` / `dsh-client-ui-input-trigger` / `dsh-client-ui-settings` / `dsh-client-store` / `dsh-client-locale` / `dsh-api-remotes` / `dsh-llm` / `dsh-settings` / `dsh-typert-protocol` / `dsh-attachment`) were all bumped to `0.1.5-rc.1`. Tested against official 0.1.5-rc.1: the core slots (`conversation.input.dock` / `conversation.input.right` / `settings.section`) are unchanged and conflict-free with the older track; 0.1.5's general-purpose file upload is a Composer-internal capability not exposed to plugins, so the file-to-Markdown / OCR entry points remain as-is.
 
-## [0.2.2] - unreleased
+## [0.2.2] - 2026-09-09
 
 ### Changed
 
