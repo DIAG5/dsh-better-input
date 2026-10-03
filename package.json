@@ -1,7 +1,7 @@
 {
   "name": "dsh-better-input",
   "version": "0.2.4",
-  "description": "Better input experience for DeepSeek Harness: voice input, AI polishing, prompt optimization, and local file input / file-to-Markdown",
+  "description": "Better input experience for DeepSeek Harness: file-to-Markdown, local file input, prompt optimization, and voice input",
   "license": "MIT",
   "author": "DIAG5",
   "homepage": "https://github.com/DIAG5/dsh-better-input#readme",
@@ -11,10 +11,10 @@
   "keywords": [
     "dsh",
     "deepseek-harness",
-    "voice",
-    "speech-to-text",
     "input",
-    "better-input"
+    "better-input",
+    "voice",
+    "speech-to-text"
   ],
   "publishConfig": {
     "access": "public"

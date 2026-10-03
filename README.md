@@ -2,7 +2,7 @@
   <img src="./assets/banner.png" width="100%" alt="dsh-better-input banner" />
 </p>
 
-<h1 align="center">🎤 dsh-better-input</h1>
+<h1 align="center">📥 dsh-better-input</h1>
 
 <p align="center"><b>给 DeepSeek Harness 更好的「输入」体验。</b></p>
 
@@ -22,7 +22,7 @@
   <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
 
-> 💡 **它解决什么？** 与智能体对话，输入不只靠键盘打字。BetterInput 是一套**输入增强套件**：语音识别、提示词优化、提示词模板随用随插、更多格式的本地文件输入与转 Markdown，再到交互细节都打磨的体验优化——**把每一种「喂给智能体的输入」都变得更好**。
+> 💡 **它解决什么？** 与智能体对话，输入不只靠键盘打字。BetterInput 是一套**输入增强套件**：提示词优化、提示词模板随用随插、更多格式的本地文件输入与转 Markdown，再到交互细节都打磨的体验优化（语音识别只是其中一环）——**把每一种「喂给智能体的输入」都变得更好**。
 
 ***
 
@@ -36,14 +36,6 @@ https://github.com/user-attachments/assets/caae08fc-2d8e-43c6-8bab-ade2d278337f
 
 <table>
 <tr><th align="center" width="120">模块</th><th align="left">说明</th></tr>
-<tr>
-<td align="center">🎙️<br/><b>语音输入</b></td>
-<td>点击麦克风，边说边转写，文字<strong>实时流式</strong>进入输入框。浏览器原生识别，<strong>无需 API Key</strong>。</td>
-</tr>
-<tr>
-<td align="center">🤖<br/><b>AI 润色</b></td>
-<td>识别后自动清理：去口头禅、修同音错字（根木鹿→根目录、脱肯→Token）、补标点、把口语列举转成编号列表。<strong>复用 dsh 已配置的模型，无需额外 Key</strong>。</td>
-</tr>
 <tr>
 <td align="center">✨<br/><b>提示词优化</b></td>
 <td>输入框右上角一个图标，AI 帮你把写好的提示词优化得更精准；点击后弹出<strong>原文 / 优化结果对比</strong>，确认满意再采用。复用 dsh 模型，无需额外 Key。</td>
@@ -76,15 +68,25 @@ https://github.com/user-attachments/assets/caae08fc-2d8e-43c6-8bab-ade2d278337f
 <td align="center">⚙️<br/><b>可视化设置页</b></td>
 <td>识别语言、录音时长、语音润色开关、以及润色 / 优化的<strong>模型、思考强度、自定义提示词</strong>，全部可在设置里配置；内置提示词可一键展开查看。默认已开启并自动选中主模型。</td>
 </tr>
+<tr>
+<td align="center">🎙️<br/><b>语音输入</b></td>
+<td>点击麦克风，边说边转写，文字<strong>实时流式</strong>进入输入框。浏览器原生识别，<strong>无需 API Key</strong>。</td>
+</tr>
+<tr>
+<td align="center">🤖<br/><b>AI 润色</b></td>
+<td>识别后自动清理：去口头禅、修同音错字（根木鹿→根目录、脱肯→Token）、补标点、把口语列举转成编号列表。<strong>复用 dsh 已配置的模型，无需额外 Key</strong>。</td>
+</tr>
 </table>
 
 ## 🗺️ 下一步（输入增强的方向）
 
-BetterInput 是一套完整的**输入增强套件**：不只是某一类输入，而是让喂给智能体的每一种输入都更顺、更省心。语音已经就位，接下来围绕三个方向展开：
+BetterInput 是一套完整的**输入增强套件**：不只是某一类输入，而是让喂给智能体的每一种输入都更顺、更省心。接下来围绕三个方向展开：
 
 ### 文件 → 结构化（输入格式升级）
 
 > 📷 图片输入：**DSH** **`rc.8`** **起已原生支持**。DeepSeek API 已原生支持图片输入，**不再提供图片相关的插件功能**。
+
+> 🎙️ 语音输入：**DSH 已内置语音输入**（桌面端实验室插件，走本地模型、需下载）。本插件保留浏览器 Web Speech 的**免下载、免 Key** 路线，作为 Web UI 上的轻量选择，两者路线互补。
 
 把文稿、表格、演示文件一键转成结构清晰的 Markdown，让 AI 一看就懂。
 - [x] 🧾 **PDF 转结构化** — PDF → AI 友好的易读格式（Markdown / 纯文本）
@@ -305,7 +307,7 @@ npm run build    # 构建 lib/（Host ESM + 浏览器 bundle）
 
 ## ⭐ 支持
 
-这个插件正在从「语音」走向「完整的输入增强套件」——觉得它值得期待？
+这个插件正朝向「完整的输入增强套件」演进——觉得它值得期待？
 
 - 点个 **Star ⭐**（你的收藏就是持续迭代的动力）
 - 提交 [Issue](https://github.com/DIAG5/dsh-better-input/issues) / [PR](https://github.com/DIAG5/dsh-better-input/pulls)

@@ -2,7 +2,7 @@
   <img src="./assets/banner.png" width="100%" alt="dsh-better-input banner" />
 </p>
 
-<h1 align="center">🎤 dsh-better-input</h1>
+<h1 align="center">📥 dsh-better-input</h1>
 
 <p align="center"><b>A better way to feed your DeepSeek Harness agent.</b></p>
 
@@ -24,7 +24,7 @@
   <a href="https://github.com/DIAG5/dsh-better-input/blob/main/CHANGELOG.en.md"><img src="https://img.shields.io/badge/changelog-CHANGELOG.en.md-blue?style=flat-square" alt="Changelog"></a>
 </p>
 
-> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: voice recognition, AI polishing, prompt optimization, on-demand prompt templates, more local file formats you can bring into the input, and file-to-Markdown — plus the small UX refinements — **making every input you feed an agent better**.
+> 💡 **What problem does it solve?** Talking to an agent shouldn't mean only typing. BetterInput is an **input-enhancement suite**: prompt optimization, on-demand prompt templates, more local file formats you can bring into the input, and file-to-Markdown — plus the small UX refinements — **making every input you feed an agent better** (voice recognition is just one part of it).
 
 ---
 
@@ -38,14 +38,6 @@ https://github.com/user-attachments/assets/caae08fc-2d8e-43c6-8bab-ade2d278337f
 
 <table>
 <tr><th align="center" width="120">Module</th><th align="left">Description</th></tr>
-<tr>
-<td align="center">🎙️<br/><b>Voice input</b></td>
-<td>Click the mic and speak; transcript <strong>streams</strong> into the draft in real time. Browser-native recognition, <strong>no API key</strong>.</td>
-</tr>
-<tr>
-<td align="center">🤖<br/><b>AI polishing</b></td>
-<td>Auto-cleanse after recognition: drop fillers, fix homophone errors (根木鹿→根目录, 脱肯→Token), restore punctuation, turn spoken enumerations into lists. <strong>Reuses your configured dsh models</strong> — no extra key.</td>
-</tr>
 <tr>
 <td align="center">✨<br/><b>Prompt optimization</b></td>
 <td>An icon at the top right of the composer — the AI refines your prompt to be more precise; a <strong>before / after comparison panel</strong> pops up so you can review before adopting. Reuses your dsh models — no extra key.</td>
@@ -78,15 +70,25 @@ https://github.com/user-attachments/assets/caae08fc-2d8e-43c6-8bab-ade2d278337f
 <td align="center">⚙️<br/><b>Visual settings page</b></td>
 <td>Recognition language, recording limit, polish toggle, plus <strong>model, reasoning effort, and custom prompt</strong> for both polish and optimization. The built-in prompt is one click away. Enabled by default, with your primary model auto-selected.</td>
 </tr>
+<tr>
+<td align="center">🎙️<br/><b>Voice input</b></td>
+<td>Click the mic and speak; transcript <strong>streams</strong> into the draft in real time. Browser-native recognition, <strong>no API key</strong>.</td>
+</tr>
+<tr>
+<td align="center">🤖<br/><b>AI polishing</b></td>
+<td>Auto-cleanse after recognition: drop fillers, fix homophone errors (根木鹿→根目录, 脱肯→Token), restore punctuation, turn spoken enumerations into lists. <strong>Reuses your configured dsh models</strong> — no extra key.</td>
+</tr>
 </table>
 
 ## 🗺️ Next (directions for better input)
 
-BetterInput is a complete **input-enhancement suite**: not just one kind of input, but making every input you feed an agent smoother and easier. Voice is already in place; next we go in three directions:
+BetterInput is a complete **input-enhancement suite**: not just one kind of input, but making every input you feed an agent smoother and easier. Next we go in three directions:
 
 ### Files → structured (format upgrades)
 
 > 📷 Image input: **natively supported by DSH since `rc.8`** — the DeepSeek API supports image input natively, so we **no longer ship an image plugin**.
+
+> 🎙️ Voice input: **DSH now ships voice input natively** (a desktop lab plugin built on a local model, which must be downloaded). This plugin keeps the browser Web Speech route — **no downloads, no keys** — as the lightweight option for the Web UI. The two routes are complementary.
 
 Turn docs, sheets, and decks into clean, structured Markdown so the agent reads them at a glance.
 - [x] 🧾 **PDF → structured** — PDF into an AI-friendly readable format (Markdown / plain text)
@@ -306,7 +308,7 @@ Client-only UI: `npm run dev:watch`, then refresh the UI. Host changes: restart 
 
 ## ⭐ Support
 
-This plugin is growing from "voice" toward a **complete input-enhancement suite** — think it's worth watching?
+This plugin is growing into a **complete input-enhancement suite** — think it's worth watching?
 
 - Give it a **Star ⭐** (your stargazes fuel continued iteration)
 - File an [Issue](https://github.com/DIAG5/dsh-better-input/issues) / open a [PR](https://github.com/DIAG5/dsh-better-input/pulls)
