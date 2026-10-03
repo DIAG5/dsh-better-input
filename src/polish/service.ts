@@ -6,7 +6,6 @@ import type { SettingsForms } from '@deepseek-ai/dsh-settings'
 import type { ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
 import type { LlmModelInfo, LlmResolvedModelInfo, StreamChunk } from '@deepseek-ai/dsh-llm'
 import { DEFAULT_SETTINGS, MAX_OCR_CHARACTERS, MAX_OPTIMIZED_CHARACTERS, MAX_OPTIMIZE_CHARACTERS, MAX_POLISHED_CHARACTERS, MAX_TRANSCRIPT_CHARACTERS, OPTIMIZE_TIMEOUT_MS, POLISH_TIMEOUT_MS, SETTINGS_NAMESPACE, validateSettings, type BetterInputSettings, type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js'
-import { BetterInputSettingsSchema } from '../config-schema.js'
 import { checkForPluginUpdate, readInstalledAboutInfo, type AboutInfo, type UpdateCheckResult } from '../about.js'
 import { optimizeUserText, polishUserText, resolveOptimizeSystemPrompt, resolvePolishSystemPrompt, OCR_SYSTEM_PROMPT, ocrUserText, OPTIMIZE_SYSTEM_PROMPT, POLISH_SYSTEM_PROMPT } from './prompts.js'
 import { convertFile } from '../converter/to-markdown.js'
@@ -22,29 +21,36 @@ type StoredSettings = BetterInputSettings
 
 export class BetterInputPolishService extends TypertRemoteService {
   static inject = ['llm', 'attachments']
-  /** Standard config schema; the Loader derives the profile entry and settings namespace from it. */
-  static Config = BetterInputSettingsSchema
+  /**
+   * The dsh settings service, captured once it is available. The plugin config
+   * is owned by the Loader (see the `Config` export in index.ts); reads and
+   * writes go through this service.
+   */
+  private settingsForms: SettingsForms | undefined
   private readonly templateStore = new TemplateStore()
 
   constructor(ctx: Context) {
     super(ctx, 'BetterInputPolish', { namespace: 'betterInput' })
     ctx.inject(['settings'], (settingsCtx) => {
-      // The plugin owns a custom settings.section UI, so suppress the native
-      // auto-generated settings page to avoid a duplicate editor.
-      const dispose = settingsCtx.settings.configure({ auto: false })
-      settingsCtx.effect(() => () => dispose(), 'dsh-better-input settings presentation')
+      this.settingsForms = settingsCtx.settings
+      settingsCtx.effect(() => () => {
+        this.settingsForms = undefined
+      }, 'dsh-better-input settings access')
     })
   }
 
   /** Read the plugin's current live settings from the settings registry. */
   private readSettings(): BetterInputSettings | undefined {
-    const descriptor = this.ctx.settings.describe({ redactSecrets: true })
+    const descriptor = this.settingsForms
+      ?.describe({ redactSecrets: true })
       .find((row) => String(row.ns) === SETTINGS_NAMESPACE)
     return descriptor === undefined ? undefined : flattenStoredSettings(descriptor.value)
   }
 
   getSettings(): BetterInputSettingsView {
-    if (this.readSettings() === undefined) {
+    const forms = this.settingsForms
+    const settings = this.readSettings()
+    if (forms === undefined || settings === undefined) {
       return {
         available: false,
         writable: false,
@@ -54,12 +60,11 @@ export class BetterInputPolishService extends TypertRemoteService {
         defaultOptimizePrompt: OPTIMIZE_SYSTEM_PROMPT
       }
     }
-    const settings = this.readSettings()!
-    const descriptor = this.ctx.settings.describe({ redactSecrets: true }).find((row) => String(row.ns) === SETTINGS_NAMESPACE)
+    const descriptor = forms.describe({ redactSecrets: true }).find((row) => String(row.ns) === SETTINGS_NAMESPACE)
     const user = descriptor?.user
     return {
       available: true,
-      writable: this.ctx.settings.writable,
+      writable: forms.writable,
       settings,
       overridden: isRecord(user) ? Object.keys(user) : [],
       defaultPolishPrompt: POLISH_SYSTEM_PROMPT,
@@ -68,7 +73,8 @@ export class BetterInputPolishService extends TypertRemoteService {
   }
 
   async updateSettings(patch: BetterInputSettingsPatch, signal: AbortSignal): Promise<BetterInputSettingsView> {
-    if (this.readSettings() === undefined) return this.getSettings()
+    const forms = this.settingsForms
+    if (forms === undefined || this.readSettings() === undefined) return this.getSettings()
     signal.throwIfAborted()
     const current = this.readSettings()!
     const next: BetterInputSettings = { ...current }
@@ -76,7 +82,7 @@ export class BetterInputPolishService extends TypertRemoteService {
       if (value !== undefined) (next as unknown as Record<string, unknown>)[key] = value
     }
     validateSettings(next)
-    await this.ctx.settings.update(SETTINGS_NAMESPACE, next as unknown as Record<string, unknown>)
+    await forms.update(SETTINGS_NAMESPACE, next as unknown as Record<string, unknown>)
     return this.getSettings()
   }
 
