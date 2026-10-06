@@ -2,6 +2,15 @@
 
 本仓库的版本记录从这里开始，持续维护。中文内容以本文件为准，英文镜像见 [CHANGELOG.en.md](CHANGELOG.en.md)。
 
+## [0.2.5] - 2026-10-06
+
+### 修复
+
+- **修复设置页读写全部失败（保存后提示「保存失败，请重试」）**：0.2.4 的 `BetterInputPolishService` 直接访问 `this.ctx.settings`，但该服务的 inject 只声明了 `llm`、`attachments`；Cordis 4 的 Context 代理会拒绝访问未注入的服务属性，于是 `getSettings` / `updateSettings` 两个 Remote 方法 100% 抛 `cannot get property "settings" without inject`。客户端拿到 `ok:false` 即显示「保存失败，请重试」，读取同路径失败又使页面退回内置默认值、模型下拉也无法补写默认路由。现改为在 `ctx.inject(['settings'], ...)` 回调内缓存 settings 服务，并在宿主缺少 `dsh-settings` 时退化为「不可用 / 只读」而非整体加载失败。
+- **`Config` 改为从包入口导出，让 Loader 能建立插件条目**：dsh 0.2.0 的 Loader 只从包入口模块读取插件契约（`runtime.Config`），而 0.2.4 的 `Config` 挂在由 `apply()` 内部挂载的服务类上，Loader 读不到——设置注册表因此不会为该命名空间产出描述符（`describe()` 恒为空），`update()` 也会以 `No configurable plugin entry` 拒绝写入。现由 `src/index.ts` 直接导出 `Config`。
+- **15 个设置字段全部标记 `.volatile()`**：设置注册表只投影并允许写入 volatile 节点下的字段。0.2.4 的字段均为普通字段，`describe()` 不投影表单，写入时逐字段抛 `Config field "..." is not volatile`。现全部字段加 `.volatile()`，改完立即生效、不重挂插件。
+- **`settings.configure({ auto: false })` 显式指定 owner 为插件条目 fiber**：不再沿用默认 owner（注入回调自身的 fiber），避免原生「设置」页额外生成一个与插件自带界面重复的 `dsh-better-input` 页面。
+
 ## [0.2.4] - 2026-10-03
 
 ### 改动

@@ -2,6 +2,15 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.2.5] - 2026-10-06
+
+### Fixed
+
+- **Fix total failure of the settings page read/write path ("Save failed, please retry")**: 0.2.4's `BetterInputPolishService` read and wrote `this.ctx.settings` directly, but the service only declared `llm` and `attachments` in its inject list. Cordis 4's Context proxy refuses to hand out a service that was not injected, so both `getSettings` and `updateSettings` failed 100% of the time with `cannot get property "settings" without inject`. The client turned the `ok:false` reply into "Save failed, please retry"; the read path failed the same way, so the page fell back to built-in defaults and the model dropdown could not backfill its default route. The settings service is now captured inside the `ctx.inject(['settings'], ...)` callback, degrading to "unavailable / read-only" — rather than failing to load altogether — on hosts without `dsh-settings`.
+- **Export `Config` from the package entry so the Loader can own the plugin entry**: dsh 0.2.0's Loader reads the plugin contract only from the entry module (`runtime.Config`), while 0.2.4 attached `Config` to a service class mounted by `apply()` internally — invisible to the Loader. The settings registry therefore published no descriptor for the namespace (`describe()` stayed empty) and `update()` refused with `No configurable plugin entry`. `src/index.ts` now exports `Config` directly.
+- **Mark all 15 settings fields `.volatile()`**: the settings registry only projects and accepts writes to fields under a volatile node. In 0.2.4 every field was plain, so `describe()` projected no form and each write threw `Config field "..." is not volatile`. All fields are now `.volatile()`, so edits take effect immediately without remounting the plugin.
+- **Pass the plugin entry fiber explicitly as the owner of `settings.configure({ auto: false })`**: the default owner (the inject callback's own fiber) is no longer used, so the native Settings page no longer renders a second, duplicate `dsh-better-input` page alongside the plugin's own UI.
+
 ## [0.2.4] - 2026-10-03
 
 ### Changed
