@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
+import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { SnapshotSelectorHook, TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import type { InputState } from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type { ChatSnapshot } from '@deepseek-ai/dsh-client-ui-chat/client'
@@ -42,6 +43,7 @@ type OptimizeState =
  */
 export function OptimizeButton({ useChat, useInput, inputActions, remote, useSettings, t }: OptimizeButtonProps) {
   const [state, setState] = useState<OptimizeState>({ kind: 'idle' })
+  const [hovered, setHovered] = useState(false)
   const settingsFace = useSettings()
   const abortRef = useRef<AbortController | null>(null)
   // Draft comes from `useInput`; message history comes from the `useChat`
@@ -128,7 +130,11 @@ export function OptimizeButton({ useChat, useInput, inputActions, remote, useSet
 
   const busy = state.kind === 'optimizing'
   const disabled = busy || !modelConfigured
-  const buttonTitle = modelConfigured ? t('optimizeButton') : t('optimizeNotConfigured')
+  const buttonTitle = busy
+    ? t('optimizeBusy')
+    : modelConfigured
+      ? t('optimizeButton')
+      : t('optimizeNotConfigured')
 
   const errorToast = state.kind === 'error' ? (
     <ErrorToastPortal
@@ -154,17 +160,19 @@ export function OptimizeButton({ useChat, useInput, inputActions, remote, useSet
   return (
     <>
       <div style={containerStyle}>
-        <button
-          type="button"
-          aria-label={buttonTitle}
-          title={buttonTitle}
-          disabled={disabled}
-          onClick={handleClick}
-          style={buttonStyle(disabled)}
-        >
-          <SparkleIcon />
-          {busy ? t('optimizeBusy') : ''}
-        </button>
+        <Tooltip side="top" delayMs={500} label={buttonTitle}>
+          <button
+            type="button"
+            aria-label={buttonTitle}
+            disabled={disabled}
+            onClick={handleClick}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            style={buttonStyle(disabled, hovered)}
+          >
+            <SparkleIcon />
+          </button>
+        </Tooltip>
       </div>
       {errorToast}
       {confirmModal}
@@ -350,24 +358,28 @@ function extractConversationContext(nodes: readonly ConversationNodeView[], maxT
 const containerStyle: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
-  height: 26,
+  height: 28,
   flex: 'none'
 }
 
-const buttonStyle = (disabled: boolean): React.CSSProperties => ({
+/** The composer's round selector button: 28px circle with the
+ * `--dsw-specific-selector` fill and a hover fill. Hover is tracked in React
+ * state (the plugin styles everything inline) rather than a CSS pseudo-class. */
+const buttonStyle = (disabled: boolean, hovered: boolean): React.CSSProperties => ({
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 4,
-  height: 26,
-  padding: '0 8px',
+  justifyContent: 'center',
+  width: 28,
+  height: 28,
+  padding: 0,
   border: 'none',
-  borderRadius: 6,
-  background: 'transparent',
-  color: 'var(--dsw-alias-label-secondary, inherit)',
+  borderRadius: 999,
+  background: hovered && !disabled ? 'var(--dsw-alias-interactive-bg-hover-solid)' : 'var(--dsw-specific-selector)',
+  color: 'var(--dsw-alias-label-primary)',
   cursor: disabled ? 'not-allowed' : 'pointer',
   opacity: disabled ? 0.5 : 1,
-  fontSize: 12,
-  flex: 'none'
+  flex: 'none',
+  transition: 'background 0.18s cubic-bezier(0.22,1,0.36,1), color 0.18s cubic-bezier(0.22,1,0.36,1)'
 })
 
 // "Full-screen" overlay with position:fixed anchored to the viewport so it

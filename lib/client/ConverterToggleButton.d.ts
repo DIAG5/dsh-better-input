@@ -3,9 +3,9 @@ import type { ConversionStore } from './conversion-store.js';
 /** The framework-injected `t` seat for the BetterInput namespace. */
 type Translate = TranslateNS<'better-input'>;
 /**
- * The small composer toolbar toggle for the file-conversion panel. Sits in the
- * `conversation.input.right` tool row (mirroring the prompt-optimize sparkle);
- * clicking expands/collapses the conversion dock with a non-linear transition.
+ * The file-conversion toggle in the `conversation.input.right` tool row.
+ * Clicking expands/collapses the conversion dock with a non-linear transition.
+ * Styled to the composer's round "selector" button convention (28px circle).
  */
 export declare function ConverterToggleButton({ store, t }: {
     store: ConversionStore;

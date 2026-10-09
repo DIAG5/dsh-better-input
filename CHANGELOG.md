@@ -2,6 +2,18 @@
 
 本仓库的版本记录从这里开始，持续维护。中文内容以本文件为准，英文镜像见 [CHANGELOG.en.md](CHANGELOG.en.md)。
 
+## [0.2.6] - 2026-10-09
+
+### 修复
+
+- **修复转换面板被压缩成 8px 残片（issue #8）**：`FileConvertDock` 的折叠容器与 `VoiceRecognitionBar` 都是 `conversation.input.dock` 槽位的子项，而该槽位宿主是 composer 的列向 flex 栈。两者未声明 `flex`，沿用默认 `flex: 0 1 auto` 被压缩（实测 30px → 8.1px），叠加自身 `overflow: hidden` 后内容被从顶部裁掉，右端「添加文件」按钮只剩顶部约 8px，点击还能命中，故表现为「按钮显示不全」。现为两者补 `flex: 0 0 auto`（等价 `flex-shrink: 0`），折叠动画、`maxHeight` 等一律未动。
+
+### 改动
+
+- **三个工具行按钮统一为 composer 的圆形「选择器」规范**：转换面板开关、提示词优化、麦克风由原来的圆角矩形 / 透明底改为与 DSH 内置按钮一致的 28×28 正圆 + `var(--dsw-specific-selector)` 底色，并按官方 `.uV2eYG_add` 的写法补上悬浮底色 `var(--dsw-alias-interactive-bg-hover-solid)`（悬浮态由 React 状态驱动，未引入全局 class，与仓库既有的全 inline style 约定一致）。录音中、面板展开中的激活态配色保留。
+- **工具行按钮悬浮提示改用官方 `Tooltip` 组件**：替换掉浏览器原生 `title`，`side="top"`、`delayMs=500`，与官方 composer 工具行（`InputBar.tools`）完全一致。为此新增 `@deepseek-ai/dsh-client-ui-primitives` 依赖（peer 范围 `>=0.2.0-rc.2 <0.3.0-0`），并在 `tsdown.client.ts` 中将其列入外挂白名单——运行时由宿主模块加载器解析（与官方 conversation 包同一机制），不内联进 bundle。
+- **转换面板工具行按钮更名「文档转换」**：该按钮原与面板内的「添加文件」同名，且与 DSH 内置 `aria-label="添加文件或调用指令"` 的入口易混淆，现中英文分别改为「文档转换」/「Document conversion」；面板内真正选文件的按钮保持「添加文件」不变。提示词优化按钮圈内的「优化中…」文字移除，忙碌提示改由悬浮气泡承载，以便容纳 28px 正圆。
+
 ## [0.2.5] - 2026-10-06
 
 ### 修复

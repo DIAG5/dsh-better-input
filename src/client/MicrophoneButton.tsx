@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { SnapshotSelectorHook, TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
+import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { InputState } from '@deepseek-ai/dsh-client-ui-conversation/client'
 import { effectiveRecognitionLanguage, effectiveRecordingSeconds, type BetterInputSettings, type BetterInputSettingsPatch } from '../config.js'
 import type { BetterInputRemote } from '../remote.js'
@@ -39,6 +40,7 @@ export type SettingsFace = {
 export function MicrophoneButton({ useInput, inputActions, voiceSession, remote, useSettings, t }: InputZoneLikeProps) {
   const snapshot = useVoiceInputSession(voiceSession)
   const state = snapshot.state
+  const [hovered, setHovered] = useState(false)
   const setState = (next: typeof state, detail = '') => voiceSession.setState(next, detail)
   // The current composer draft, read through the framework's standard `useInput`
   // hook. `InputState` keeps exposing `.draft` in dsh 0.1.2.
@@ -186,19 +188,22 @@ export function MicrophoneButton({ useInput, inputActions, voiceSession, remote,
   const label = busy ? '…' : active ? t('voiceStop') : t('voiceStart')
 
   return (
-    <button
-      type="button"
-      aria-label={label}
-      aria-pressed={active}
-      disabled={busy}
-      title={tooltip}
-      onClick={active ? stopListening : startListening}
-      data-better-input-state={state}
-      data-better-input-polish-configured={polishConfigured ? 'yes' : 'no'}
-      style={buttonStyle(active, busy, !polishConfigured)}
-    >
-      <MicrophoneIcon />
-    </button>
+    <Tooltip side="top" delayMs={500} label={tooltip}>
+      <button
+        type="button"
+        aria-label={label}
+        aria-pressed={active}
+        disabled={busy}
+        onClick={active ? stopListening : startListening}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        data-better-input-state={state}
+        data-better-input-polish-configured={polishConfigured ? 'yes' : 'no'}
+        style={buttonStyle(active, busy, !polishConfigured, hovered)}
+      >
+        <MicrophoneIcon />
+      </button>
+    </Tooltip>
   )
 }
 
@@ -259,7 +264,12 @@ function collapseDraft(text: string): string {
   return text.replace(/\s+/g, ' ').trim()
 }
 
-function buttonStyle(active: boolean, busy: boolean, polishUnconfigured: boolean): React.CSSProperties {
+function buttonStyle(active: boolean, busy: boolean, polishUnconfigured: boolean, hovered: boolean): React.CSSProperties {
+  const background = active
+    ? 'var(--dsw-alias-state-business-primary, #4f8cff)'
+    : hovered && !busy
+      ? 'var(--dsw-alias-interactive-bg-hover-solid)'
+      : 'var(--dsw-specific-selector)'
   return {
     display: 'inline-flex',
     alignItems: 'center',
@@ -268,12 +278,13 @@ function buttonStyle(active: boolean, busy: boolean, polishUnconfigured: boolean
     height: 28,
     padding: 0,
     border: 'none',
-    borderRadius: 6,
-    background: active ? 'var(--dsw-alias-state-business-primary, #4f8cff)' : 'transparent',
-    color: active ? '#fff' : 'var(--dsw-alias-label-primary, inherit)',
+    borderRadius: 999,
+    background,
+    color: active ? '#fff' : 'var(--dsw-alias-label-primary)',
     cursor: busy ? 'default' : 'pointer',
     opacity: busy ? 0.5 : polishUnconfigured ? 0.75 : 1,
-    flex: 'none'
+    flex: 'none',
+    transition: 'background 0.18s cubic-bezier(0.22,1,0.36,1), color 0.18s cubic-bezier(0.22,1,0.36,1)'
   }
 }
 

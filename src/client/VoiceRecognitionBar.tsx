@@ -36,6 +36,9 @@ export function VoiceRecognitionBar({ voiceSession, t }: RecognitionBarProps) {
       data-better-input-bar="true"
       role="status"
       style={{
+        // Same non-shrinking rule as the conversion dock: this bar is also a
+        // child of the composer's column flex stack.
+        flex: '0 0 auto',
         display: 'flex',
         alignItems: 'center',
         gap: 8,

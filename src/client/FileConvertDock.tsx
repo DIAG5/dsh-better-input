@@ -429,6 +429,12 @@ function AttachGlyph() {
  * a linear slide.
  */
 const foldStyle = (expanded: boolean): React.CSSProperties => ({
+  // `conversation.input.dock` entries are children of the composer's column
+  // flex stack. Left at the default `flex: 0 1 auto` this wrapper is shrunk
+  // whenever the stack is tight (measured 30px -> 8.1px), and its own
+  // `overflow: hidden` then clips the chip rail and the add-file button to a
+  // sliver. Keep the row at its natural height.
+  flex: '0 0 auto',
   overflow: 'hidden',
   maxHeight: expanded ? 160 : 0,
   opacity: expanded ? 1 : 0,

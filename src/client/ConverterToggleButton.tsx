@@ -1,35 +1,41 @@
 import { useEffect, useState } from 'react'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
+import { Tooltip } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ConversionStore } from './conversion-store.js'
 
 /** The framework-injected `t` seat for the BetterInput namespace. */
 type Translate = TranslateNS<'better-input'>
 
 /**
- * The small composer toolbar toggle for the file-conversion panel. Sits in the
- * `conversation.input.right` tool row (mirroring the prompt-optimize sparkle);
- * clicking expands/collapses the conversion dock with a non-linear transition.
+ * The file-conversion toggle in the `conversation.input.right` tool row.
+ * Clicking expands/collapses the conversion dock with a non-linear transition.
+ * Styled to the composer's round "selector" button convention (28px circle).
  */
 export function ConverterToggleButton({ store, t }: { store: ConversionStore; t: Translate }) {
   const [expanded, setExpanded] = useState(store.isExpanded())
+  const [hovered, setHovered] = useState(false)
 
   useEffect(() => {
     return store.subscribe(() => setExpanded(store.isExpanded()))
   }, [store])
 
   const toggle = () => store.setExpanded(!store.isExpanded())
+  const label = t('convertToggle')
 
   return (
-    <button
-      type="button"
-      aria-label={t('convertToggle')}
-      title={t('convertToggle')}
-      aria-expanded={expanded}
-      onClick={toggle}
-      style={buttonStyle(expanded)}
-    >
-      <ConvertGlyph />
-    </button>
+    <Tooltip side="top" delayMs={500} label={label}>
+      <button
+        type="button"
+        aria-label={label}
+        aria-expanded={expanded}
+        onClick={toggle}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={buttonStyle(expanded, hovered)}
+      >
+        <ConvertGlyph />
+      </button>
+    </Tooltip>
   )
 }
 
@@ -42,21 +48,30 @@ function ConvertGlyph() {
   )
 }
 
-function buttonStyle(expanded: boolean): React.CSSProperties {
+/**
+ * The composer's round selector button: 28px circle with the
+ * `--dsw-specific-selector` fill and a hover fill. Hover is tracked in React
+ * state (the plugin styles everything inline) rather than a CSS pseudo-class.
+ */
+function buttonStyle(expanded: boolean, hovered: boolean): React.CSSProperties {
+  const background = expanded
+    ? 'var(--dsw-alias-state-business-tertiary, rgba(79,140,255,0.15))'
+    : hovered
+      ? 'var(--dsw-alias-interactive-bg-hover-solid)'
+      : 'var(--dsw-specific-selector)'
   return {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 4,
-    height: 26,
-    padding: '0 8px',
+    justifyContent: 'center',
+    width: 28,
+    height: 28,
+    padding: 0,
     border: 'none',
-    borderRadius: 6,
-    background: expanded ? 'var(--dsw-alias-state-business-tertiary, rgba(79,140,255,0.15))' : 'transparent',
-    color: expanded ? 'var(--dsw-alias-state-business-primary, #4f8cff)' : 'var(--dsw-alias-label-secondary, inherit)',
+    borderRadius: 999,
+    background,
+    color: expanded ? 'var(--dsw-alias-state-business-primary, #4f8cff)' : 'var(--dsw-alias-label-primary)',
     cursor: 'pointer',
-    fontSize: 12,
-    opacity: expanded ? 1 : 0.75,
     flex: 'none',
-    transition: 'background 0.18s cubic-bezier(0.22,1,0.36,1), color 0.18s cubic-bezier(0.22,1,0.36,1), opacity 0.18s cubic-bezier(0.22,1,0.36,1)'
+    transition: 'background 0.18s cubic-bezier(0.22,1,0.36,1), color 0.18s cubic-bezier(0.22,1,0.36,1)'
   }
 }

@@ -2,6 +2,18 @@
 
 Versioned release notes for this repository, maintained from here on. This is the English mirror; Chinese is authoritative — see [CHANGELOG.md](CHANGELOG.md).
 
+## [0.2.6] - 2026-10-09
+
+### Fixed
+
+- **Fix the conversion dock collapsing into an 8px sliver (issue #8)**: both `FileConvertDock`'s fold wrapper and `VoiceRecognitionBar` are children of the `conversation.input.dock` slot, whose host is the composer's column flex stack. Neither declared `flex`, so both took the default `flex: 0 1 auto` and were shrunk whenever the stack was tight (measured 30px → 8.1px); combined with their own `overflow: hidden` the content was clipped from the top, leaving only ~8px of the right-hand "Add file" button visible — still clickable, hence the "button renders incompletely" symptom. Both now declare `flex: 0 0 auto` (equivalent to `flex-shrink: 0`); the fold animation and `maxHeight` are untouched.
+
+### Changed
+
+- **Unify the three tool-row buttons on the composer's round "selector" convention**: the conversion toggle, prompt-optimize, and microphone buttons move from rounded rectangles / transparent fills to the 28×28 circle with `var(--dsw-specific-selector)` used by DSH's built-in buttons, and gain the hover fill `var(--dsw-alias-interactive-bg-hover-solid)` exactly as the official `.uV2eYG_add` does (hover is driven by React state rather than a global class, consistent with the repo's all-inline-style convention). The active styling for recording and for the expanded panel is preserved.
+- **Switch the tool-row tooltips to the official `Tooltip` component**: the browser-native `title` is replaced with `side="top"` and `delayMs=500`, matching the official composer tool row (`InputBar.tools`). This adds the `@deepseek-ai/dsh-client-ui-primitives` dependency (peer range `>=0.2.0-rc.2 <0.3.0-0`) and lists it in `tsdown.client.ts`'s externals whitelist — resolved at runtime by the host module loader (the same mechanism the official conversation package uses) rather than being inlined into the bundle.
+- **Rename the conversion toggle to "Document conversion"**: it previously shared the name "Add file" with the button inside the panel and could be mistaken for DSH's built-in entry (`aria-label="添加文件或调用指令"`); it is now "文档转换" / "Document conversion" in Chinese and English respectively, while the in-panel file picker keeps "Add file". The inline "optimizing…" text inside the prompt-optimize button was removed so the label fits its 28px circle, with the busy hint carried by the tooltip bubble instead.
+
 ## [0.2.5] - 2026-10-06
 
 ### Fixed
