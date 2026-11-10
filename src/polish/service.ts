@@ -4,7 +4,7 @@ import { TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 // Type-only import loads dsh-settings' `Context.settings` module augmentation.
 import type { SettingsForms } from '@deepseek-ai/dsh-settings'
 import type { ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
-import type { LlmModelInfo, LlmResolvedModelInfo, StreamChunk } from '@deepseek-ai/dsh-llm'
+import type { LlmFailure, LlmModelInfo, LlmResolvedModelInfo, StreamChunk } from '@deepseek-ai/dsh-llm'
 import { DEFAULT_SETTINGS, MAX_OCR_CHARACTERS, MAX_OPTIMIZED_CHARACTERS, MAX_OPTIMIZE_CHARACTERS, MAX_POLISHED_CHARACTERS, MAX_TRANSCRIPT_CHARACTERS, OPTIMIZE_TIMEOUT_MS, POLISH_TIMEOUT_MS, SETTINGS_NAMESPACE, validateSettings, type BetterInputSettings, type BetterInputSettingsPatch, type BetterInputSettingsView, type PolishRoute, type ReasoningEffortInfo } from '../config.js'
 import { checkForPluginUpdate, readInstalledAboutInfo, type AboutInfo, type UpdateCheckResult } from '../about.js'
 import { optimizeUserText, polishUserText, resolveOptimizeSystemPrompt, resolvePolishSystemPrompt, OCR_SYSTEM_PROMPT, ocrUserText, OPTIMIZE_SYSTEM_PROMPT, POLISH_SYSTEM_PROMPT } from './prompts.js'
@@ -215,6 +215,9 @@ export class BetterInputPolishService extends TypertRemoteService {
       }
       return result
     } catch (error) {
+      // A caller abort forwards into the timeout controller, so the two signals
+      // can both be aborted. Check the caller's own abort first, otherwise a
+      // user cancellation is misreported as a timeout.
       if (signal.aborted) throw error
       if (timeout.signal.aborted) throw new Error('The dsh LLM optimize request timed out')
       throw error instanceof Error ? error : new Error('The dsh LLM route did not complete optimization')
@@ -479,6 +482,34 @@ function decodeBase64(input: string): Uint8Array {
   return bytes
 }
 
+/**
+ * Describe one terminal route failure.
+ *
+ * The dsh LLM runtime normalizes an adapter throw into a terminal `error` or
+ * `aborted` finish chunk carrying a `failure` snapshot: the provider's own
+ * message plus a stable machine code (and, when the provider answered with an
+ * HTTP status, that status). The previous template sentence dropped all of
+ * it, so a quota rejection, an invalid credential, and a transport outage
+ * were indistinguishable to the user.
+ *
+ * The provider message is the useful part, so it leads; the code and status
+ * follow as diagnostic context. A failure with no usable message still
+ * reports the route-level outcome rather than nothing at all.
+ */
+function describeRouteFailure(label: string, failure: LlmFailure): string {
+  const message = failure.message.trim()
+  const code = failure.code.trim()
+  const detail = code === '' ? '' : code
+  if (message === '') {
+    return detail === ''
+      ? `The dsh LLM route did not complete ${label}`
+      : `The dsh LLM route did not complete ${label} (${detail})`
+  }
+  return detail === ''
+    ? `The dsh LLM route did not complete ${label}: ${message}`
+    : `The dsh LLM route did not complete ${label}: ${message} (${detail})`
+}
+
 async function collectText(stream: AsyncIterable<StreamChunk>, maxCharacters: number, label: string): Promise<string> {
   let text = ''
   let sawDelta = false
@@ -492,7 +523,7 @@ async function collectText(stream: AsyncIterable<StreamChunk>, maxCharacters: nu
     }
 
     if (chunk.type === 'finish' && (chunk.reason.kind === 'error' || chunk.reason.kind === 'aborted')) {
-      throw new Error(`The dsh LLM route did not complete ${label}`)
+      throw new Error(describeRouteFailure(label, chunk.reason.failure))
     }
 
     if (!sawDelta && chunk.type === 'block-end' && chunk.block.type === 'text') {

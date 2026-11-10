@@ -85,6 +85,7 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
   const [saveFailed, setSaveFailed] = useState(false)
   const [showDefaultPrompt, setShowDefaultPrompt] = useState(false)
   const [showDefaultOptimizePrompt, setShowDefaultOptimizePrompt] = useState(false)
+  const [effortClearedNotice, setEffortClearedNotice] = useState<string | null>(null)
   const draftsRef = useRef(drafts)
   draftsRef.current = drafts
 
@@ -122,6 +123,33 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
   }
 
   const s = settings.view.settings
+
+  /**
+   * Apply a route switch.
+   *
+   * The provider and the model are one selection: both are written together so
+   * the model can never outlive its provider. The stored reasoning effort
+   * belongs to the *previous* model, so it is validated against the new one
+   * and dropped when the new model does not offer that tier — otherwise the
+   * Host rejects the next call with `UNSUPPORTED_REASONING_EFFORT`.
+   */
+  const switchRoute = async (
+    route: { provider: string; model: string },
+    effortField: 'polishReasoningEffort' | 'optimizeReasoningEffort',
+    storedEffort: string,
+    routePatch: BetterInputSettingsPatch,
+  ) => {
+    const { patch, effortCleared } = await settingsController.buildRouteSwitchPatch(route, effortField, storedEffort)
+    await save({ ...routePatch, ...patch })
+    if (effortCleared) {
+      // The old tier no longer exists on the new model; say so instead of
+      // leaving the user to wonder why the effort select reset itself.
+      setEffortClearedNotice(t('effortClearedNotice'))
+    } else {
+      setEffortClearedNotice(null)
+    }
+  }
+
   const languageField = field('language', s.language)
   const secondsField = field('maxRecordingSeconds', String(s.maxRecordingSeconds))
   const polishPromptField = field('polishPrompt', s.polishPrompt)
@@ -135,6 +163,8 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
       <p style={hintStyle}>{t('settingsDescription')}</p>
 
       {saveFailed ? <p style={errorStyle}>{t('saveFailed')}</p> : null}
+
+      {effortClearedNotice ? <p style={noticeStyle}>{effortClearedNotice}</p> : null}
 
       <h3 style={sectionTitleStyle}>{t('voiceSectionLabel')}</h3>
 
@@ -187,7 +217,12 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
                 : `${s.polishProvider}\u0000${s.polishModel}`}
               onChange={(event) => {
                 const [provider, model] = event.target.value.split('\u0000')
-                void save({ polishProvider: provider ?? '', polishModel: model ?? '' })
+                void switchRoute(
+                  { provider: provider ?? '', model: model ?? '' },
+                  'polishReasoningEffort',
+                  s.polishReasoningEffort,
+                  { polishProvider: provider ?? '', polishModel: model ?? '' },
+                )
               }}
               style={inputStyle}
               disabled={routes.status !== 'ready' || routes.routes.length === 0}
@@ -265,7 +300,12 @@ export function BetterInputSettingsSection({ close, settingsController, t }: Set
                 : `${s.optimizeProvider}\u0000${s.optimizeModel}`}
               onChange={(event) => {
                 const [provider, model] = event.target.value.split('\u0000')
-                void save({ optimizeProvider: provider ?? '', optimizeModel: model ?? '' })
+                void switchRoute(
+                  { provider: provider ?? '', model: model ?? '' },
+                  'optimizeReasoningEffort',
+                  s.optimizeReasoningEffort,
+                  { optimizeProvider: provider ?? '', optimizeModel: model ?? '' },
+                )
               }}
               style={inputStyle}
               disabled={routes.status !== 'ready' || routes.routes.length === 0}
@@ -517,6 +557,12 @@ const errorStyle: React.CSSProperties = {
   margin: 0,
   fontSize: 12,
   color: 'var(--dsw-alias-state-error-primary, #e5484d)'
+}
+
+const noticeStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  opacity: 0.75
 }
 
 const switchStyle: React.CSSProperties = {

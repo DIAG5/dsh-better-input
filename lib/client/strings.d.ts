@@ -41,6 +41,7 @@ export type BetterInputStrings = {
     defaultPromptLabel: string;
     effortDefaultLabel: string;
     effortLoadingLabel: string;
+    effortClearedNotice: string;
     routesStatus: string;
     routesUnavailable: string;
     optimizeButton: string;

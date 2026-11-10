@@ -41,6 +41,7 @@ export type BetterInputStrings = {
   defaultPromptLabel: string
   effortDefaultLabel: string
   effortLoadingLabel: string
+  effortClearedNotice: string
   routesStatus: string
   routesUnavailable: string
   optimizeButton: string
@@ -167,6 +168,7 @@ export const zh: BetterInputStrings = {
   defaultPromptLabel: '内置提示词',
   effortDefaultLabel: '默认（关闭思考）',
   effortLoadingLabel: '加载思考强度选项…',
+  effortClearedNotice: '已切换模型，新模型不支持原先的思考强度，已重置为默认。',
   routesStatus: '可用模型路由',
   routesUnavailable: '不可用',
   optimizeButton: '优化提示词',
@@ -293,6 +295,7 @@ export const en: BetterInputStrings = {
   defaultPromptLabel: 'Built-in prompt',
   effortDefaultLabel: 'Default (thinking off)',
   effortLoadingLabel: 'Loading reasoning effort options…',
+  effortClearedNotice: 'Model switched. The new model does not offer the previous reasoning effort, so it was reset to the default.',
   routesStatus: 'Available model routes',
   routesUnavailable: 'unavailable',
   optimizeButton: 'Optimize prompt',

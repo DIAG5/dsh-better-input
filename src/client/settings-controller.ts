@@ -207,6 +207,50 @@ export class SettingsController {
     this.emit()
   }
 
+  /**
+   * Resolve the settings patch for switching one route.
+   *
+   * A route is a provider + model pair, and the two are always written
+   * together so the selected model can never outlive its provider. The
+   * reasoning effort, however, is an independent setting: it names a tier of
+   * the *previous* model. Carrying it across a route switch would send an
+   * effort the new model does not advertise, and the Host rejects that with
+   * `UNSUPPORTED_REASONING_EFFORT`.
+   *
+   * So the switch resolves the new route's effort tiers and drops the stored
+   * effort when the new model does not offer it. An empty effort means "let
+   * the Host pick the model's default", which every route accepts.
+   *
+   * `effortField` names the single setting that belongs to the route being
+   * switched. The polish and optimize routes are independent, so switching
+   * one must not disturb the other's effort.
+   *
+   * When the new route's metadata cannot be resolved the stored effort is
+   * left alone: an unknown tier list is not evidence that the effort is
+   * invalid, and clearing it would silently discard a valid preference.
+   */
+  async buildRouteSwitchPatch(
+    route: { provider: string; model: string },
+    effortField: 'polishReasoningEffort' | 'optimizeReasoningEffort',
+    storedEffort: string,
+  ): Promise<{ patch: BetterInputSettingsPatch; effortCleared: boolean }> {
+    const provider = route.provider.trim()
+    const model = route.model.trim()
+    const patch: BetterInputSettingsPatch = {}
+    const effort = storedEffort.trim()
+
+    if (provider !== '' && model !== '') {
+      await this.ensureEffortsFor(provider, model)
+      const entry = this.effortsSnapshot[`${provider}\u0000${model}`]
+      if (entry?.status === 'ready' && effort !== '') {
+        const supported = entry.efforts.some((candidate) => candidate.id === effort)
+        if (!supported) patch[effortField] = ''
+      }
+    }
+
+    return { patch, effortCleared: patch[effortField] === '' && effort !== '' }
+  }
+
   async refreshAbout(): Promise<void> {
     const result = await this.remote.getAbout()
     if (this.disposed) return

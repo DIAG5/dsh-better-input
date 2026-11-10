@@ -67,6 +67,35 @@ export declare class SettingsController {
      * lands.
      */
     ensureEffortsFor(provider: string, model: string): Promise<void>;
+    /**
+     * Resolve the settings patch for switching one route.
+     *
+     * A route is a provider + model pair, and the two are always written
+     * together so the selected model can never outlive its provider. The
+     * reasoning effort, however, is an independent setting: it names a tier of
+     * the *previous* model. Carrying it across a route switch would send an
+     * effort the new model does not advertise, and the Host rejects that with
+     * `UNSUPPORTED_REASONING_EFFORT`.
+     *
+     * So the switch resolves the new route's effort tiers and drops the stored
+     * effort when the new model does not offer it. An empty effort means "let
+     * the Host pick the model's default", which every route accepts.
+     *
+     * `effortField` names the single setting that belongs to the route being
+     * switched. The polish and optimize routes are independent, so switching
+     * one must not disturb the other's effort.
+     *
+     * When the new route's metadata cannot be resolved the stored effort is
+     * left alone: an unknown tier list is not evidence that the effort is
+     * invalid, and clearing it would silently discard a valid preference.
+     */
+    buildRouteSwitchPatch(route: {
+        provider: string;
+        model: string;
+    }, effortField: 'polishReasoningEffort' | 'optimizeReasoningEffort', storedEffort: string): Promise<{
+        patch: BetterInputSettingsPatch;
+        effortCleared: boolean;
+    }>;
     refreshAbout(): Promise<void>;
     checkForUpdate(): Promise<void>;
     dispose(): void;
